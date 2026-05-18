@@ -184,6 +184,14 @@
     .spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
 
+    /* ── Horizon toggle ── */
+    .hz-bar{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+    .hz-lbl{font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+    .hz-grp{display:flex;gap:0;background:var(--card2);border-radius:8px;padding:2px;border:1px solid var(--border)}
+    .hz-btn{padding:5px 14px;border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:.66rem;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s}
+    .hz-btn:hover{color:var(--text)}
+    .hz-btn.active{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(99,102,241,.25)}
+
     @media(max-width:600px){
       .nav-meta,.brand-sub{display:none}
       .hero-kpis{gap:8px}
@@ -263,6 +271,9 @@ let DATA = {};
 let charts = {};
 let activeTab = 'inflacion';
 let activeKeys = {};
+let inflacionHorizon = 'siguiente';
+
+function infS(){ return inflacionHorizon === 'siguiente' ? DATA.inflacion.series_siguiente : DATA.inflacion.series_actual; }
 
 function dk(){ return document.documentElement.getAttribute('data-theme') === 'dark'; }
 
@@ -299,7 +310,7 @@ function buildHeroKPIs(){
   const items = [];
 
   if(DATA.inflacion){
-    const s = DATA.inflacion.series;
+    const s = DATA.inflacion.series_siguiente;
     const last = s[s.length-1];
     items.push({ lbl:'Inflación esperada', val:last.mediana.toFixed(1)+'%', sub:'Mediana · '+last.target, color:'#6366F1' });
   }
@@ -374,18 +385,19 @@ function buildAllSections(){
 
 function buildInflacionSection(){
   const sec = createSection('inflacion', '#6366F1', '01', 'Expectativas de Inflación',
-    'Tasa de inflación interanual (a 12 meses) esperada para diciembre del año siguiente. Encuesta mensual EEE del BCB.');
-  const S = DATA.inflacion.series;
-  const N = S.length;
-  const last = S[N-1], prev = S[N-2];
+    'Tasa de inflación interanual (a 12 meses) esperada. Encuesta mensual EEE del BCB.');
   activeKeys.inflacion = new Set(['mediana','decil9','decil1']);
 
-  sec.appendChild(buildKPIs([
-    { lbl:'Mediana', val:last.mediana.toFixed(1)+'%', d:last.mediana-prev.mediana, color:'#6366F1', inv:true },
-    { lbl:'Decil 9 (pesimistas)', val:last.decil9.toFixed(1)+'%', d:last.decil9-prev.decil9, color:'#C71E1D', inv:true },
-    { lbl:'Decil 1 (optimistas)', val:last.decil1.toFixed(1)+'%', d:last.decil1-prev.decil1, color:'#059669', inv:true },
-    { lbl:'Rango D9–D1', val:(last.decil9-last.decil1).toFixed(1)+' pp', d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#6366F1', inv:true },
-  ]));
+  const hzBar = el('div','hz-bar');
+  hzBar.innerHTML = `<span class="hz-lbl">Horizonte:</span>
+    <div class="hz-grp">
+      <button class="hz-btn active" data-hz="siguiente" onclick="switchInflacionHorizon('siguiente')">Año siguiente</button>
+      <button class="hz-btn" data-hz="actual" onclick="switchInflacionHorizon('actual')">Año en curso</button>
+    </div>`;
+  sec.appendChild(hzBar);
+
+  const kpiDiv = el('div',''); kpiDiv.id = 'inf-kpis';
+  sec.appendChild(kpiDiv);
 
   const wrap = el('div','chart-wrap');
   const chartCard = el('div','chart-card');
@@ -409,32 +421,66 @@ function buildInflacionSection(){
   chartCard.appendChild(chartDiv);
   wrap.appendChild(chartCard);
 
-  const panel = buildInflacionPanel(S, N-1);
-  panel.id = 'panel-inflacion';
-  wrap.appendChild(panel);
+  const panelWrap = el('div',''); panelWrap.id = 'inf-panel-wrap';
+  wrap.appendChild(panelWrap);
   sec.appendChild(wrap);
 
   syncPills('inflacion', {mediana:'#6366F1',decil9:'#C71E1D',decil1:'#059669'});
 
   sec.appendChild(buildEduGrid([
-    { t:'¿Qué son las expectativas de inflación?', b:'Son las proyecciones que hacen los agentes económicos (empresas, analistas, académicos) sobre cuánto subirán los precios en el futuro. El BCB las recopila mensualmente a través de la Encuesta de Expectativas Económicas (EEE).' },
-    { t:'¿Por qué importan?', b:'Si los agentes esperan inflación alta, ajustan precios y salarios al alza, generando una <strong>profecía autocumplida</strong>. Expectativas desancladas dificultan el control de precios.' },
+    { t:'¿Qué son las expectativas de inflación?', b:'Son las proyecciones que hacen los agentes económicos sobre cuánto subirán los precios. El BCB las recopila mensualmente a través de la Encuesta de Expectativas Económicas (EEE).' },
+    { t:'Año siguiente vs. año en curso', b:'La serie <strong>"Año siguiente"</strong> muestra cuánta inflación esperan para dic. del próximo año (horizonte largo). <strong>"Año en curso"</strong> muestra la expectativa para dic. de este año (horizonte corto). Comparar ambas revela si el pesimismo es de corto o largo plazo.' },
     { t:'Mediana, Decil 1 y Decil 9', b:'La <strong>Mediana</strong> es el valor central. El <strong>Decil 1</strong> marca el 10% más optimista. El <strong>Decil 9</strong> el 10% más pesimista. La diferencia mide la <strong>incertidumbre</strong>.' },
-    { t:'¿Cómo leer la serie?', b:'Cada punto es una encuesta mensual. Ej: Ene 2024 muestra la inflación esperada para <strong>Dic 2025</strong>. Los saltos al cambiar año objetivo son normales.' },
+    { t:'¿Cómo leer la serie?', b:'Cada punto es una encuesta mensual. Ej: Ene 2024 muestra la inflación esperada para <strong>Dic 2025</strong> (año siguiente) o <strong>Dic 2024</strong> (año en curso). Los saltos al cambiar año objetivo son normales.' },
   ], '#6366F1'));
 
-  sec.appendChild(buildDataTable('inflacion',
-    ['Mes encuesta','Objetivo','Mediana','Decil 1','Decil 9','Resp.'],
-    S.slice().reverse().map(d => [d.label, d.target, d.mediana.toFixed(2)+'%', d.decil1.toFixed(2)+'%', d.decil9.toFixed(2)+'%', d.respuestas])
-  ));
+  const tblDiv = el('div',''); tblDiv.id = 'inf-table-wrap';
+  sec.appendChild(tblDiv);
 
   setTimeout(() => {
     charts.inflacion = echarts.init(chartDiv);
-    rebuildChart('inflacion');
+    refreshInflacionView();
     charts.inflacion.on('click', p => { if(p.dataIndex!==undefined) updateInflacionPanel(p.dataIndex); });
   }, 100);
 
   return sec;
+}
+
+function switchInflacionHorizon(hz){
+  if(hz === inflacionHorizon) return;
+  inflacionHorizon = hz;
+  document.querySelectorAll('.hz-btn').forEach(b => b.classList.toggle('active', b.dataset.hz === hz));
+  refreshInflacionView();
+}
+
+function refreshInflacionView(){
+  const S = infS();
+  const N = S.length;
+  const last = S[N-1], prev = S[N-2];
+
+  const kpiDiv = document.getElementById('inf-kpis');
+  kpiDiv.innerHTML = '';
+  kpiDiv.appendChild(buildKPIs([
+    { lbl:'Mediana', val:last.mediana.toFixed(1)+'%', d:last.mediana-prev.mediana, color:'#6366F1', inv:true },
+    { lbl:'Decil 9 (pesimistas)', val:last.decil9.toFixed(1)+'%', d:last.decil9-prev.decil9, color:'#C71E1D', inv:true },
+    { lbl:'Decil 1 (optimistas)', val:last.decil1.toFixed(1)+'%', d:last.decil1-prev.decil1, color:'#059669', inv:true },
+    { lbl:'Rango D9–D1', val:(last.decil9-last.decil1).toFixed(1)+' pp', d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#6366F1', inv:true },
+  ]));
+
+  const panelWrap = document.getElementById('inf-panel-wrap');
+  panelWrap.innerHTML = '';
+  const panel = buildInflacionPanel(S, N-1);
+  panel.id = 'panel-inflacion';
+  panelWrap.appendChild(panel);
+
+  const tblWrap = document.getElementById('inf-table-wrap');
+  tblWrap.innerHTML = '';
+  tblWrap.appendChild(buildDataTable('inflacion',
+    ['Mes encuesta','Objetivo','Mediana','Decil 1','Decil 9','Resp.'],
+    S.slice().reverse().map(d => [d.label, d.target, d.mediana.toFixed(2)+'%', d.decil1.toFixed(2)+'%', d.decil9.toFixed(2)+'%', d.respuestas])
+  ));
+
+  if(charts.inflacion) rebuildInflacionChart(dk());
 }
 
 function rebuildChart(id){
@@ -448,7 +494,7 @@ function rebuildChart(id){
 }
 
 function rebuildInflacionChart(d){
-  const S = DATA.inflacion.series;
+  const S = infS();
   const labels = S.map(s => s.label);
   const keys = activeKeys.inflacion;
   const COLORS = {mediana:'#6366F1',decil9:'#C71E1D',decil1:'#059669'};
@@ -463,7 +509,7 @@ function rebuildInflacionChart(d){
     series.push({ name:'_bh', type:'line', data:S.map((x,i)=>x.decil9-x.decil1), symbol:'none', lineStyle:{width:0}, stack:'band', areaStyle:{color:d?'rgba(99,102,241,0.06)':'rgba(99,102,241,0.08)'}, silent:true, z:0 });
   }
 
-  charts.inflacion.setOption(chartOption(labels, series, d, v => v.toFixed(0)+'%', (params, S2) => {
+  charts.inflacion.setOption(chartOption(labels, series, d, v => v.toFixed(0)+'%', (params) => {
     const valid = params.filter(p => !p.seriesName.startsWith('_'));
     if(!valid.length) return '';
     const idx = valid[0].dataIndex;
@@ -487,7 +533,7 @@ function buildInflacionPanel(S, idx){
 }
 
 function updateInflacionPanel(idx){
-  const S = DATA.inflacion.series;
+  const S = infS();
   const panel = document.getElementById('panel-inflacion');
   if(!panel) return;
   const dateEl = panel.querySelector('.panel-hd-d');

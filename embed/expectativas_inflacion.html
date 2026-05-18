@@ -34,6 +34,15 @@
     .sec-sub{font-size:.78rem;color:var(--muted);padding-left:14px;margin-top:2px}
     [data-theme="dark"] .sec-sub{color:rgba(255,255,255,.4)}
 
+    /* ── Horizon toggle ── */
+    .hz-bar{display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-left:14px}
+    .hz-lbl{font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+    .hz-grp{display:flex;gap:0;background:var(--light-gray);border-radius:8px;padding:2px;border:1px solid var(--border)}
+    [data-theme="dark"] .hz-grp{background:#1A1A1A;border-color:var(--dark-border)}
+    .hz-btn{padding:5px 14px;border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:.68rem;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s}
+    .hz-btn:hover{color:var(--text)}
+    .hz-btn.active{background:var(--ct-mediana);color:#fff;box-shadow:0 2px 8px rgba(99,102,241,.25)}
+
     /* ── KPIs ── */
     .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
     @media(max-width:700px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
@@ -141,9 +150,9 @@
     const DASHBOARD_URL = '../index.html';
     const COLORS = { mediana:'#6366F1', decil9:'#C71E1D', decil1:'#059669' };
 
-    let DATA, chart, curIdx, activeKeys;
+    let DATA, chart, curIdx, activeKeys, horizon = 'siguiente';
 
-    function fv(v){ return v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(2) + '%'; }
+    function S(){ return horizon === 'siguiente' ? DATA.series_siguiente : DATA.series_actual; }
     function fvs(v){ return v == null ? '—' : v.toFixed(1) + '%'; }
     function dk(){ return document.documentElement.getAttribute('data-theme') === 'dark'; }
 
@@ -155,20 +164,28 @@
         document.getElementById('loader').innerHTML = '<span style="color:#C71E1D">Error cargando datos</span>';
         return;
       }
-      const S = DATA.series;
-      const N = S.length;
-      curIdx = N - 1;
-      activeKeys = new Set(['mediana','decil9','decil1']);
 
+      activeKeys = new Set(['mediana','decil9','decil1']);
       const app = document.getElementById('app');
       const updTxt = DATA.metadata.ultimo_dato;
+      const ser = S();
+      const N = ser.length;
+      curIdx = N - 1;
+
       app.innerHTML = `
         <div class="sec-hd">
           <h2 class="sec-title">
             <span class="accent-bar"></span>
             Expectativas de Inflación
           </h2>
-          <p class="sec-sub">Encuesta EEE — BCB · Inflación interanual esperada a dic. del año siguiente · Serie ${S[0].label}–${S[N-1].label}</p>
+          <p class="sec-sub" id="sec-sub"></p>
+        </div>
+        <div class="hz-bar">
+          <span class="hz-lbl">Horizonte:</span>
+          <div class="hz-grp">
+            <button class="hz-btn active" data-hz="siguiente" onclick="switchHorizon('siguiente')">Año siguiente</button>
+            <button class="hz-btn" data-hz="actual" onclick="switchHorizon('actual')">Año en curso</button>
+          </div>
         </div>
         <div class="kpi-grid" id="kpis"></div>
         <div class="main-grid">
@@ -204,20 +221,40 @@
         </div>
       `;
 
+      updateSubtitle();
       buildKPIs();
       buildToggles();
       buildChart();
-      updatePanel(N - 1);
+      updatePanel(curIdx);
       buildEduBoxes();
 
       window.addEventListener('resize', () => chart && chart.resize());
       new MutationObserver(() => buildChart()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     }
 
+    function switchHorizon(hz){
+      if(hz === horizon) return;
+      horizon = hz;
+      document.querySelectorAll('.hz-btn').forEach(b => b.classList.toggle('active', b.dataset.hz === hz));
+      const ser = S();
+      curIdx = ser.length - 1;
+      updateSubtitle();
+      buildKPIs();
+      buildChart();
+      updatePanel(curIdx);
+    }
+
+    function updateSubtitle(){
+      const ser = S();
+      const N = ser.length;
+      const hzLabel = horizon === 'siguiente' ? 'dic. del año siguiente' : 'dic. del año en curso';
+      document.getElementById('sec-sub').textContent = `Encuesta EEE — BCB · Inflación interanual esperada a ${hzLabel} · Serie ${ser[0].label}–${ser[N-1].label}`;
+    }
+
     function buildKPIs() {
-      const S = DATA.series;
-      const N = S.length;
-      const last = S[N-1], prev = S[N-2];
+      const ser = S();
+      const N = ser.length;
+      const last = ser[N-1], prev = ser[N-2];
       const dMed = last.mediana - prev.mediana;
       const dD9 = last.decil9 - prev.decil9;
       const dD1 = last.decil1 - prev.decil1;
@@ -274,16 +311,16 @@
     }
 
     function buildChart() {
-      const S = DATA.series;
+      const ser = S();
       const d = dk();
-      const labels = S.map(s => s.label);
+      const labels = ser.map(s => s.label);
 
       if (!chart) {
         chart = echarts.init(document.getElementById('chart'));
         chart.on('click', p => { if (p.dataIndex !== undefined) updatePanel(p.dataIndex); });
         chart.getZr().on('mousemove', e => {
           const p = chart.convertFromPixel({seriesIndex:0}, [e.offsetX, e.offsetY]);
-          if (p) { const idx = Math.round(p[0]); if (idx >= 0 && idx < S.length && idx !== curIdx) updatePanel(idx); }
+          if (p) { const idx = Math.round(p[0]); if (idx >= 0 && idx < ser.length && idx !== curIdx) updatePanel(idx); }
         });
       }
 
@@ -294,7 +331,7 @@
       ];
 
       const series = SERIES_CFG.filter(s => activeKeys.has(s.key)).map(s => {
-        const data = S.map(item => item[s.key]);
+        const data = ser.map(item => item[s.key]);
         const lastIdx = data.length - 1;
         return {
           name: s.name,
@@ -318,29 +355,26 @@
         };
       });
 
-      // Band between D1 and D9
       if (activeKeys.has('decil1') && activeKeys.has('decil9')) {
         series.push({
           name: '_band_low',
           type: 'line',
-          data: S.map(item => item.decil1),
+          data: ser.map(item => item.decil1),
           symbol: 'none',
           lineStyle: { width: 0 },
           stack: 'band',
           areaStyle: { color: 'transparent' },
-          silent: true,
-          z: 0,
+          silent: true, z: 0,
         });
         series.push({
           name: '_band_high',
           type: 'line',
-          data: S.map((item, i) => item.decil9 - item.decil1),
+          data: ser.map((item) => item.decil9 - item.decil1),
           symbol: 'none',
           lineStyle: { width: 0 },
           stack: 'band',
           areaStyle: { color: d ? 'rgba(99,102,241,0.06)' : 'rgba(99,102,241,0.08)' },
-          silent: true,
-          z: 0,
+          silent: true, z: 0,
         });
       }
 
@@ -384,7 +418,7 @@
             if (!valid.length) return '';
             let html = `<div style="font-weight:700;margin-bottom:8px;color:#E9D8A6">${valid[0].axisValue}</div>`;
             const idx = valid[0].dataIndex;
-            const target = S[idx].target;
+            const target = ser[idx].target;
             html += `<div style="font-size:10px;color:#94A3B8;margin-bottom:6px">Expectativa para ${target}</div>`;
             valid.forEach(p => {
               html += `<div style="display:flex;align-items:center;gap:6px;margin-top:4px">
@@ -401,43 +435,44 @@
     }
 
     function updatePanel(idx) {
-      const S = DATA.series;
-      const N = S.length;
+      const ser = S();
+      const N = ser.length;
       if (idx < 0 || idx >= N) return;
       curIdx = idx;
-      const d = S[idx];
-      const prev = idx > 0 ? S[idx-1] : null;
+      const d = ser[idx];
+      const prev = idx > 0 ? ser[idx-1] : null;
 
       document.getElementById('panel-date').textContent = d.label;
 
       const dMed = prev ? d.mediana - prev.mediana : 0;
       const rango = d.decil9 - d.decil1;
+      const hzLabel = horizon === 'siguiente' ? 'del año siguiente' : 'del año en curso';
 
       let analysis;
       if (d.mediana > 15)
-        analysis = `Con una expectativa mediana de <span class="dt dv-purple">${fvs(d.mediana)}</span>, los encuestados anticipan una <strong>inflación muy elevada</strong> al cierre del próximo año. El pesimismo se refleja en un Decil 9 de <span class="dt dv-red">${fvs(d.decil9)}</span>, señalando que un 10% de los encuestados espera niveles aún más críticos. Esto indica una <strong>pérdida significativa de confianza</strong> en la estabilidad de precios.`;
+        analysis = `Con una expectativa mediana de <span class="dt dv-purple">${fvs(d.mediana)}</span>, los encuestados anticipan una <strong>inflación muy elevada</strong> al cierre ${hzLabel}. El pesimismo se refleja en un Decil 9 de <span class="dt dv-red">${fvs(d.decil9)}</span>, señalando una <strong>pérdida significativa de confianza</strong>.`;
       else if (d.mediana > 10)
-        analysis = `La expectativa mediana de <span class="dt dv-purple">${fvs(d.mediana)}</span> se sitúa en <strong>niveles altos</strong>, muy por encima de la inflación históricamente baja de Bolivia. La dispersión de <strong>${rango.toFixed(1)} pp</strong> entre optimistas y pesimistas refleja una <strong>incertidumbre considerable</strong> sobre la trayectoria futura de los precios.`;
+        analysis = `La expectativa mediana de <span class="dt dv-purple">${fvs(d.mediana)}</span> se sitúa en <strong>niveles altos</strong>. La dispersión de <strong>${rango.toFixed(1)} pp</strong> refleja una <strong>incertidumbre considerable</strong>.`;
       else if (d.mediana > 5)
-        analysis = `Con <span class="dt dv-purple">${fvs(d.mediana)}</span> de expectativa mediana, los encuestados anticipan una inflación <strong>moderadamente elevada</strong>. El rango entre Decil 1 (<span class="dt dv-green">${fvs(d.decil1)}</span>) y Decil 9 (<span class="dt dv-red">${fvs(d.decil9)}</span>) sugiere visiones divergentes sobre la efectividad de la política monetaria.`;
+        analysis = `Con <span class="dt dv-purple">${fvs(d.mediana)}</span>, los encuestados anticipan inflación <strong>moderadamente elevada</strong>. El rango entre D1 (<span class="dt dv-green">${fvs(d.decil1)}</span>) y D9 (<span class="dt dv-red">${fvs(d.decil9)}</span>) sugiere visiones divergentes.`;
       else
-        analysis = `La expectativa mediana de <span class="dt dv-purple">${fvs(d.mediana)}</span> refleja una <strong>confianza razonable</strong> en la estabilidad de precios. El consenso es relativamente estrecho, con un rango de <strong>${rango.toFixed(1)} pp</strong> entre optimistas y pesimistas.`;
+        analysis = `La expectativa mediana de <span class="dt dv-purple">${fvs(d.mediana)}</span> refleja <strong>confianza razonable</strong> en la estabilidad de precios. Consenso relativamente estrecho con rango de <strong>${rango.toFixed(1)} pp</strong>.`;
 
       document.getElementById('panel-body').innerHTML = `
         <div class="pb">
           <div class="pb-lbl" style="color:${COLORS.mediana};background:rgba(99,102,241,.08);border-left-color:${COLORS.mediana}">Mediana</div>
           <div class="pb-val" style="color:${COLORS.mediana}">${fvs(d.mediana)}</div>
-          <p class="pb-desc">En <strong>${d.label}</strong>, la expectativa mediana de inflación interanual para <strong>${d.target}</strong> es <span class="dt dv-purple">${fvs(d.mediana)}</span>${prev ? `, ${dMed >= 0 ? 'subiendo' : 'bajando'} <span class="dt dv-purple">${Math.abs(dMed).toFixed(2)} pp</span> respecto a ${prev.label}` : ''}. Basada en ${d.respuestas} respuestas de especialistas.</p>
+          <p class="pb-desc">En <strong>${d.label}</strong>, la expectativa mediana de inflación interanual para <strong>${d.target}</strong> es <span class="dt dv-purple">${fvs(d.mediana)}</span>${prev ? `, ${dMed >= 0 ? 'subiendo' : 'bajando'} <span class="dt dv-purple">${Math.abs(dMed).toFixed(2)} pp</span> respecto a ${prev.label}` : ''}. Basada en ${d.respuestas} respuestas.</p>
         </div>
         <div class="pb">
           <div class="pb-lbl" style="color:${COLORS.decil9};background:rgba(199,30,29,.08);border-left-color:${COLORS.decil9}">Decil 9 · Pesimistas</div>
           <div class="pb-val" style="color:${COLORS.decil9}">${fvs(d.decil9)}</div>
-          <p class="pb-desc">El 10% más pesimista de los encuestados espera una inflación de al menos <span class="dt dv-red">${fvs(d.decil9)}</span> para ${d.target}. Este valor marca el <strong>techo</strong> de las expectativas del sector privado.</p>
+          <p class="pb-desc">El 10% más pesimista espera al menos <span class="dt dv-red">${fvs(d.decil9)}</span> para ${d.target}.</p>
         </div>
         <div class="pb">
           <div class="pb-lbl" style="color:${COLORS.decil1};background:rgba(5,150,105,.08);border-left-color:${COLORS.decil1}">Decil 1 · Optimistas</div>
           <div class="pb-val" style="color:${COLORS.decil1}">${fvs(d.decil1)}</div>
-          <p class="pb-desc">El 10% más optimista espera una inflación no superior a <span class="dt dv-green">${fvs(d.decil1)}</span>. Este valor representa el <strong>piso</strong> de las expectativas.</p>
+          <p class="pb-desc">El 10% más optimista espera no más de <span class="dt dv-green">${fvs(d.decil1)}</span>.</p>
         </div>
         <div class="ctx"><p>${analysis}</p></div>
       `;
@@ -447,19 +482,19 @@
       const boxes = [
         {
           title: '¿Qué son las expectativas de inflación?',
-          body: 'Son las proyecciones que hacen los agentes económicos (empresas, analistas, académicos) sobre cuánto subirán los precios en el futuro. El BCB las recopila mensualmente a través de la Encuesta de Expectativas Económicas (EEE), dirigida a un grupo selecto de ejecutivos, asesores y especialistas de instituciones financieras, académicos, investigadores y consultores.'
+          body: 'Son las proyecciones que hacen los agentes económicos (empresas, analistas, académicos) sobre cuánto subirán los precios. El BCB las recopila mensualmente a través de la Encuesta de Expectativas Económicas (EEE), dirigida a ejecutivos, académicos e investigadores.'
+        },
+        {
+          title: '¿Año siguiente vs. año en curso?',
+          body: 'La serie <strong>"Año siguiente"</strong> muestra cuánta inflación esperan para diciembre del próximo año (horizonte largo). La serie <strong>"Año en curso"</strong> muestra la expectativa para diciembre de este mismo año (horizonte corto). Comparar ambas revela si el pesimismo es de corto o largo plazo.'
+        },
+        {
+          title: '¿Qué significan Mediana, D1 y D9?',
+          body: 'La <strong>Mediana</strong> es el valor central: la mitad espera más y la otra mitad menos. El <strong>Decil 1</strong> marca el 10% más optimista. El <strong>Decil 9</strong> marca el 10% más pesimista. La diferencia mide la <strong>incertidumbre</strong>.'
         },
         {
           title: '¿Por qué importan?',
-          body: 'Las expectativas de inflación son un predictor clave de la inflación futura. Si los agentes esperan inflación alta, ajustan precios y salarios al alza, generando una <strong>profecía autocumplida</strong>. Por eso los bancos centrales monitorean estas encuestas: expectativas desancladas dificultan enormemente el control de precios.'
-        },
-        {
-          title: '¿Qué significan Mediana, Decil 1 y Decil 9?',
-          body: 'La <strong>Mediana</strong> es el valor central: la mitad de los encuestados espera más y la otra mitad menos. El <strong>Decil 1</strong> marca el umbral del 10% más optimista (esperan inflación baja). El <strong>Decil 9</strong> marca el umbral del 10% más pesimista (esperan inflación alta). La diferencia entre ambos deciles mide la <strong>incertidumbre</strong>: a mayor rango, mayor desacuerdo entre los especialistas.'
-        },
-        {
-          title: '¿Cómo leer la serie temporal?',
-          body: 'Cada punto representa una encuesta mensual. El dato de, por ejemplo, Ene 2024 muestra la inflación interanual que los encuestados esperaban para <strong>diciembre de 2025</strong> (el cierre del año siguiente). Al cambiar el año objetivo (de Dic 2025 a Dic 2026, etc.), pueden aparecer saltos en la serie que reflejan el cambio de horizonte, no necesariamente un cambio abrupto de expectativas.'
+          body: 'Las expectativas de inflación son un predictor clave de la inflación futura. Si los agentes esperan inflación alta, ajustan precios y salarios al alza, generando una <strong>profecía autocumplida</strong>. Expectativas desancladas dificultan enormemente el control de precios.'
         },
       ];
       const el = document.getElementById('edu-boxes');
@@ -471,7 +506,6 @@
       `).join('');
     }
 
-    // Theme sync from parent (iframe postMessage)
     window.addEventListener('message', e => {
       if (e.data && e.data.theme) {
         document.documentElement.setAttribute('data-theme', e.data.theme);

@@ -265,16 +265,17 @@ def build_series_json(all_data):
         "metadata": {
             "fuente": "Banco Central de Bolivia — Encuesta Mensual de Expectativas Económicas",
             "url": "https://www.bcb.gob.bo/?q=resultados-encuestas",
-            "descripcion": "Tasa de inflación interanual (a 12 meses) esperada para diciembre del año siguiente",
-            "nota": "Cada mes presenta la expectativa de los encuestados sobre la inflación al cierre del próximo año",
+            "descripcion": "Tasa de inflación interanual (a 12 meses) esperada para diciembre del año siguiente y del año actual",
+            "nota": "Cada mes presenta la expectativa de los encuestados sobre la inflación al cierre del próximo año y del año en curso",
             "ultimo_dato": all_data[-1]["label"],
             "total_observaciones": len(all_data),
         },
-        "series": [],
+        "series_siguiente": [],
+        "series_actual": [],
     }
     for d in all_data:
         inf = d.get("inflacion_dic_siguiente", {})
-        inflacion["series"].append({
+        inflacion["series_siguiente"].append({
             "survey_month": d["survey_month"],
             "label": d["label"],
             "target": inf.get("target", ""),
@@ -284,6 +285,18 @@ def build_series_json(all_data):
             "decil9": inf.get("decil9"),
             "respuestas": inf.get("respuestas"),
         })
+        inf_act = d.get("inflacion_dic_actual", {})
+        if inf_act:
+            inflacion["series_actual"].append({
+                "survey_month": d["survey_month"],
+                "label": d["label"],
+                "target": f"Dic {int(d['survey_month'][:4])}",
+                "mediana": inf_act.get("mediana"),
+                "media": inf_act.get("media"),
+                "decil1": inf_act.get("decil1"),
+                "decil9": inf_act.get("decil9"),
+                "respuestas": inf_act.get("respuestas"),
+            })
 
     with open(DATA_DIR / "expectativas_inflacion.json", "w", encoding="utf-8") as f:
         json.dump(inflacion, f, ensure_ascii=False, indent=2)
