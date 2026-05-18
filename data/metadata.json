@@ -1,0 +1,13 @@
+{
+  "ultimo_scrape": "2026-04",
+  "ultimo_dato": "Abr 2026",
+  "total_observaciones": 28,
+  "archivos": [
+    "expectativas_inflacion.json",
+    "expectativas_tipo_cambio.json",
+    "expectativas_pib.json",
+    "expectativas_rin.json",
+    "expectativas_percepcion.json",
+    "expectativas_all.json"
+  ]
+}

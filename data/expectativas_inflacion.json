@@ -1,0 +1,292 @@
+{
+  "metadata": {
+    "fuente": "Banco Central de Bolivia — Encuesta Mensual de Expectativas Económicas",
+    "url": "https://www.bcb.gob.bo/?q=resultados-encuestas",
+    "descripcion": "Tasa de inflación interanual (a 12 meses) esperada para diciembre del año siguiente",
+    "nota": "Cada mes presenta la expectativa de los encuestados sobre la inflación al cierre del próximo año",
+    "ultimo_dato": "Abr 2026",
+    "total_observaciones": 28
+  },
+  "series": [
+    {
+      "survey_month": "2024-01",
+      "label": "Ene 2024",
+      "target": "Dic 2025",
+      "mediana": 3.55,
+      "media": 4.14,
+      "decil1": 2.68,
+      "decil9": 6.95,
+      "respuestas": 28
+    },
+    {
+      "survey_month": "2024-02",
+      "label": "Feb 2024",
+      "target": "Dic 2025",
+      "mediana": 4.05,
+      "media": 4.74,
+      "decil1": 2.78,
+      "decil9": 8.24,
+      "respuestas": 30
+    },
+    {
+      "survey_month": "2024-03",
+      "label": "Mar 2024",
+      "target": "Dic 2025",
+      "mediana": 3.5,
+      "media": 4.09,
+      "decil1": 2.51,
+      "decil9": 7.53,
+      "respuestas": 34
+    },
+    {
+      "survey_month": "2024-04",
+      "label": "Abr 2024",
+      "target": "Dic 2025",
+      "mediana": 4.0,
+      "media": 4.35,
+      "decil1": 2.64,
+      "decil9": 7.08,
+      "respuestas": 33
+    },
+    {
+      "survey_month": "2024-05",
+      "label": "May 2024",
+      "target": "Dic 2025",
+      "mediana": 4.2,
+      "media": 4.62,
+      "decil1": 2.7,
+      "decil9": 7.2,
+      "respuestas": 31
+    },
+    {
+      "survey_month": "2024-06",
+      "label": "Jun 2024",
+      "target": "Dic 2025",
+      "mediana": 4.5,
+      "media": 4.74,
+      "decil1": 2.81,
+      "decil9": 7.99,
+      "respuestas": 32
+    },
+    {
+      "survey_month": "2024-07",
+      "label": "Jul 2024",
+      "target": "Dic 2025",
+      "mediana": 4.85,
+      "media": 5.34,
+      "decil1": 3.28,
+      "decil9": 7.45,
+      "respuestas": 32
+    },
+    {
+      "survey_month": "2024-08",
+      "label": "Ago 2024",
+      "target": "Dic 2025",
+      "mediana": 5.0,
+      "media": 5.25,
+      "decil1": 3.6,
+      "decil9": 7.0,
+      "respuestas": 33
+    },
+    {
+      "survey_month": "2024-09",
+      "label": "Sep 2024",
+      "target": "Dic 2025",
+      "mediana": 6.0,
+      "media": 6.55,
+      "decil1": 3.26,
+      "decil9": 10.2,
+      "respuestas": 30
+    },
+    {
+      "survey_month": "2024-10",
+      "label": "Oct 2024",
+      "target": "Dic 2025",
+      "mediana": 6.39,
+      "media": 7.01,
+      "decil1": 4.27,
+      "decil9": 10.78,
+      "respuestas": 30
+    },
+    {
+      "survey_month": "2024-11",
+      "label": "Nov 2024",
+      "target": "Dic 2025",
+      "mediana": 8.35,
+      "media": 8.57,
+      "decil1": 4.21,
+      "decil9": 12.82,
+      "respuestas": 30
+    },
+    {
+      "survey_month": "2024-12",
+      "label": "Dic 2024",
+      "target": "Dic 2025",
+      "mediana": 10.0,
+      "media": 10.47,
+      "decil1": 7.0,
+      "decil9": 16.0,
+      "respuestas": 31
+    },
+    {
+      "survey_month": "2025-01",
+      "label": "Ene 2025",
+      "target": "Dic 2026",
+      "mediana": 10.0,
+      "media": 10.01,
+      "decil1": 5.83,
+      "decil9": 17.0,
+      "respuestas": 31
+    },
+    {
+      "survey_month": "2025-02",
+      "label": "Feb 2025",
+      "target": "Dic 2026",
+      "mediana": 10.0,
+      "media": 11.52,
+      "decil1": 5.61,
+      "decil9": 17.4,
+      "respuestas": 33
+    },
+    {
+      "survey_month": "2025-03",
+      "label": "Mar 2025",
+      "target": "Dic 2026",
+      "mediana": 12.5,
+      "media": 14.1,
+      "decil1": 7.0,
+      "decil9": 25.44,
+      "respuestas": 31
+    },
+    {
+      "survey_month": "2025-04",
+      "label": "Abr 2025",
+      "target": "Dic 2026",
+      "mediana": 14.9,
+      "media": 16.0,
+      "decil1": 8.0,
+      "decil9": 27.7,
+      "respuestas": 32
+    },
+    {
+      "survey_month": "2025-05",
+      "label": "May 2025",
+      "target": "Dic 2026",
+      "mediana": 15.0,
+      "media": 17.75,
+      "decil1": 8.4,
+      "decil9": 31.0,
+      "respuestas": 39
+    },
+    {
+      "survey_month": "2025-06",
+      "label": "Jun 2025",
+      "target": "Dic 2026",
+      "mediana": 15.95,
+      "media": 17.73,
+      "decil1": 9.69,
+      "decil9": 30.6,
+      "respuestas": 38
+    },
+    {
+      "survey_month": "2025-07",
+      "label": "Jul 2025",
+      "target": "Dic 2026",
+      "mediana": 17.0,
+      "media": 19.52,
+      "decil1": 8.07,
+      "decil9": 32.31,
+      "respuestas": 38
+    },
+    {
+      "survey_month": "2025-08",
+      "label": "Ago 2025",
+      "target": "Dic 2026",
+      "mediana": 17.57,
+      "media": 22.31,
+      "decil1": 12.0,
+      "decil9": 43.2,
+      "respuestas": 37
+    },
+    {
+      "survey_month": "2025-09",
+      "label": "Sep 2025",
+      "target": "Dic 2026",
+      "mediana": 16.5,
+      "media": 21.46,
+      "decil1": 10.0,
+      "decil9": 39.11,
+      "respuestas": 36
+    },
+    {
+      "survey_month": "2025-10",
+      "label": "Oct 2025",
+      "target": "Dic 2026",
+      "mediana": 18.3,
+      "media": 20.36,
+      "decil1": 10.0,
+      "decil9": 32.5,
+      "respuestas": 36
+    },
+    {
+      "survey_month": "2025-11",
+      "label": "Nov 2025",
+      "target": "Dic 2026",
+      "mediana": 18.0,
+      "media": 18.34,
+      "decil1": 8.63,
+      "decil9": 29.4,
+      "respuestas": 37
+    },
+    {
+      "survey_month": "2025-12",
+      "label": "Dic 2025",
+      "target": "Dic 2026",
+      "mediana": 17.0,
+      "media": 17.83,
+      "decil1": 7.72,
+      "decil9": 33.14,
+      "respuestas": 35
+    },
+    {
+      "survey_month": "2026-01",
+      "label": "Ene 2026",
+      "target": "Dic 2027",
+      "mediana": 12.57,
+      "media": 12.68,
+      "decil1": 5.18,
+      "decil9": 20.0,
+      "respuestas": 29
+    },
+    {
+      "survey_month": "2026-02",
+      "label": "Feb 2026",
+      "target": "Dic 2027",
+      "mediana": 12.5,
+      "media": 12.78,
+      "decil1": 7.0,
+      "decil9": 19.22,
+      "respuestas": 26
+    },
+    {
+      "survey_month": "2026-03",
+      "label": "Mar 2026",
+      "target": "Dic 2027",
+      "mediana": 11.5,
+      "media": 12.41,
+      "decil1": 5.45,
+      "decil9": 18.25,
+      "respuestas": 30
+    },
+    {
+      "survey_month": "2026-04",
+      "label": "Abr 2026",
+      "target": "Dic 2027",
+      "mediana": 12.1,
+      "media": 11.9,
+      "decil1": 5.0,
+      "decil9": 18.0,
+      "respuestas": 27
+    }
+  ]
+}

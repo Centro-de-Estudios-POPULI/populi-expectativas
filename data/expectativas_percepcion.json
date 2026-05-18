@@ -1,0 +1,205 @@
+{
+  "metadata": {
+    "fuente": "BCB — EEE",
+    "descripcion": "Índice de Percepción Económica, Situación Actual y Situación Futura",
+    "ultimo_dato": "Abr 2026"
+  },
+  "series": [
+    {
+      "survey_month": "2024-01",
+      "label": "Ene 2024",
+      "ipe": null,
+      "isa": null,
+      "isf": null
+    },
+    {
+      "survey_month": "2024-02",
+      "label": "Feb 2024",
+      "ipe": null,
+      "isa": null,
+      "isf": null
+    },
+    {
+      "survey_month": "2024-03",
+      "label": "Mar 2024",
+      "ipe": -51.8,
+      "isa": -66.7,
+      "isf": -35.3
+    },
+    {
+      "survey_month": "2024-04",
+      "label": "Abr 2024",
+      "ipe": -50.1,
+      "isa": -56.3,
+      "isf": -43.8
+    },
+    {
+      "survey_month": "2024-05",
+      "label": "May 2024",
+      "ipe": -52.1,
+      "isa": -63.3,
+      "isf": -40.0
+    },
+    {
+      "survey_month": "2024-06",
+      "label": "Jun 2024",
+      "ipe": -72.0,
+      "isa": -87.1,
+      "isf": -54.8
+    },
+    {
+      "survey_month": "2024-07",
+      "label": "Jul 2024",
+      "ipe": -64.7,
+      "isa": -71.0,
+      "isf": -58.1
+    },
+    {
+      "survey_month": "2024-08",
+      "label": "Ago 2024",
+      "ipe": -67.2,
+      "isa": -78.8,
+      "isf": -54.5
+    },
+    {
+      "survey_month": "2024-09",
+      "label": "Sep 2024",
+      "ipe": -74.9,
+      "isa": -87.1,
+      "isf": -61.3
+    },
+    {
+      "survey_month": "2024-10",
+      "label": "Oct 2024",
+      "ipe": -62.2,
+      "isa": -73.3,
+      "isf": -50.0
+    },
+    {
+      "survey_month": "2024-11",
+      "label": "Nov 2024",
+      "ipe": -77.1,
+      "isa": -86.7,
+      "isf": -66.7
+    },
+    {
+      "survey_month": "2024-12",
+      "label": "Dic 2024",
+      "ipe": -76.1,
+      "isa": -83.9,
+      "isf": -67.7
+    },
+    {
+      "survey_month": "2025-01",
+      "label": "Ene 2025",
+      "ipe": -64.9,
+      "isa": -74.2,
+      "isf": -54.8
+    },
+    {
+      "survey_month": "2025-02",
+      "label": "Feb 2025",
+      "ipe": -75.8,
+      "isa": -78.8,
+      "isf": -72.7
+    },
+    {
+      "survey_month": "2025-03",
+      "label": "Mar 2025",
+      "ipe": -82.9,
+      "isa": -87.5,
+      "isf": -78.1
+    },
+    {
+      "survey_month": "2025-04",
+      "label": "Abr 2025",
+      "ipe": -75.2,
+      "isa": -81.3,
+      "isf": -68.8
+    },
+    {
+      "survey_month": "2025-05",
+      "label": "May 2025",
+      "ipe": -74.2,
+      "isa": -82.1,
+      "isf": -65.8
+    },
+    {
+      "survey_month": "2025-06",
+      "label": "Jun 2025",
+      "ipe": -80.1,
+      "isa": -86.8,
+      "isf": -73.0
+    },
+    {
+      "survey_month": "2025-07",
+      "label": "Jul 2025",
+      "ipe": -72.7,
+      "isa": -81.6,
+      "isf": -63.2
+    },
+    {
+      "survey_month": "2025-08",
+      "label": "Ago 2025",
+      "ipe": -57.1,
+      "isa": -84.2,
+      "isf": -23.7
+    },
+    {
+      "survey_month": "2025-09",
+      "label": "Sep 2025",
+      "ipe": -54.9,
+      "isa": -77.8,
+      "isf": -27.8
+    },
+    {
+      "survey_month": "2025-10",
+      "label": "Oct 2025",
+      "ipe": -52.0,
+      "isa": -80.6,
+      "isf": -16.7
+    },
+    {
+      "survey_month": "2025-11",
+      "label": "Nov 2025",
+      "ipe": -25.9,
+      "isa": -58.3,
+      "isf": 13.9
+    },
+    {
+      "survey_month": "2025-12",
+      "label": "Dic 2025",
+      "ipe": 7.0,
+      "isa": -17.1,
+      "isf": 34.3
+    },
+    {
+      "survey_month": "2026-01",
+      "label": "Ene 2026",
+      "ipe": 30.4,
+      "isa": 13.8,
+      "isf": 48.3
+    },
+    {
+      "survey_month": "2026-02",
+      "label": "Feb 2026",
+      "ipe": 67.25,
+      "isa": 73.08,
+      "isf": 61.54
+    },
+    {
+      "survey_month": "2026-03",
+      "label": "Mar 2026",
+      "ipe": 46.06,
+      "isa": 62.07,
+      "isf": 31.03
+    },
+    {
+      "survey_month": "2026-04",
+      "label": "Abr 2026",
+      "ipe": 28.16,
+      "isa": 55.56,
+      "isf": 3.7
+    }
+  ]
+}

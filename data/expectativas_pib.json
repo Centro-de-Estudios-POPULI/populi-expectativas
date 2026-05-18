@@ -1,0 +1,201 @@
+{
+  "metadata": {
+    "fuente": "BCB — EEE",
+    "descripcion": "Crecimiento del PIB esperado (var. anual acumulada) para el año siguiente",
+    "ultimo_dato": "Abr 2026"
+  },
+  "series": [
+    {
+      "survey_month": "2024-01",
+      "label": "Ene 2024",
+      "target": "Año 2025",
+      "mediana": 2.5,
+      "decil1": 1.47,
+      "decil9": 3.8
+    },
+    {
+      "survey_month": "2024-02",
+      "label": "Feb 2024",
+      "target": "Año 2025",
+      "mediana": 2.35,
+      "decil1": 1.49,
+      "decil9": 3.53
+    },
+    {
+      "survey_month": "2024-03",
+      "label": "Mar 2024",
+      "target": "Año 2025",
+      "mediana": 2.6,
+      "decil1": 1.66,
+      "decil9": 3.74
+    },
+    {
+      "survey_month": "2024-04",
+      "label": "Abr 2024",
+      "target": "Año 2025",
+      "mediana": 2.5,
+      "decil1": 1.52,
+      "decil9": 3.7
+    },
+    {
+      "survey_month": "2024-05",
+      "label": "May 2024",
+      "target": "Año 2025",
+      "mediana": 2.9,
+      "decil1": 1.79,
+      "decil9": 3.82
+    },
+    {
+      "survey_month": "2024-06",
+      "label": "Jun 2024",
+      "target": "Año 2025",
+      "mediana": 2.05,
+      "decil1": 1.71,
+      "decil9": 3.71
+    },
+    {
+      "survey_month": "2024-07",
+      "label": "Jul 2024",
+      "target": "Año 2025",
+      "mediana": 2.65,
+      "decil1": 1.61,
+      "decil9": 3.73
+    },
+    {
+      "survey_month": "2024-08",
+      "label": "Ago 2024",
+      "target": "Año 2025",
+      "mediana": 2.4,
+      "decil1": 1.5,
+      "decil9": 3.7
+    },
+    {
+      "survey_month": "2024-09",
+      "label": "Sep 2024",
+      "target": "Año 2025",
+      "mediana": 2.05,
+      "decil1": 0.5,
+      "decil9": 3.66
+    },
+    {
+      "survey_month": "2024-10",
+      "label": "Oct 2024",
+      "target": "Año 2025",
+      "mediana": 2.0,
+      "decil1": 0.95,
+      "decil9": 3.5
+    },
+    {
+      "survey_month": "2024-11",
+      "label": "Nov 2024",
+      "target": "Año 2025",
+      "mediana": 2.0,
+      "decil1": 0.96,
+      "decil9": 3.49
+    },
+    {
+      "survey_month": "2024-12",
+      "label": "Dic 2024",
+      "target": "Año 2025",
+      "mediana": 1.98,
+      "decil1": 1.0,
+      "decil9": 3.5
+    },
+    {
+      "survey_month": "2025-04",
+      "label": "Abr 2025",
+      "target": "Año 2026",
+      "mediana": 2.0,
+      "decil1": 0.68,
+      "decil9": 3.46
+    },
+    {
+      "survey_month": "2025-05",
+      "label": "May 2025",
+      "target": "Año 2026",
+      "mediana": 2.0,
+      "decil1": 0.56,
+      "decil9": 3.11
+    },
+    {
+      "survey_month": "2025-06",
+      "label": "Jun 2025",
+      "target": "Año 2026",
+      "mediana": 2.0,
+      "decil1": 0.36,
+      "decil9": 3.18
+    },
+    {
+      "survey_month": "2025-07",
+      "label": "Jul 2025",
+      "target": "Año 2026",
+      "mediana": 1.41,
+      "decil1": -0.44,
+      "decil9": 3.14
+    },
+    {
+      "survey_month": "2025-08",
+      "label": "Ago 2025",
+      "target": "Año 2026",
+      "mediana": 1.5,
+      "decil1": -1.08,
+      "decil9": 3.48
+    },
+    {
+      "survey_month": "2025-09",
+      "label": "Sep 2025",
+      "target": "Año 2026",
+      "mediana": 1.5,
+      "decil1": -1.12,
+      "decil9": 3.34
+    },
+    {
+      "survey_month": "2025-10",
+      "label": "Oct 2025",
+      "target": "Año 2026",
+      "mediana": 0.91,
+      "decil1": -1.5,
+      "decil9": 3.03
+    },
+    {
+      "survey_month": "2025-11",
+      "label": "Nov 2025",
+      "target": "Año 2026",
+      "mediana": 0.65,
+      "decil1": -2.84,
+      "decil9": 2.4
+    },
+    {
+      "survey_month": "2025-12",
+      "label": "Dic 2025",
+      "target": "Año 2026",
+      "mediana": 0.8,
+      "decil1": -2.26,
+      "decil9": 2.24
+    },
+    {
+      "survey_month": "2026-02",
+      "label": "Feb 2026",
+      "target": "Año 2027",
+      "mediana": 1.04,
+      "decil1": -1.4,
+      "decil9": 2.95
+    },
+    {
+      "survey_month": "2026-03",
+      "label": "Mar 2026",
+      "target": "Año 2027",
+      "mediana": 1.2,
+      "decil1": -0.39,
+      "decil9": 3.03
+    },
+    {
+      "survey_month": "2026-04",
+      "label": "Abr 2026",
+      "target": "Año 2027",
+      "mediana": 1.5,
+      "decil1": -1.64,
+      "decil9": 3.66
+    }
+  ]
+}

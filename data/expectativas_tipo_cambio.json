@@ -1,0 +1,233 @@
+{
+  "metadata": {
+    "fuente": "BCB — EEE",
+    "descripcion": "Tipo de cambio Bs/$us esperado para fin de periodo, diciembre del año siguiente",
+    "ultimo_dato": "Abr 2026"
+  },
+  "series": [
+    {
+      "survey_month": "2024-01",
+      "label": "Ene 2024",
+      "target": "Dic 2025",
+      "mediana": 7.2,
+      "decil1": 6.96,
+      "decil9": 8.76
+    },
+    {
+      "survey_month": "2024-02",
+      "label": "Feb 2024",
+      "target": "Dic 2025",
+      "mediana": 7.5,
+      "decil1": 6.96,
+      "decil9": 11.18
+    },
+    {
+      "survey_month": "2024-03",
+      "label": "Mar 2024",
+      "target": "Dic 2025",
+      "mediana": 7.5,
+      "decil1": 6.96,
+      "decil9": 9.8
+    },
+    {
+      "survey_month": "2024-04",
+      "label": "Abr 2024",
+      "target": "Dic 2025",
+      "mediana": 7.5,
+      "decil1": 6.96,
+      "decil9": 9.0
+    },
+    {
+      "survey_month": "2024-05",
+      "label": "May 2024",
+      "target": "Dic 2025",
+      "mediana": 7.5,
+      "decil1": 6.96,
+      "decil9": 10.19
+    },
+    {
+      "survey_month": "2024-06",
+      "label": "Jun 2024",
+      "target": "Dic 2025",
+      "mediana": 7.65,
+      "decil1": 6.96,
+      "decil9": 10.0
+    },
+    {
+      "survey_month": "2024-07",
+      "label": "Jul 2024",
+      "target": "Dic 2025",
+      "mediana": 7.5,
+      "decil1": 6.96,
+      "decil9": 10.0
+    },
+    {
+      "survey_month": "2024-08",
+      "label": "Ago 2024",
+      "target": "Dic 2025",
+      "mediana": 7.65,
+      "decil1": 6.96,
+      "decil9": 12.0
+    },
+    {
+      "survey_month": "2024-09",
+      "label": "Sep 2024",
+      "target": "Dic 2025",
+      "mediana": 7.5,
+      "decil1": 6.96,
+      "decil9": 12.3
+    },
+    {
+      "survey_month": "2024-10",
+      "label": "Oct 2024",
+      "target": "Dic 2025",
+      "mediana": 7.5,
+      "decil1": 6.96,
+      "decil9": 12.0
+    },
+    {
+      "survey_month": "2024-11",
+      "label": "Nov 2024",
+      "target": "Dic 2025",
+      "mediana": 8.0,
+      "decil1": 6.96,
+      "decil9": 11.2
+    },
+    {
+      "survey_month": "2024-12",
+      "label": "Dic 2024",
+      "target": "Dic 2025",
+      "mediana": 7.85,
+      "decil1": 6.96,
+      "decil9": 12.09
+    },
+    {
+      "survey_month": "2025-01",
+      "label": "Ene 2025",
+      "target": "Dic 2026",
+      "mediana": 8.0,
+      "decil1": 6.96,
+      "decil9": 13.1
+    },
+    {
+      "survey_month": "2025-02",
+      "label": "Feb 2025",
+      "target": "Dic 2026",
+      "mediana": 8.54,
+      "decil1": 6.96,
+      "decil9": 15.62
+    },
+    {
+      "survey_month": "2025-03",
+      "label": "Mar 2025",
+      "target": "Dic 2026",
+      "mediana": 10.0,
+      "decil1": 6.96,
+      "decil9": 17.0
+    },
+    {
+      "survey_month": "2025-04",
+      "label": "Abr 2025",
+      "target": "Dic 2026",
+      "mediana": 11.0,
+      "decil1": 7.18,
+      "decil9": 15.0
+    },
+    {
+      "survey_month": "2025-05",
+      "label": "May 2025",
+      "target": "Dic 2026",
+      "mediana": 13.1,
+      "decil1": 7.55,
+      "decil9": 20.6
+    },
+    {
+      "survey_month": "2025-06",
+      "label": "Jun 2025",
+      "target": "Dic 2026",
+      "mediana": 12.0,
+      "decil1": 6.96,
+      "decil9": 19.0
+    },
+    {
+      "survey_month": "2025-07",
+      "label": "Jul 2025",
+      "target": "Dic 2026",
+      "mediana": 12.0,
+      "decil1": 6.96,
+      "decil9": 16.8
+    },
+    {
+      "survey_month": "2025-08",
+      "label": "Ago 2025",
+      "target": "Dic 2026",
+      "mediana": 12.7,
+      "decil1": 7.37,
+      "decil9": 20.42
+    },
+    {
+      "survey_month": "2025-09",
+      "label": "Sep 2025",
+      "target": "Dic 2026",
+      "mediana": 11.0,
+      "decil1": 6.96,
+      "decil9": 15.07
+    },
+    {
+      "survey_month": "2025-10",
+      "label": "Oct 2025",
+      "target": "Dic 2026",
+      "mediana": 12.0,
+      "decil1": 7.38,
+      "decil9": 15.0
+    },
+    {
+      "survey_month": "2025-11",
+      "label": "Nov 2025",
+      "target": "Dic 2026",
+      "mediana": 11.0,
+      "decil1": 8.12,
+      "decil9": 15.22
+    },
+    {
+      "survey_month": "2025-12",
+      "label": "Dic 2025",
+      "target": "Dic 2026",
+      "mediana": 10.0,
+      "decil1": 7.27,
+      "decil9": 13.87
+    },
+    {
+      "survey_month": "2026-01",
+      "label": "Ene 2026",
+      "target": "Dic 2027",
+      "mediana": 9.45,
+      "decil1": 7.69,
+      "decil9": 12.33
+    },
+    {
+      "survey_month": "2026-02",
+      "label": "Feb 2026",
+      "target": "Dic 2027",
+      "mediana": 9.5,
+      "decil1": 6.96,
+      "decil9": 11.82
+    },
+    {
+      "survey_month": "2026-03",
+      "label": "Mar 2026",
+      "target": "Dic 2027",
+      "mediana": 9.2,
+      "decil1": 6.96,
+      "decil9": 12.06
+    },
+    {
+      "survey_month": "2026-04",
+      "label": "Abr 2026",
+      "target": "Dic 2027",
+      "mediana": 10.0,
+      "decil1": 6.96,
+      "decil9": 12.0
+    }
+  ]
+}

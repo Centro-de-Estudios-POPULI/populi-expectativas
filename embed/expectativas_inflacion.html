@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expectativas de Inflación · Populi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <style>
+    :root {
+      --populi:#8B1A1A; --populi-dark:#6B0300; --populi-light:#C00000;
+      --cream:#F5EFE0; --brown-dark:#3D2B1F;
+      --navy:#0D1B2A; --navy-light:#1A2940; --slate:#475569; --slate-light:#64748B;
+      --warm-white:#FAF8F3; --light-gray:#F1EDE5; --border:#E2DDD3; --dark-border:#2A3A50;
+      --bg:var(--warm-white); --card:#FFFFFF; --text:var(--brown-dark); --muted:var(--slate-light);
+      --ct-mediana:#6366F1; --ct-decil9:#C71E1D; --ct-decil1:#059669;
+      --radius:12px;
+    }
+    [data-theme="dark"] {
+      --bg:#080808; --card:#141414; --text:#E2E8F0; --muted:#64748B;
+      --border:#2A3A50; --light-gray:#1A1A1A; --cream:#1A2940;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;transition:background .25s,color .25s}
+    .wrap{max-width:1200px;margin:0 auto;padding:20px 16px}
+
+    .sec-hd{margin-bottom:16px}
+    .sec-title{font-family:'Playfair Display',Georgia,serif;font-size:1.55rem;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:10px;line-height:1.15}
+    [data-theme="dark"] .sec-title{color:#fff}
+    .accent-bar{width:4px;height:26px;background:var(--ct-mediana);border-radius:2px;flex-shrink:0}
+    .sec-sub{font-size:.78rem;color:var(--muted);padding-left:14px;margin-top:2px}
+    [data-theme="dark"] .sec-sub{color:rgba(255,255,255,.4)}
+
+    /* ── KPIs ── */
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+    @media(max-width:700px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+    .kpi{background:var(--warm-white);border:1px solid var(--border);border-radius:10px;padding:12px 14px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;cursor:pointer}
+    [data-theme="dark"] .kpi{background:#141414;border-color:var(--dark-border)}
+    .kpi:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+    .kpi::after{content:'';position:absolute;top:0;left:0;width:100%;height:3px}
+    .kpi[data-s="med"]::after{background:var(--ct-mediana)}
+    .kpi[data-s="d9"]::after{background:var(--ct-decil9)}
+    .kpi[data-s="d1"]::after{background:var(--ct-decil1)}
+    .kpi[data-s="rango"]::after{background:var(--ct-mediana)}
+    .kpi-lbl{font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
+    [data-theme="dark"] .kpi-lbl{color:rgba(255,255,255,.4)}
+    .kpi-val{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:700}
+    .kpi-d{display:inline-flex;align-items:center;gap:3px;font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:600;padding:1px 7px;border-radius:5px;margin-top:5px}
+    .kpi-d.up{background:rgba(199,30,29,.08);color:#C71E1D}
+    .kpi-d.down{background:rgba(5,150,105,.08);color:#059669}
+    .kpi-d.flat{background:rgba(100,116,139,.08);color:#64748B}
+    [data-theme="dark"] .kpi-d.up{background:rgba(199,30,29,.15)}
+    [data-theme="dark"] .kpi-d.down{background:rgba(5,150,105,.15)}
+
+    /* ── Main Grid: Chart LEFT (3fr) + Panel RIGHT (2fr) ── */
+    .main-grid{display:grid;grid-template-columns:3fr 2fr;grid-template-rows:540px;gap:16px}
+    @media(max-width:900px){.main-grid{grid-template-columns:1fr;grid-template-rows:480px auto}}
+    @media(min-width:1100px){.main-grid{grid-template-rows:580px}}
+
+    .chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;height:100%;overflow:hidden}
+    [data-theme="dark"] .chart-card{background:#141414;border-color:var(--dark-border)}
+    .chart-ctrl{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+    .tog-grp{display:flex;gap:6px;flex-wrap:wrap}
+    .pill{display:flex;align-items:center;gap:5px;padding:4px 12px;border:1.5px solid;border-radius:8px;background:transparent;cursor:pointer;font-family:'Inter',sans-serif;font-size:.68rem;font-weight:600;transition:all .2s}
+    .pill:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    .lp{width:16px;height:0;border-top:2.5px solid;border-radius:1px}
+    .lp.dashed{border-top-style:dashed}
+    #chart{flex:1;min-height:0}
+
+    /* ── Panel ── */
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;height:100%}
+    [data-theme="dark"] .panel{background:#141414;border-color:var(--dark-border)}
+    .panel-hd{background:var(--navy);padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
+    [data-theme="dark"] .panel-hd{background:var(--navy-light)}
+    .panel-hd-t{font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.8)}
+    .panel-hd-d{font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:600;color:var(--populi-light);background:rgba(199,30,29,.15);padding:2px 8px;border-radius:5px}
+    .panel-body{padding:14px;flex:1;overflow-y:auto}
+    .pb{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+    [data-theme="dark"] .pb{border-color:var(--dark-border)}
+    .pb:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+    .pb-lbl{display:inline-flex;align-items:center;gap:4px;font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;padding:2px 9px 2px 6px;border-radius:4px;border-left:3px solid}
+    .pb-val{font-family:'JetBrains Mono',monospace;font-size:.95rem;font-weight:700;margin-bottom:3px}
+    .pb-desc{font-size:.68rem;line-height:1.5;color:var(--muted)}
+    [data-theme="dark"] .pb-desc{color:rgba(255,255,255,.45)}
+    .pb-desc strong{color:var(--navy)}
+    [data-theme="dark"] .pb-desc strong{color:#E2E8F0}
+    .dt{font-family:'JetBrains Mono',monospace;font-weight:600;padding:1px 5px;border-radius:4px;font-size:.82em;white-space:nowrap}
+    .dv-purple{background:rgba(99,102,241,.08);color:#6366F1}
+    .dv-red{background:rgba(199,30,29,.08);color:#C71E1D}
+    .dv-green{background:rgba(5,150,105,.08);color:#059669}
+    .ctx{background:var(--cream);border-radius:6px;padding:8px 10px;border-left:3px solid var(--ct-mediana);margin-top:6px}
+    [data-theme="dark"] .ctx{background:var(--navy-light)}
+    .ctx p{font-size:.68rem;line-height:1.5;color:var(--muted)}
+    [data-theme="dark"] .ctx p{color:#94A3B8}
+    .ctx p strong{color:var(--navy)}
+    [data-theme="dark"] .ctx p strong{color:#E2E8F0}
+    .panel-ft{padding:10px 14px;border-top:1px solid var(--border)}
+    [data-theme="dark"] .panel-ft{border-color:var(--dark-border)}
+    .amp{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:8px 0;border-radius:8px;font-family:'Inter',sans-serif;font-size:.66rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ct-mediana);background:rgba(99,102,241,.06);border:1.5px solid rgba(99,102,241,.15);transition:all .2s;text-decoration:none;cursor:pointer}
+    [data-theme="dark"] .amp{background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.2)}
+    .amp:hover{background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.3);transform:translateY(-1px);box-shadow:0 2px 8px rgba(99,102,241,.1);text-decoration:none}
+
+    /* ── Edu boxes ── */
+    .edu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-top:16px}
+    .edu{background:var(--cream);border-radius:8px;padding:10px 12px;border-left:3px solid var(--ct-mediana);cursor:pointer;transition:all .2s}
+    [data-theme="dark"] .edu{background:var(--navy-light);border-left-color:var(--ct-mediana)}
+    .edu:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    .edu-t{font-size:.7rem;font-weight:700;color:var(--navy);display:flex;align-items:center;justify-content:space-between}
+    [data-theme="dark"] .edu-t{color:#E2E8F0}
+    .edu-t svg{width:14px;height:14px;transition:transform .2s;color:var(--muted)}
+    .edu.open .edu-t svg{transform:rotate(180deg)}
+    .edu-body{display:none;font-size:.68rem;line-height:1.6;color:var(--muted);margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
+    [data-theme="dark"] .edu-body{color:#94A3B8;border-color:var(--dark-border)}
+    .edu.open .edu-body{display:block}
+
+    /* ── Footer ── */
+    .source{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding:0 2px}
+    .source-txt{font-size:.6rem;color:var(--muted)}
+    .source-txt a{color:var(--populi);font-weight:600;text-decoration:none}
+    .source-txt a:hover{text-decoration:underline}
+
+    /* ── Loading ── */
+    .loading{display:flex;align-items:center;justify-content:center;height:300px;flex-direction:column;gap:12px;color:var(--muted)}
+    .spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--ct-mediana);border-radius:50%;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+  <div class="wrap" id="app">
+    <div class="loading" id="loader">
+      <div class="spinner"></div>
+      <span style="font-size:.8rem">Cargando expectativas de inflación...</span>
+    </div>
+  </div>
+
+  <script>
+    const DATA_URL = '../data/expectativas_inflacion.json';
+    const DASHBOARD_URL = '../index.html';
+    const COLORS = { mediana:'#6366F1', decil9:'#C71E1D', decil1:'#059669' };
+
+    let DATA, chart, curIdx, activeKeys;
+
+    function fv(v){ return v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(2) + '%'; }
+    function fvs(v){ return v == null ? '—' : v.toFixed(1) + '%'; }
+    function dk(){ return document.documentElement.getAttribute('data-theme') === 'dark'; }
+
+    async function init() {
+      try {
+        const r = await fetch(DATA_URL);
+        DATA = await r.json();
+      } catch(e) {
+        document.getElementById('loader').innerHTML = '<span style="color:#C71E1D">Error cargando datos</span>';
+        return;
+      }
+      const S = DATA.series;
+      const N = S.length;
+      curIdx = N - 1;
+      activeKeys = new Set(['mediana','decil9','decil1']);
+
+      const app = document.getElementById('app');
+      const updTxt = DATA.metadata.ultimo_dato;
+      app.innerHTML = `
+        <div class="sec-hd">
+          <h2 class="sec-title">
+            <span class="accent-bar"></span>
+            Expectativas de Inflación
+          </h2>
+          <p class="sec-sub">Encuesta EEE — BCB · Inflación interanual esperada a dic. del año siguiente · Serie ${S[0].label}–${S[N-1].label}</p>
+        </div>
+        <div class="kpi-grid" id="kpis"></div>
+        <div class="main-grid">
+          <div class="chart-card">
+            <div class="chart-ctrl">
+              <div class="tog-grp" id="toggles"></div>
+            </div>
+            <div id="chart"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-hd">
+              <span class="panel-hd-t">Lectura del indicador</span>
+              <span class="panel-hd-d" id="panel-date"></span>
+            </div>
+            <div class="panel-body" id="panel-body"></div>
+            <div class="panel-ft">
+              <a href="${DASHBOARD_URL}" target="_blank" class="amp">
+                <span>Ver dashboard completo</span>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="edu-grid" id="edu-boxes"></div>
+        <div class="source">
+          <span class="source-txt">
+            Fuente: <a href="https://www.bcb.gob.bo/?q=resultados-encuestas" target="_blank">BCB</a> · Elaboración: Centro de Estudios POPULI · Datos al: ${updTxt}
+          </span>
+          <svg viewBox="0 0 310 130" xmlns="http://www.w3.org/2000/svg" style="height:16px;width:auto;opacity:.18;flex-shrink:0">
+            <text x="6" y="112" font-family="'Playfair Display',Georgia,serif" font-size="145" font-weight="700" fill="#8B1A1A">P</text>
+            <text x="92" y="87" font-family="'Playfair Display',Georgia,serif" font-size="55" font-weight="400" font-style="italic" letter-spacing="1" fill="#3D2B1F">opuli</text>
+          </svg>
+        </div>
+      `;
+
+      buildKPIs();
+      buildToggles();
+      buildChart();
+      updatePanel(N - 1);
+      buildEduBoxes();
+
+      window.addEventListener('resize', () => chart && chart.resize());
+      new MutationObserver(() => buildChart()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    }
+
+    function buildKPIs() {
+      const S = DATA.series;
+      const N = S.length;
+      const last = S[N-1], prev = S[N-2];
+      const dMed = last.mediana - prev.mediana;
+      const dD9 = last.decil9 - prev.decil9;
+      const dD1 = last.decil1 - prev.decil1;
+      const rango = last.decil9 - last.decil1;
+      const rangoPrev = prev.decil9 - prev.decil1;
+      const dRango = rango - rangoPrev;
+
+      function cls(d){ return d > 0.01 ? 'up' : d < -0.01 ? 'down' : 'flat'; }
+      function arrow(d){ return d > 0.01 ? '▲' : d < -0.01 ? '▼' : '—'; }
+
+      document.getElementById('kpis').innerHTML = `
+        <div class="kpi" data-s="med"><div class="kpi-lbl">Mediana</div><div class="kpi-val" style="color:${COLORS.mediana}">${fvs(last.mediana)}</div><div class="kpi-d ${cls(dMed)}">${arrow(dMed)} ${Math.abs(dMed).toFixed(2)} pp</div></div>
+        <div class="kpi" data-s="d9"><div class="kpi-lbl">Decil 9 (pesimistas)</div><div class="kpi-val" style="color:${COLORS.decil9}">${fvs(last.decil9)}</div><div class="kpi-d ${cls(dD9)}">${arrow(dD9)} ${Math.abs(dD9).toFixed(2)} pp</div></div>
+        <div class="kpi" data-s="d1"><div class="kpi-lbl">Decil 1 (optimistas)</div><div class="kpi-val" style="color:${COLORS.decil1}">${fvs(last.decil1)}</div><div class="kpi-d ${cls(dD1)}">${arrow(dD1)} ${Math.abs(dD1).toFixed(2)} pp</div></div>
+        <div class="kpi" data-s="rango"><div class="kpi-lbl">Rango (D9 – D1)</div><div class="kpi-val" style="color:var(--ct-mediana)">${rango.toFixed(1)} pp</div><div class="kpi-d ${cls(dRango)}">${arrow(dRango)} ${Math.abs(dRango).toFixed(1)} pp</div></div>
+      `;
+    }
+
+    function buildToggles() {
+      const SERIES = [
+        { key:'mediana', label:'Mediana', color:COLORS.mediana, dashed:false },
+        { key:'decil9', label:'Decil 9', color:COLORS.decil9, dashed:true },
+        { key:'decil1', label:'Decil 1', color:COLORS.decil1, dashed:true },
+      ];
+      const el = document.getElementById('toggles');
+      el.innerHTML = '';
+      SERIES.forEach(s => {
+        const btn = document.createElement('button');
+        btn.className = 'pill';
+        btn.dataset.key = s.key;
+        btn.innerHTML = `<span class="lp${s.dashed?' dashed':''}" style="border-color:#fff"></span>${s.label}`;
+        btn.addEventListener('click', () => {
+          if (activeKeys.has(s.key)) { if (activeKeys.size === 1) return; activeKeys.delete(s.key); }
+          else activeKeys.add(s.key);
+          syncPills();
+          buildChart();
+        });
+        el.appendChild(btn);
+      });
+      syncPills();
+    }
+
+    function syncPills() {
+      document.querySelectorAll('.pill').forEach(btn => {
+        const k = btn.dataset.key;
+        const c = COLORS[k];
+        const on = activeKeys.has(k);
+        btn.style.backgroundColor = on ? c : 'transparent';
+        btn.style.color = on ? '#fff' : c;
+        btn.style.borderColor = c;
+        const lp = btn.querySelector('.lp');
+        if (lp) lp.style.borderColor = on ? '#fff' : c;
+      });
+    }
+
+    function buildChart() {
+      const S = DATA.series;
+      const d = dk();
+      const labels = S.map(s => s.label);
+
+      if (!chart) {
+        chart = echarts.init(document.getElementById('chart'));
+        chart.on('click', p => { if (p.dataIndex !== undefined) updatePanel(p.dataIndex); });
+        chart.getZr().on('mousemove', e => {
+          const p = chart.convertFromPixel({seriesIndex:0}, [e.offsetX, e.offsetY]);
+          if (p) { const idx = Math.round(p[0]); if (idx >= 0 && idx < S.length && idx !== curIdx) updatePanel(idx); }
+        });
+      }
+
+      const SERIES_CFG = [
+        { key:'mediana', name:'Mediana', color:COLORS.mediana, width:3, type:'solid', z:3 },
+        { key:'decil9', name:'Decil 9 (pesimistas)', color:COLORS.decil9, width:1.5, type:'dashed', z:1 },
+        { key:'decil1', name:'Decil 1 (optimistas)', color:COLORS.decil1, width:1.5, type:'dashed', z:1 },
+      ];
+
+      const series = SERIES_CFG.filter(s => activeKeys.has(s.key)).map(s => {
+        const data = S.map(item => item[s.key]);
+        const lastIdx = data.length - 1;
+        return {
+          name: s.name,
+          type: 'line',
+          data,
+          symbol: 'none',
+          lineStyle: { width: s.width, type: s.type },
+          itemStyle: { color: s.color },
+          z: s.z,
+          markPoint: {
+            data: [{ coord: [lastIdx, data[lastIdx]] }],
+            symbol: 'circle',
+            symbolSize: 7,
+            itemStyle: { color: s.color, borderColor: d ? '#141414' : '#fff', borderWidth: 2 },
+            label: { show: false },
+          },
+          areaStyle: s.key === 'mediana' ? { color: new echarts.graphic.LinearGradient(0,0,0,1,[
+            {offset:0, color: s.color + (d?'20':'10')},
+            {offset:1, color: s.color + '00'}
+          ])} : undefined,
+        };
+      });
+
+      // Band between D1 and D9
+      if (activeKeys.has('decil1') && activeKeys.has('decil9')) {
+        series.push({
+          name: '_band_low',
+          type: 'line',
+          data: S.map(item => item.decil1),
+          symbol: 'none',
+          lineStyle: { width: 0 },
+          stack: 'band',
+          areaStyle: { color: 'transparent' },
+          silent: true,
+          z: 0,
+        });
+        series.push({
+          name: '_band_high',
+          type: 'line',
+          data: S.map((item, i) => item.decil9 - item.decil1),
+          symbol: 'none',
+          lineStyle: { width: 0 },
+          stack: 'band',
+          areaStyle: { color: d ? 'rgba(99,102,241,0.06)' : 'rgba(99,102,241,0.08)' },
+          silent: true,
+          z: 0,
+        });
+      }
+
+      chart.setOption({
+        grid: { left: 50, right: 20, top: 20, bottom: 40 },
+        xAxis: {
+          type: 'category',
+          data: labels,
+          axisLine: { lineStyle: { color: d ? '#2A3A50' : '#E2E8F0' } },
+          axisTick: { show: false },
+          axisLabel: {
+            fontFamily: 'Inter', fontSize: 10, fontWeight: 500,
+            color: d ? '#4A8A82' : '#94A3B8',
+            rotate: 45,
+            formatter: v => {
+              const [m, y] = v.split(' ');
+              return m === 'Ene' ? `${m} ${y}` : m;
+            },
+          },
+        },
+        yAxis: {
+          type: 'value',
+          axisLine: { show: false },
+          splitLine: { lineStyle: { color: d ? 'rgba(42,58,80,0.5)' : '#F1F5F9' } },
+          axisLabel: {
+            fontFamily: 'JetBrains Mono', fontSize: 11,
+            color: d ? '#4A8A82' : '#94A3B8',
+            formatter: v => v.toFixed(0) + '%',
+          },
+        },
+        tooltip: {
+          trigger: 'axis',
+          backgroundColor: 'rgba(0,18,25,0.96)',
+          borderColor: d ? '#2A3A50' : '#1A2940',
+          borderWidth: 1,
+          padding: 14,
+          extraCssText: 'border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.3);',
+          textStyle: { fontFamily: 'Inter', fontSize: 12, color: '#fff' },
+          formatter: params => {
+            const valid = params.filter(p => !p.seriesName.startsWith('_'));
+            if (!valid.length) return '';
+            let html = `<div style="font-weight:700;margin-bottom:8px;color:#E9D8A6">${valid[0].axisValue}</div>`;
+            const idx = valid[0].dataIndex;
+            const target = S[idx].target;
+            html += `<div style="font-size:10px;color:#94A3B8;margin-bottom:6px">Expectativa para ${target}</div>`;
+            valid.forEach(p => {
+              html += `<div style="display:flex;align-items:center;gap:6px;margin-top:4px">
+                <span style="width:8px;height:8px;border-radius:50%;background:${p.color};display:inline-block"></span>
+                <span style="font-size:11px">${p.seriesName}:</span>
+                <span style="font-family:'JetBrains Mono';font-weight:700;color:${p.color}">${p.value != null ? p.value.toFixed(2) + '%' : '—'}</span>
+              </div>`;
+            });
+            return html;
+          },
+        },
+        series,
+      }, true);
+    }
+
+    function updatePanel(idx) {
+      const S = DATA.series;
+      const N = S.length;
+      if (idx < 0 || idx >= N) return;
+      curIdx = idx;
+      const d = S[idx];
+      const prev = idx > 0 ? S[idx-1] : null;
+
+      document.getElementById('panel-date').textContent = d.label;
+
+      const dMed = prev ? d.mediana - prev.mediana : 0;
+      const rango = d.decil9 - d.decil1;
+
+      let analysis;
+      if (d.mediana > 15)
+        analysis = `Con una expectativa mediana de <span class="dt dv-purple">${fvs(d.mediana)}</span>, los encuestados anticipan una <strong>inflación muy elevada</strong> al cierre del próximo año. El pesimismo se refleja en un Decil 9 de <span class="dt dv-red">${fvs(d.decil9)}</span>, señalando que un 10% de los encuestados espera niveles aún más críticos. Esto indica una <strong>pérdida significativa de confianza</strong> en la estabilidad de precios.`;
+      else if (d.mediana > 10)
+        analysis = `La expectativa mediana de <span class="dt dv-purple">${fvs(d.mediana)}</span> se sitúa en <strong>niveles altos</strong>, muy por encima de la inflación históricamente baja de Bolivia. La dispersión de <strong>${rango.toFixed(1)} pp</strong> entre optimistas y pesimistas refleja una <strong>incertidumbre considerable</strong> sobre la trayectoria futura de los precios.`;
+      else if (d.mediana > 5)
+        analysis = `Con <span class="dt dv-purple">${fvs(d.mediana)}</span> de expectativa mediana, los encuestados anticipan una inflación <strong>moderadamente elevada</strong>. El rango entre Decil 1 (<span class="dt dv-green">${fvs(d.decil1)}</span>) y Decil 9 (<span class="dt dv-red">${fvs(d.decil9)}</span>) sugiere visiones divergentes sobre la efectividad de la política monetaria.`;
+      else
+        analysis = `La expectativa mediana de <span class="dt dv-purple">${fvs(d.mediana)}</span> refleja una <strong>confianza razonable</strong> en la estabilidad de precios. El consenso es relativamente estrecho, con un rango de <strong>${rango.toFixed(1)} pp</strong> entre optimistas y pesimistas.`;
+
+      document.getElementById('panel-body').innerHTML = `
+        <div class="pb">
+          <div class="pb-lbl" style="color:${COLORS.mediana};background:rgba(99,102,241,.08);border-left-color:${COLORS.mediana}">Mediana</div>
+          <div class="pb-val" style="color:${COLORS.mediana}">${fvs(d.mediana)}</div>
+          <p class="pb-desc">En <strong>${d.label}</strong>, la expectativa mediana de inflación interanual para <strong>${d.target}</strong> es <span class="dt dv-purple">${fvs(d.mediana)}</span>${prev ? `, ${dMed >= 0 ? 'subiendo' : 'bajando'} <span class="dt dv-purple">${Math.abs(dMed).toFixed(2)} pp</span> respecto a ${prev.label}` : ''}. Basada en ${d.respuestas} respuestas de especialistas.</p>
+        </div>
+        <div class="pb">
+          <div class="pb-lbl" style="color:${COLORS.decil9};background:rgba(199,30,29,.08);border-left-color:${COLORS.decil9}">Decil 9 · Pesimistas</div>
+          <div class="pb-val" style="color:${COLORS.decil9}">${fvs(d.decil9)}</div>
+          <p class="pb-desc">El 10% más pesimista de los encuestados espera una inflación de al menos <span class="dt dv-red">${fvs(d.decil9)}</span> para ${d.target}. Este valor marca el <strong>techo</strong> de las expectativas del sector privado.</p>
+        </div>
+        <div class="pb">
+          <div class="pb-lbl" style="color:${COLORS.decil1};background:rgba(5,150,105,.08);border-left-color:${COLORS.decil1}">Decil 1 · Optimistas</div>
+          <div class="pb-val" style="color:${COLORS.decil1}">${fvs(d.decil1)}</div>
+          <p class="pb-desc">El 10% más optimista espera una inflación no superior a <span class="dt dv-green">${fvs(d.decil1)}</span>. Este valor representa el <strong>piso</strong> de las expectativas.</p>
+        </div>
+        <div class="ctx"><p>${analysis}</p></div>
+      `;
+    }
+
+    function buildEduBoxes() {
+      const boxes = [
+        {
+          title: '¿Qué son las expectativas de inflación?',
+          body: 'Son las proyecciones que hacen los agentes económicos (empresas, analistas, académicos) sobre cuánto subirán los precios en el futuro. El BCB las recopila mensualmente a través de la Encuesta de Expectativas Económicas (EEE), dirigida a un grupo selecto de ejecutivos, asesores y especialistas de instituciones financieras, académicos, investigadores y consultores.'
+        },
+        {
+          title: '¿Por qué importan?',
+          body: 'Las expectativas de inflación son un predictor clave de la inflación futura. Si los agentes esperan inflación alta, ajustan precios y salarios al alza, generando una <strong>profecía autocumplida</strong>. Por eso los bancos centrales monitorean estas encuestas: expectativas desancladas dificultan enormemente el control de precios.'
+        },
+        {
+          title: '¿Qué significan Mediana, Decil 1 y Decil 9?',
+          body: 'La <strong>Mediana</strong> es el valor central: la mitad de los encuestados espera más y la otra mitad menos. El <strong>Decil 1</strong> marca el umbral del 10% más optimista (esperan inflación baja). El <strong>Decil 9</strong> marca el umbral del 10% más pesimista (esperan inflación alta). La diferencia entre ambos deciles mide la <strong>incertidumbre</strong>: a mayor rango, mayor desacuerdo entre los especialistas.'
+        },
+        {
+          title: '¿Cómo leer la serie temporal?',
+          body: 'Cada punto representa una encuesta mensual. El dato de, por ejemplo, Ene 2024 muestra la inflación interanual que los encuestados esperaban para <strong>diciembre de 2025</strong> (el cierre del año siguiente). Al cambiar el año objetivo (de Dic 2025 a Dic 2026, etc.), pueden aparecer saltos en la serie que reflejan el cambio de horizonte, no necesariamente un cambio abrupto de expectativas.'
+        },
+      ];
+      const el = document.getElementById('edu-boxes');
+      el.innerHTML = boxes.map(b => `
+        <div class="edu" onclick="this.classList.toggle('open')">
+          <div class="edu-t">${b.title}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="edu-body">${b.body}</div>
+        </div>
+      `).join('');
+    }
+
+    // Theme sync from parent (iframe postMessage)
+    window.addEventListener('message', e => {
+      if (e.data && e.data.theme) {
+        document.documentElement.setAttribute('data-theme', e.data.theme);
+      }
+    });
+
+    init();
+  </script>
+</body>
+</html>

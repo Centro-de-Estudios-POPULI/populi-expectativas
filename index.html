@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expectativas Económicas · BCB EEE · Populi</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='85' font-family='serif' font-weight='700' fill='%238B1A1A'>P</text></svg>">
+  <meta property="og:title" content="Expectativas Económicas Bolivia · Encuesta EEE · BCB">
+  <meta property="og:description" content="Dashboard interactivo con las expectativas de inflación, tipo de cambio, PIB, reservas internacionales y percepción económica del sector privado boliviano. Datos BCB.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Centro de Estudios POPULI">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <style>
+    :root {
+      --populi:#8B1A1A; --populi-dark:#6B0300; --populi-light:#C00000;
+      --bg:#EEF1F5; --card:#FFFFFF; --card2:#F7F9FB; --border:#DDE3EA;
+      --text:#0D1B2A; --text2:#364555; --muted:#6B7A8D; --muted2:#9AACBA;
+      --navy:#001219; --navy-light:#1A2940;
+      --shadow:0 1px 3px rgba(0,18,25,.05),0 4px 18px rgba(0,18,25,.06);
+      --shadow-xs:0 1px 2px rgba(0,18,25,.06);
+      --radius:13px; --transition:.18s ease;
+      --ct-axis:#92A4B4; --ct-grid:#E8EDF2;
+      --ct-tip-bg:#0A1622; --ct-tip-bd:#1E3045;
+      --accent:#6366F1;
+    }
+    [data-theme="dark"] {
+      --bg:#050505; --card:#101010; --card2:#161616; --border:#222;
+      --text:#E8E8E8; --text2:#A0A0A0; --muted:#5A5A5A; --muted2:#303030;
+      --shadow:0 2px 10px rgba(0,0,0,.6),0 6px 28px rgba(0,0,0,.5);
+      --shadow-xs:0 1px 4px rgba(0,0,0,.5);
+      --ct-axis:#909090; --ct-grid:#1E1E1E;
+      --ct-tip-bg:#080808; --ct-tip-bd:#242424;
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;transition:background var(--transition),color var(--transition)}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    /* ── Navbar ── */
+    .navbar{background:linear-gradient(180deg,#CE2020 0%,#A81414 100%);position:sticky;top:0;z-index:100;border-top:2px solid rgba(255,255,255,.15)}
+    [data-theme="dark"] .navbar{background:linear-gradient(160deg,#1A0606 0%,#0A0202 100%);border-top-color:rgba(199,30,29,.2);box-shadow:0 1px 0 rgba(199,30,29,.12)}
+    .nav-inner{max-width:1320px;margin:auto;padding:0 24px;height:54px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px}
+    .nav-left{display:flex;align-items:center;gap:10px}
+    .logo-p{fill:rgba(255,255,255,.95)}
+    .logo-opuli{fill:rgba(255,255,255,.78)}
+    [data-theme="dark"] .logo-p{fill:rgba(199,30,29,.9)}
+    [data-theme="dark"] .logo-opuli{fill:rgba(245,239,224,.85)}
+    .nav-div{width:1px;height:18px;background:rgba(255,255,255,.16)}
+    [data-theme="dark"] .nav-div{background:rgba(255,255,255,.08)}
+    .brand-sub{font-size:11px;font-weight:400;color:rgba(255,255,255,.45);letter-spacing:.2px;white-space:nowrap}
+    [data-theme="dark"] .brand-sub{color:rgba(255,255,255,.25)}
+    .nav-center{text-align:center;font-size:13px;font-weight:600;letter-spacing:-.1px;color:rgba(255,255,255,.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    [data-theme="dark"] .nav-center{color:rgba(255,255,255,.7)}
+    .nav-right{display:flex;align-items:center;justify-content:flex-end;gap:12px}
+    .nav-meta{font-size:11px;color:rgba(255,255,255,.5);white-space:nowrap;display:flex;align-items:center;gap:5px}
+    .nav-meta b{color:rgba(255,255,255,.85);font-weight:600}
+    .theme-btn{width:34px;height:34px;border-radius:8px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.14s;flex-shrink:0}
+    .theme-btn:hover{background:rgba(0,0,0,.32);border-color:rgba(255,255,255,.28)}
+    [data-theme="dark"] .theme-btn{background:rgba(199,30,29,.1);border-color:rgba(199,30,29,.2)}
+    .theme-btn svg{width:15px;height:15px;fill:rgba(255,255,255,.85)}
+
+    /* ── Hero ── */
+    .hero{background:linear-gradient(180deg,#A81414 0%,#6A0C0C 40%,#1A0404 80%,#000 100%);padding:36px 24px 40px;text-align:center;position:relative;overflow:hidden}
+    [data-theme="dark"] .hero{background:linear-gradient(180deg,#0A0202 0%,#040101 50%,#000 100%)}
+    .hero-inner{max-width:760px;margin:auto;position:relative;z-index:1}
+    .hero h1{font-size:clamp(22px,3vw,30px);font-weight:800;color:rgba(255,255,255,.95);letter-spacing:-.5px;line-height:1.15;margin-bottom:8px}
+    .hero h1 em{color:rgba(255,255,255,.45);font-style:normal;font-weight:400}
+    [data-theme="dark"] .hero h1{color:rgba(255,255,255,.85)}
+    [data-theme="dark"] .hero h1 em{color:rgba(255,255,255,.3)}
+    .hero-desc{font-size:13.5px;color:rgba(255,255,255,.42);line-height:1.7}
+    .hero-wm{position:absolute;right:-10px;bottom:-20px;font-family:'JetBrains Mono',monospace;font-size:clamp(70px,12vw,140px);font-weight:500;letter-spacing:-4px;color:rgba(255,255,255,.04);line-height:1;pointer-events:none;user-select:none;z-index:0}
+    [data-theme="dark"] .hero-wm{color:rgba(255,255,255,.02)}
+
+    /* ── Hero KPIs ── */
+    .hero-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;max-width:900px;margin:24px auto 0}
+    @media(max-width:800px){.hero-kpis{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:500px){.hero-kpis{grid-template-columns:repeat(2,1fr)}}
+    .hkpi{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 12px;text-align:left;transition:.2s}
+    .hkpi:hover{background:rgba(255,255,255,.1);transform:translateY(-1px)}
+    .hkpi-lbl{font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.35);margin-bottom:3px}
+    .hkpi-val{font-family:'JetBrains Mono',monospace;font-size:1.15rem;font-weight:700;color:#fff}
+    .hkpi-sub{font-size:.6rem;color:rgba(255,255,255,.3);margin-top:2px}
+
+    /* ── Tabs ── */
+    .tab-bar{background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:54px;z-index:90;transition:background var(--transition)}
+    .tab-inner{max-width:1320px;margin:auto;padding:0 24px;display:flex;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .tab-inner::-webkit-scrollbar{display:none}
+    .tab{padding:12px 20px;font-size:.75rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;transition:.15s;display:flex;align-items:center;gap:6px}
+    .tab:hover{color:var(--text)}
+    .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+    .tab-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+    /* ── Container ── */
+    .container{max-width:1320px;margin:auto;padding:28px 24px 60px}
+
+    /* ── Section ── */
+    .section{display:none;animation:fadeIn .3s ease}
+    .section.active{display:block}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+    .sec-hd{margin-bottom:16px;display:flex;align-items:flex-start;gap:10px}
+    .sec-num{font-size:9.5px;font-weight:800;letter-spacing:1.2px;padding:2px 7px;border-radius:20px;margin-top:3px;flex-shrink:0;border:1.5px solid}
+    .sec-titles h2{font-size:15.5px;font-weight:700;color:var(--text);letter-spacing:-.15px}
+    .sec-titles p{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.55}
+
+    /* ── KPI cards ── */
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+    @media(max-width:700px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+    .kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;position:relative;overflow:hidden;box-shadow:var(--shadow-xs);transition:transform .2s,box-shadow .2s}
+    .kpi:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+    .kpi::after{content:'';position:absolute;top:0;left:0;width:100%;height:3px}
+    .kpi-lbl{font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
+    .kpi-val{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:700}
+    .kpi-d{display:inline-flex;align-items:center;gap:3px;font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:600;padding:1px 7px;border-radius:5px;margin-top:4px}
+    .kpi-d.up{background:rgba(199,30,29,.08);color:#C71E1D}
+    .kpi-d.down{background:rgba(5,150,105,.08);color:#059669}
+    .kpi-d.flat{background:rgba(100,116,139,.08);color:#64748B}
+
+    /* ── Chart area ── */
+    .chart-wrap{display:grid;grid-template-columns:1fr 340px;gap:16px;margin-bottom:20px}
+    @media(max-width:960px){.chart-wrap{grid-template-columns:1fr;grid-template-rows:500px auto}}
+    .chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-xs);display:flex;flex-direction:column;min-height:520px}
+    .chart-ctrl{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+    .tog-grp{display:flex;gap:6px;flex-wrap:wrap}
+    .pill{display:flex;align-items:center;gap:5px;padding:4px 12px;border:1.5px solid;border-radius:8px;background:transparent;cursor:pointer;font-family:'Inter',sans-serif;font-size:.66rem;font-weight:600;transition:all .2s}
+    .pill:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    .lp{width:16px;height:0;border-top:2.5px solid;border-radius:1px}
+    .lp.dashed{border-top-style:dashed}
+    .chart-area{flex:1;min-height:0}
+
+    /* ── Analysis panel ── */
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-xs)}
+    .panel-hd{padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
+    .panel-hd-t{font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.8)}
+    .panel-hd-d{font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:600;padding:2px 8px;border-radius:5px}
+    .panel-body{padding:14px;flex:1;overflow-y:auto}
+    .pb{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+    .pb:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+    .pb-lbl{display:inline-flex;align-items:center;gap:4px;font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;padding:2px 9px 2px 6px;border-radius:4px;border-left:3px solid}
+    .pb-val{font-family:'JetBrains Mono',monospace;font-size:.92rem;font-weight:700;margin-bottom:3px}
+    .pb-desc{font-size:.66rem;line-height:1.5;color:var(--muted)}
+    .pb-desc strong{color:var(--text)}
+    .dt{font-family:'JetBrains Mono',monospace;font-weight:600;padding:1px 5px;border-radius:4px;font-size:.82em;white-space:nowrap}
+    .ctx{border-radius:6px;padding:8px 10px;border-left:3px solid;margin-top:6px}
+    .ctx p{font-size:.66rem;line-height:1.5;color:var(--muted)}
+    .ctx p strong{color:var(--text)}
+
+    /* ── Edu boxes ── */
+    .edu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;margin-bottom:20px}
+    .edu{background:var(--card2);border-radius:8px;padding:10px 12px;border-left:3px solid;cursor:pointer;transition:.2s}
+    .edu:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+    .edu-t{font-size:.7rem;font-weight:700;color:var(--text);display:flex;align-items:center;justify-content:space-between}
+    .edu-t svg{width:14px;height:14px;transition:transform .2s;color:var(--muted)}
+    .edu.open .edu-t svg{transform:rotate(180deg)}
+    .edu-body{display:none;font-size:.66rem;line-height:1.6;color:var(--muted);margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
+    .edu.open .edu-body{display:block}
+
+    /* ── Data table ── */
+    .tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-xs)}
+    .tbl-hd{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .tbl-hd-t{font-size:.7rem;font-weight:700;color:var(--text)}
+    .tbl-scroll{max-height:360px;overflow-y:auto}
+    table{width:100%;border-collapse:collapse;font-size:.68rem}
+    thead{position:sticky;top:0;z-index:1}
+    thead tr{background:var(--card2)}
+    [data-theme="dark"] thead tr{background:#161616}
+    th{padding:8px 12px;text-align:left;font-weight:700;font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);border-bottom:1px solid var(--border)}
+    td{padding:7px 12px;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:.68rem}
+    tr:hover{background:rgba(99,102,241,.03)}
+    [data-theme="dark"] tr:hover{background:rgba(99,102,241,.05)}
+
+    /* ── Footer ── */
+    .footer{max-width:1320px;margin:auto;padding:0 24px 40px;display:flex;align-items:center;justify-content:space-between}
+    .footer-txt{font-size:.6rem;color:var(--muted);line-height:1.6}
+    .footer-txt a{color:var(--populi);font-weight:600}
+
+    /* ── Loading ── */
+    .loading{display:flex;align-items:center;justify-content:center;height:400px;flex-direction:column;gap:12px;color:var(--muted)}
+    .spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    @media(max-width:600px){
+      .nav-meta,.brand-sub{display:none}
+      .hero-kpis{gap:8px}
+      .tab{padding:10px 14px;font-size:.7rem}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <svg viewBox="0 0 310 130" xmlns="http://www.w3.org/2000/svg" style="height:28px;width:auto">
+          <text x="6" y="112" font-family="'Playfair Display',Georgia,serif" font-size="145" font-weight="700" class="logo-p">P</text>
+          <text x="92" y="87" font-family="'Playfair Display',Georgia,serif" font-size="55" font-weight="400" font-style="italic" letter-spacing="1" class="logo-opuli">opuli</text>
+        </svg>
+        <div class="nav-div"></div>
+        <span class="brand-sub">Centro de Estudios</span>
+      </div>
+      <div class="nav-center">Expectativas Económicas</div>
+      <div class="nav-right">
+        <span class="nav-meta">Datos al: <b id="nav-date">—</b></span>
+        <button class="theme-btn" onclick="toggleTheme()" aria-label="Cambiar tema">
+          <svg id="theme-icon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8A9 9 0 0 0 12 3z"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-inner">
+      <h1>Expectativas Económicas <em>Bolivia</em></h1>
+      <p class="hero-desc">Encuesta mensual a empresas, analistas y especialistas del sector privado sobre inflación, tipo de cambio, crecimiento, reservas internacionales y percepción económica.</p>
+      <div class="hero-kpis" id="hero-kpis"></div>
+    </div>
+    <div class="hero-wm">EEE</div>
+  </header>
+
+  <!-- Tabs -->
+  <div class="tab-bar">
+    <div class="tab-inner" id="tab-bar"></div>
+  </div>
+
+  <!-- Content -->
+  <div class="container" id="main">
+    <div class="loading" id="loader">
+      <div class="spinner"></div>
+      <span style="font-size:.8rem">Cargando datos de expectativas...</span>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span class="footer-txt">
+      Fuente: <a href="https://www.bcb.gob.bo/?q=resultados-encuestas" target="_blank">Banco Central de Bolivia</a> — Encuesta de Expectativas Económicas (EEE)<br>
+      Elaboración: Centro de Estudios POPULI · Actualización mensual automática
+    </span>
+    <svg viewBox="0 0 310 130" xmlns="http://www.w3.org/2000/svg" style="height:20px;width:auto;opacity:.15;flex-shrink:0">
+      <text x="6" y="112" font-family="'Playfair Display',Georgia,serif" font-size="145" font-weight="700" fill="var(--populi)">P</text>
+      <text x="92" y="87" font-family="'Playfair Display',Georgia,serif" font-size="55" font-weight="400" font-style="italic" letter-spacing="1" fill="var(--text)">opuli</text>
+    </svg>
+  </div>
+
+<script>
+const BASE = 'data/';
+const TABS = [
+  { id:'inflacion', label:'Inflación', file:'expectativas_inflacion.json', color:'#6366F1', icon:'📈' },
+  { id:'tc',        label:'Tipo de Cambio', file:'expectativas_tipo_cambio.json', color:'#D97706', icon:'💱' },
+  { id:'pib',       label:'PIB', file:'expectativas_pib.json', color:'#0D9488', icon:'📊' },
+  { id:'rin',       label:'Reservas (RIN)', file:'expectativas_rin.json', color:'#2563EB', icon:'🏦' },
+  { id:'percepcion',label:'Percepción', file:'expectativas_percepcion.json', color:'#DB2777', icon:'🔮' },
+];
+
+let DATA = {};
+let charts = {};
+let activeTab = 'inflacion';
+let activeKeys = {};
+
+function dk(){ return document.documentElement.getAttribute('data-theme') === 'dark'; }
+
+function toggleTheme(){
+  const t = dk() ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('theme', t);
+  Object.keys(charts).forEach(k => { if(charts[k]) rebuildChart(k); });
+}
+
+(function(){
+  const saved = localStorage.getItem('theme');
+  if(saved) document.documentElement.setAttribute('data-theme', saved);
+  else if(window.matchMedia('(prefers-color-scheme:dark)').matches) document.documentElement.setAttribute('data-theme','dark');
+})();
+
+async function loadAll(){
+  const results = await Promise.all(TABS.map(t => fetch(BASE + t.file).then(r => r.json()).catch(() => null)));
+  TABS.forEach((t,i) => { DATA[t.id] = results[i]; });
+
+  if(DATA.inflacion){
+    document.getElementById('nav-date').textContent = DATA.inflacion.metadata?.ultimo_dato || '—';
+  }
+
+  document.getElementById('loader').style.display = 'none';
+  buildHeroKPIs();
+  buildTabs();
+  buildAllSections();
+  switchTab('inflacion');
+}
+
+function buildHeroKPIs(){
+  const el = document.getElementById('hero-kpis');
+  const items = [];
+
+  if(DATA.inflacion){
+    const s = DATA.inflacion.series;
+    const last = s[s.length-1];
+    items.push({ lbl:'Inflación esperada', val:last.mediana.toFixed(1)+'%', sub:'Mediana · '+last.target, color:'#6366F1' });
+  }
+  if(DATA.tc){
+    const s = DATA.tc.series;
+    const last = s[s.length-1];
+    items.push({ lbl:'Tipo de cambio esp.', val:'Bs '+last.mediana.toFixed(1), sub:'Mediana · '+last.target, color:'#D97706' });
+  }
+  if(DATA.pib){
+    const s = DATA.pib.series;
+    const last = s[s.length-1];
+    items.push({ lbl:'Crecimiento PIB esp.', val:last.mediana.toFixed(1)+'%', sub:'Mediana · '+last.target, color:'#0D9488' });
+  }
+  if(DATA.rin){
+    const s = DATA.rin.series;
+    const last = s[s.length-1];
+    items.push({ lbl:'RIN esperadas', val:'$'+Math.round(last.mediana).toLocaleString()+' MM', sub:'Mediana · '+last.target, color:'#2563EB' });
+  }
+  if(DATA.percepcion){
+    const s = DATA.percepcion.series.filter(d => d.ipe != null);
+    if(s.length){
+      const last = s[s.length-1];
+      items.push({ lbl:'Percepción (IPE)', val:(last.ipe>0?'+':'')+last.ipe.toFixed(1), sub:last.label, color:'#DB2777' });
+    }
+  }
+  el.innerHTML = items.map(i => `
+    <div class="hkpi" style="cursor:pointer" onclick="switchTab('${TABS.find(t=>t.color===i.color)?.id||'inflacion'}')">
+      <div class="hkpi-lbl">${i.lbl}</div>
+      <div class="hkpi-val" style="color:${i.color}">${i.val}</div>
+      <div class="hkpi-sub">${i.sub}</div>
+    </div>
+  `).join('');
+}
+
+function buildTabs(){
+  const el = document.getElementById('tab-bar');
+  el.innerHTML = TABS.map(t => `
+    <div class="tab" data-tab="${t.id}" onclick="switchTab('${t.id}')">
+      <span class="tab-dot" style="background:${t.color}"></span>
+      ${t.label}
+    </div>
+  `).join('');
+}
+
+function switchTab(id){
+  activeTab = id;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+  document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === 'sec-'+id));
+  const tab = TABS.find(t => t.id === id);
+  if(tab) document.documentElement.style.setProperty('--accent', tab.color);
+  if(charts[id]) setTimeout(() => charts[id].resize(), 50);
+}
+
+function buildAllSections(){
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+
+  if(DATA.inflacion) main.appendChild(buildInflacionSection());
+  if(DATA.tc) main.appendChild(buildTCSection());
+  if(DATA.pib) main.appendChild(buildPIBSection());
+  if(DATA.rin) main.appendChild(buildRINSection());
+  if(DATA.percepcion) main.appendChild(buildPercepcionSection());
+
+  window.addEventListener('resize', () => {
+    Object.keys(charts).forEach(k => { if(charts[k]) charts[k].resize(); });
+  });
+}
+
+/* ════════════════════════════════════════════
+   SECTION BUILDERS
+   ════════════════════════════════════════════ */
+
+function buildInflacionSection(){
+  const sec = createSection('inflacion', '#6366F1', '01', 'Expectativas de Inflación',
+    'Tasa de inflación interanual (a 12 meses) esperada para diciembre del año siguiente. Encuesta mensual EEE del BCB.');
+  const S = DATA.inflacion.series;
+  const N = S.length;
+  const last = S[N-1], prev = S[N-2];
+  activeKeys.inflacion = new Set(['mediana','decil9','decil1']);
+
+  sec.appendChild(buildKPIs([
+    { lbl:'Mediana', val:last.mediana.toFixed(1)+'%', d:last.mediana-prev.mediana, color:'#6366F1', inv:true },
+    { lbl:'Decil 9 (pesimistas)', val:last.decil9.toFixed(1)+'%', d:last.decil9-prev.decil9, color:'#C71E1D', inv:true },
+    { lbl:'Decil 1 (optimistas)', val:last.decil1.toFixed(1)+'%', d:last.decil1-prev.decil1, color:'#059669', inv:true },
+    { lbl:'Rango D9–D1', val:(last.decil9-last.decil1).toFixed(1)+' pp', d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#6366F1', inv:true },
+  ]));
+
+  const wrap = el('div','chart-wrap');
+  const chartCard = el('div','chart-card');
+  const ctrl = el('div','chart-ctrl');
+  const togGrp = el('div','tog-grp');
+
+  [{key:'mediana',label:'Mediana',color:'#6366F1',dash:false},{key:'decil9',label:'Decil 9',color:'#C71E1D',dash:true},{key:'decil1',label:'Decil 1',color:'#059669',dash:true}].forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'pill';
+    btn.dataset.key = s.key;
+    btn.dataset.section = 'inflacion';
+    btn.innerHTML = `<span class="lp${s.dash?' dashed':''}" style="border-color:#fff"></span>${s.label}`;
+    btn.addEventListener('click', () => toggleKey('inflacion', s.key));
+    togGrp.appendChild(btn);
+  });
+  ctrl.appendChild(togGrp);
+  chartCard.appendChild(ctrl);
+
+  const chartDiv = el('div','chart-area');
+  chartDiv.id = 'chart-inflacion';
+  chartCard.appendChild(chartDiv);
+  wrap.appendChild(chartCard);
+
+  const panel = buildInflacionPanel(S, N-1);
+  panel.id = 'panel-inflacion';
+  wrap.appendChild(panel);
+  sec.appendChild(wrap);
+
+  syncPills('inflacion', {mediana:'#6366F1',decil9:'#C71E1D',decil1:'#059669'});
+
+  sec.appendChild(buildEduGrid([
+    { t:'¿Qué son las expectativas de inflación?', b:'Son las proyecciones que hacen los agentes económicos (empresas, analistas, académicos) sobre cuánto subirán los precios en el futuro. El BCB las recopila mensualmente a través de la Encuesta de Expectativas Económicas (EEE).' },
+    { t:'¿Por qué importan?', b:'Si los agentes esperan inflación alta, ajustan precios y salarios al alza, generando una <strong>profecía autocumplida</strong>. Expectativas desancladas dificultan el control de precios.' },
+    { t:'Mediana, Decil 1 y Decil 9', b:'La <strong>Mediana</strong> es el valor central. El <strong>Decil 1</strong> marca el 10% más optimista. El <strong>Decil 9</strong> el 10% más pesimista. La diferencia mide la <strong>incertidumbre</strong>.' },
+    { t:'¿Cómo leer la serie?', b:'Cada punto es una encuesta mensual. Ej: Ene 2024 muestra la inflación esperada para <strong>Dic 2025</strong>. Los saltos al cambiar año objetivo son normales.' },
+  ], '#6366F1'));
+
+  sec.appendChild(buildDataTable('inflacion',
+    ['Mes encuesta','Objetivo','Mediana','Decil 1','Decil 9','Resp.'],
+    S.slice().reverse().map(d => [d.label, d.target, d.mediana.toFixed(2)+'%', d.decil1.toFixed(2)+'%', d.decil9.toFixed(2)+'%', d.respuestas])
+  ));
+
+  setTimeout(() => {
+    charts.inflacion = echarts.init(chartDiv);
+    rebuildChart('inflacion');
+    charts.inflacion.on('click', p => { if(p.dataIndex!==undefined) updateInflacionPanel(p.dataIndex); });
+  }, 100);
+
+  return sec;
+}
+
+function rebuildChart(id){
+  if(!charts[id]) return;
+  const d = dk();
+  if(id === 'inflacion') rebuildInflacionChart(d);
+  else if(id === 'tc') rebuildTCChart(d);
+  else if(id === 'pib') rebuildPIBChart(d);
+  else if(id === 'rin') rebuildRINChart(d);
+  else if(id === 'percepcion') rebuildPercepcionChart(d);
+}
+
+function rebuildInflacionChart(d){
+  const S = DATA.inflacion.series;
+  const labels = S.map(s => s.label);
+  const keys = activeKeys.inflacion;
+  const COLORS = {mediana:'#6366F1',decil9:'#C71E1D',decil1:'#059669'};
+  const series = [];
+
+  if(keys.has('mediana')) series.push(lineSeries('Mediana', S.map(x=>x.mediana), COLORS.mediana, 3, 'solid', d, true));
+  if(keys.has('decil9')) series.push(lineSeries('Decil 9', S.map(x=>x.decil9), COLORS.decil9, 1.5, 'dashed', d));
+  if(keys.has('decil1')) series.push(lineSeries('Decil 1', S.map(x=>x.decil1), COLORS.decil1, 1.5, 'dashed', d));
+
+  if(keys.has('decil1') && keys.has('decil9')){
+    series.push({ name:'_bl', type:'line', data:S.map(x=>x.decil1), symbol:'none', lineStyle:{width:0}, stack:'band', areaStyle:{color:'transparent'}, silent:true, z:0 });
+    series.push({ name:'_bh', type:'line', data:S.map((x,i)=>x.decil9-x.decil1), symbol:'none', lineStyle:{width:0}, stack:'band', areaStyle:{color:d?'rgba(99,102,241,0.06)':'rgba(99,102,241,0.08)'}, silent:true, z:0 });
+  }
+
+  charts.inflacion.setOption(chartOption(labels, series, d, v => v.toFixed(0)+'%', (params, S2) => {
+    const valid = params.filter(p => !p.seriesName.startsWith('_'));
+    if(!valid.length) return '';
+    const idx = valid[0].dataIndex;
+    let html = `<div style="font-weight:700;margin-bottom:6px;color:#E9D8A6">${valid[0].axisValue}</div>`;
+    html += `<div style="font-size:10px;color:#94A3B8;margin-bottom:6px">Expectativa para ${S[idx].target}</div>`;
+    valid.forEach(p => { html += tooltipLine(p); });
+    return html;
+  }), true);
+}
+
+function buildInflacionPanel(S, idx){
+  const panel = el('div','panel');
+  const hd = el('div','panel-hd');
+  hd.style.background = dk() ? '#1A1A2E' : '#1E1B4B';
+  hd.innerHTML = `<span class="panel-hd-t">Lectura del indicador</span><span class="panel-hd-d" style="color:#6366F1;background:rgba(99,102,241,.15)">${S[idx].label}</span>`;
+  panel.appendChild(hd);
+  const body = el('div','panel-body');
+  body.innerHTML = inflacionPanelHTML(S, idx);
+  panel.appendChild(body);
+  return panel;
+}
+
+function updateInflacionPanel(idx){
+  const S = DATA.inflacion.series;
+  const panel = document.getElementById('panel-inflacion');
+  if(!panel) return;
+  const dateEl = panel.querySelector('.panel-hd-d');
+  if(dateEl) dateEl.textContent = S[idx].label;
+  const body = panel.querySelector('.panel-body');
+  if(body) body.innerHTML = inflacionPanelHTML(S, idx);
+}
+
+function inflacionPanelHTML(S, idx){
+  const d = S[idx], prev = idx > 0 ? S[idx-1] : null;
+  const dMed = prev ? d.mediana - prev.mediana : 0;
+  const rango = d.decil9 - d.decil1;
+  let analysis;
+  if(d.mediana > 15) analysis = `Expectativa mediana de <strong>${d.mediana.toFixed(1)}%</strong>: nivel <strong>muy elevado</strong>. El pesimismo se refleja en un D9 de ${d.decil9.toFixed(1)}%, señalando pérdida significativa de confianza en la estabilidad de precios.`;
+  else if(d.mediana > 10) analysis = `Mediana de <strong>${d.mediana.toFixed(1)}%</strong>, muy por encima de la inflación históricamente baja de Bolivia. La dispersión de <strong>${rango.toFixed(1)} pp</strong> refleja incertidumbre considerable.`;
+  else if(d.mediana > 5) analysis = `Con <strong>${d.mediana.toFixed(1)}%</strong>, los encuestados anticipan inflación <strong>moderadamente elevada</strong>. El rango D1–D9 sugiere visiones divergentes.`;
+  else analysis = `Mediana de <strong>${d.mediana.toFixed(1)}%</strong>: confianza razonable en la estabilidad de precios. Consenso relativamente estrecho.`;
+  return `
+    <div class="pb"><div class="pb-lbl" style="color:#6366F1;background:rgba(99,102,241,.08);border-left-color:#6366F1">Mediana</div>
+    <div class="pb-val" style="color:#6366F1">${d.mediana.toFixed(1)}%</div>
+    <p class="pb-desc">En <strong>${d.label}</strong>, expectativa mediana para <strong>${d.target}</strong>${prev?`, ${dMed>=0?'subiendo':'bajando'} ${Math.abs(dMed).toFixed(2)} pp`:''}.${d.respuestas ? ' Basada en '+d.respuestas+' respuestas.' : ''}</p></div>
+    <div class="pb"><div class="pb-lbl" style="color:#C71E1D;background:rgba(199,30,29,.08);border-left-color:#C71E1D">D9 · Pesimistas</div>
+    <div class="pb-val" style="color:#C71E1D">${d.decil9.toFixed(1)}%</div>
+    <p class="pb-desc">El 10% más pesimista espera al menos <strong>${d.decil9.toFixed(1)}%</strong> de inflación.</p></div>
+    <div class="pb"><div class="pb-lbl" style="color:#059669;background:rgba(5,150,105,.08);border-left-color:#059669">D1 · Optimistas</div>
+    <div class="pb-val" style="color:#059669">${d.decil1.toFixed(1)}%</div>
+    <p class="pb-desc">El 10% más optimista espera no más de <strong>${d.decil1.toFixed(1)}%</strong>.</p></div>
+    <div class="ctx" style="background:${dk()?'#1A1A2E':'rgba(99,102,241,.04)'};border-left-color:#6366F1"><p>${analysis}</p></div>`;
+}
+
+/* ── Tipo de Cambio ── */
+function buildTCSection(){
+  const sec = createSection('tc', '#D97706', '02', 'Expectativas de Tipo de Cambio',
+    'Tipo de cambio Bs/$us esperado para fin de periodo (diciembre del año siguiente). Encuesta mensual EEE del BCB.');
+  const S = DATA.tc.series;
+  const N = S.length;
+  const last = S[N-1], prev = S[N-2];
+  activeKeys.tc = new Set(['mediana','decil9','decil1']);
+
+  sec.appendChild(buildKPIs([
+    { lbl:'Mediana', val:'Bs '+last.mediana.toFixed(2), d:last.mediana-prev.mediana, color:'#D97706', inv:true },
+    { lbl:'Decil 9 (pesimistas)', val:'Bs '+last.decil9.toFixed(2), d:last.decil9-prev.decil9, color:'#C71E1D', inv:true },
+    { lbl:'Decil 1 (optimistas)', val:'Bs '+last.decil1.toFixed(2), d:last.decil1-prev.decil1, color:'#059669', inv:true },
+    { lbl:'Rango D9–D1', val:'Bs '+(last.decil9-last.decil1).toFixed(2), d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#D97706', inv:true },
+  ]));
+
+  const wrap = el('div','chart-wrap');
+  const chartCard = el('div','chart-card');
+  const ctrl = el('div','chart-ctrl');
+  const togGrp = el('div','tog-grp');
+  [{key:'mediana',label:'Mediana',color:'#D97706',dash:false},{key:'decil9',label:'Decil 9',color:'#C71E1D',dash:true},{key:'decil1',label:'Decil 1',color:'#059669',dash:true}].forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'pill'; btn.dataset.key = s.key; btn.dataset.section = 'tc';
+    btn.innerHTML = `<span class="lp${s.dash?' dashed':''}" style="border-color:#fff"></span>${s.label}`;
+    btn.addEventListener('click', () => toggleKey('tc', s.key));
+    togGrp.appendChild(btn);
+  });
+  ctrl.appendChild(togGrp);
+  chartCard.appendChild(ctrl);
+  const chartDiv = el('div','chart-area'); chartDiv.id = 'chart-tc';
+  chartCard.appendChild(chartDiv);
+  wrap.appendChild(chartCard);
+
+  const panel = buildGenericPanel(S, N-1, 'tc', '#D97706', v => 'Bs '+v.toFixed(2), tcAnalysis);
+  panel.id = 'panel-tc';
+  wrap.appendChild(panel);
+  sec.appendChild(wrap);
+  syncPills('tc', {mediana:'#D97706',decil9:'#C71E1D',decil1:'#059669'});
+
+  sec.appendChild(buildEduGrid([
+    { t:'¿Qué refleja esta expectativa?', b:'Muestra el tipo de cambio que los especialistas esperan al cierre del próximo año. Bolivia mantuvo un tipo de cambio fijo de <strong>Bs 6.96/$us</strong> desde 2011 hasta 2024. Las expectativas por encima de ese nivel reflejan anticipación de una devaluación.' },
+    { t:'¿Por qué importa?', b:'El tipo de cambio afecta el precio de las importaciones, la deuda en dólares y el poder adquisitivo. Expectativas de depreciación pueden generar <strong>fuga de capitales</strong> y presión adicional sobre las reservas.' },
+    { t:'Tipo de cambio oficial vs. paralelo', b:'Bolivia tiene un mercado cambiario dual. El tipo de cambio oficial (BCB) se mantuvo fijo en Bs 6.96. El mercado paralelo puede reflejar primas significativas. Esta encuesta captura expectativas sobre el tipo de cambio general.' },
+  ], '#D97706'));
+
+  sec.appendChild(buildDataTable('tc',
+    ['Mes encuesta','Objetivo','Mediana','Decil 1','Decil 9'],
+    S.slice().reverse().map(d => [d.label, d.target, 'Bs '+d.mediana.toFixed(2), 'Bs '+d.decil1.toFixed(2), 'Bs '+d.decil9.toFixed(2)])
+  ));
+
+  setTimeout(() => {
+    charts.tc = echarts.init(chartDiv);
+    rebuildTCChart(dk());
+    charts.tc.on('click', p => { if(p.dataIndex!==undefined) updateGenericPanel('tc', DATA.tc.series, p.dataIndex, '#D97706', v=>'Bs '+v.toFixed(2), tcAnalysis); });
+  }, 150);
+  return sec;
+}
+
+function rebuildTCChart(d){
+  const S = DATA.tc.series;
+  const labels = S.map(s => s.label);
+  const keys = activeKeys.tc;
+  const series = [];
+  if(keys.has('mediana')) series.push(lineSeries('Mediana', S.map(x=>x.mediana), '#D97706', 3, 'solid', d, true));
+  if(keys.has('decil9')) series.push(lineSeries('Decil 9', S.map(x=>x.decil9), '#C71E1D', 1.5, 'dashed', d));
+  if(keys.has('decil1')) series.push(lineSeries('Decil 1', S.map(x=>x.decil1), '#059669', 1.5, 'dashed', d));
+  if(keys.has('decil1') && keys.has('decil9')){
+    series.push({ name:'_bl', type:'line', data:S.map(x=>x.decil1), symbol:'none', lineStyle:{width:0}, stack:'band', areaStyle:{color:'transparent'}, silent:true, z:0 });
+    series.push({ name:'_bh', type:'line', data:S.map((x,i)=>x.decil9-x.decil1), symbol:'none', lineStyle:{width:0}, stack:'band', areaStyle:{color:d?'rgba(217,119,6,.06)':'rgba(217,119,6,.08)'}, silent:true, z:0 });
+  }
+  charts.tc.setOption(chartOption(labels, series, d, v => 'Bs '+v.toFixed(1), (params) => {
+    const valid = params.filter(p=>!p.seriesName.startsWith('_'));
+    if(!valid.length) return '';
+    const idx = valid[0].dataIndex;
+    let html = `<div style="font-weight:700;margin-bottom:6px;color:#E9D8A6">${valid[0].axisValue}</div>`;
+    html += `<div style="font-size:10px;color:#94A3B8;margin-bottom:6px">Expectativa para ${S[idx].target}</div>`;
+    valid.forEach(p => { html += tooltipLine(p, v => 'Bs '+v.toFixed(2)); });
+    return html;
+  }), true);
+}
+
+function tcAnalysis(d){
+  if(d.mediana > 12) return `Tipo de cambio esperado de <strong>Bs ${d.mediana.toFixed(2)}</strong>: los especialistas anticipan una <strong>depreciación muy significativa</strong> respecto al tipo fijo histórico de Bs 6.96. Rango D1–D9 de Bs ${(d.decil9-d.decil1).toFixed(2)} refleja alta incertidumbre.`;
+  if(d.mediana > 8) return `Con <strong>Bs ${d.mediana.toFixed(2)}</strong>, se espera una depreciación moderada a significativa. La expectativa supera ampliamente el tipo fijo de Bs 6.96, reflejando presiones cambiarias persistentes.`;
+  if(d.mediana > 6.96) return `Mediana de <strong>Bs ${d.mediana.toFixed(2)}</strong>, ligeramente por encima del tipo fijo de Bs 6.96. Señal temprana de expectativas de ajuste cambiario.`;
+  return `Mediana de <strong>Bs ${d.mediana.toFixed(2)}</strong>, en línea con el tipo de cambio fijo. Confianza en la estabilidad cambiaria.`;
+}
+
+/* ── PIB ── */
+function buildPIBSection(){
+  const sec = createSection('pib', '#0D9488', '03', 'Expectativas de Crecimiento del PIB',
+    'Variación anual acumulada del PIB esperada para el año siguiente. Encuesta mensual EEE del BCB.');
+  const S = DATA.pib.series;
+  const N = S.length;
+  const last = S[N-1], prev = S[N-2];
+  activeKeys.pib = new Set(['mediana','decil9','decil1']);
+
+  sec.appendChild(buildKPIs([
+    { lbl:'Mediana', val:last.mediana.toFixed(1)+'%', d:last.mediana-prev.mediana, color:'#0D9488', inv:false },
+    { lbl:'Decil 9 (optimistas)', val:last.decil9.toFixed(1)+'%', d:last.decil9-prev.decil9, color:'#059669', inv:false },
+    { lbl:'Decil 1 (pesimistas)', val:last.decil1.toFixed(1)+'%', d:last.decil1-prev.decil1, color:'#C71E1D', inv:false },
+    { lbl:'Rango D9–D1', val:(last.decil9-last.decil1).toFixed(1)+' pp', d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#0D9488', inv:true },
+  ]));
+
+  const wrap = el('div','chart-wrap');
+  const chartCard = el('div','chart-card');
+  const ctrl = el('div','chart-ctrl');
+  const togGrp = el('div','tog-grp');
+  [{key:'mediana',label:'Mediana',color:'#0D9488',dash:false},{key:'decil9',label:'Decil 9',color:'#059669',dash:true},{key:'decil1',label:'Decil 1',color:'#C71E1D',dash:true}].forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'pill'; btn.dataset.key = s.key; btn.dataset.section = 'pib';
+    btn.innerHTML = `<span class="lp${s.dash?' dashed':''}" style="border-color:#fff"></span>${s.label}`;
+    btn.addEventListener('click', () => toggleKey('pib', s.key));
+    togGrp.appendChild(btn);
+  });
+  ctrl.appendChild(togGrp);
+  chartCard.appendChild(ctrl);
+  const chartDiv = el('div','chart-area'); chartDiv.id = 'chart-pib';
+  chartCard.appendChild(chartDiv);
+  wrap.appendChild(chartCard);
+
+  const panel = buildGenericPanel(S, N-1, 'pib', '#0D9488', v => v.toFixed(2)+'%', pibAnalysis);
+  panel.id = 'panel-pib';
+  wrap.appendChild(panel);
+  sec.appendChild(wrap);
+  syncPills('pib', {mediana:'#0D9488',decil9:'#059669',decil1:'#C71E1D'});
+
+  sec.appendChild(buildEduGrid([
+    { t:'¿Qué mide esta expectativa?', b:'La tasa de crecimiento anual del Producto Interno Bruto que los especialistas esperan para el próximo año. Un valor positivo indica expansión económica, uno negativo recesión.' },
+    { t:'Contexto histórico', b:'Bolivia creció en promedio <strong>4.5%</strong> entre 2006-2019 (boom de commodities). Tras la pandemia, el crecimiento se desaceleró significativamente. Las expectativas actuales reflejan un entorno económico más desafiante.' },
+    { t:'D1 y D9 invertidos', b:'A diferencia de inflación, aquí el <strong>Decil 9 son los optimistas</strong> (esperan mayor crecimiento) y el <strong>Decil 1 los pesimistas</strong> (esperan menor crecimiento o incluso contracción).' },
+  ], '#0D9488'));
+
+  sec.appendChild(buildDataTable('pib',
+    ['Mes encuesta','Objetivo','Mediana','Decil 1','Decil 9'],
+    S.slice().reverse().map(d => [d.label, d.target, d.mediana.toFixed(2)+'%', d.decil1.toFixed(2)+'%', d.decil9.toFixed(2)+'%'])
+  ));
+
+  setTimeout(() => {
+    charts.pib = echarts.init(chartDiv);
+    rebuildPIBChart(dk());
+    charts.pib.on('click', p => { if(p.dataIndex!==undefined) updateGenericPanel('pib', DATA.pib.series, p.dataIndex, '#0D9488', v=>v.toFixed(2)+'%', pibAnalysis); });
+  }, 200);
+  return sec;
+}
+
+function rebuildPIBChart(d){
+  const S = DATA.pib.series;
+  const labels = S.map(s => s.label);
+  const keys = activeKeys.pib;
+  const series = [];
+  if(keys.has('mediana')) series.push(lineSeries('Mediana', S.map(x=>x.mediana), '#0D9488', 3, 'solid', d, true));
+  if(keys.has('decil9')) series.push(lineSeries('Decil 9', S.map(x=>x.decil9), '#059669', 1.5, 'dashed', d));
+  if(keys.has('decil1')) series.push(lineSeries('Decil 1', S.map(x=>x.decil1), '#C71E1D', 1.5, 'dashed', d));
+  if(keys.has('decil1') && keys.has('decil9')){
+    series.push({ name:'_bl', type:'line', data:S.map(x=>x.decil1), symbol:'none', lineStyle:{width:0}, stack:'band', areaStyle:{color:'transparent'}, silent:true, z:0 });
+    series.push({ name:'_bh', type:'line', data:S.map((x,i)=>x.decil9-x.decil1), symbol:'none', lineStyle:{width:0}, stack:'band', areaStyle:{color:d?'rgba(13,148,136,.06)':'rgba(13,148,136,.08)'}, silent:true, z:0 });
+  }
+  charts.pib.setOption(chartOption(labels, series, d, v => v.toFixed(1)+'%', (params) => {
+    const valid = params.filter(p=>!p.seriesName.startsWith('_'));
+    if(!valid.length) return '';
+    const idx = valid[0].dataIndex;
+    let html = `<div style="font-weight:700;margin-bottom:6px;color:#E9D8A6">${valid[0].axisValue}</div>`;
+    html += `<div style="font-size:10px;color:#94A3B8;margin-bottom:6px">Expectativa para ${S[idx].target}</div>`;
+    valid.forEach(p => { html += tooltipLine(p, v => v.toFixed(2)+'%'); });
+    return html;
+  }), true);
+}
+
+function pibAnalysis(d){
+  if(d.mediana < 0) return `Mediana de <strong>${d.mediana.toFixed(2)}%</strong>: los especialistas anticipan una <strong>contracción económica</strong>. Señal muy negativa para la actividad productiva.`;
+  if(d.mediana < 1.5) return `Crecimiento esperado de <strong>${d.mediana.toFixed(2)}%</strong>, un ritmo <strong>muy bajo</strong> para Bolivia. Prácticamente estancamiento considerando el crecimiento poblacional.`;
+  if(d.mediana < 3) return `Mediana de <strong>${d.mediana.toFixed(2)}%</strong>, un crecimiento <strong>moderado</strong> pero por debajo del promedio histórico de 4.5%. Refleja las limitaciones del modelo económico actual.`;
+  return `Expectativa de <strong>${d.mediana.toFixed(2)}%</strong>, un crecimiento <strong>sólido</strong> cercano al promedio histórico.`;
+}
+
+/* ── RIN ── */
+function buildRINSection(){
+  const sec = createSection('rin', '#2563EB', '04', 'Expectativas de Reservas Internacionales (RIN)',
+    'Nivel de Reservas Internacionales Netas esperado (MM $us) para diciembre del año siguiente. Encuesta mensual EEE del BCB.');
+  const S = DATA.rin.series;
+  const N = S.length;
+  const last = S[N-1], prev = S[N-2];
+  activeKeys.rin = new Set(['mediana','decil9','decil1']);
+
+  sec.appendChild(buildKPIs([
+    { lbl:'Mediana', val:'$'+Math.round(last.mediana).toLocaleString()+' MM', d:last.mediana-prev.mediana, color:'#2563EB', inv:false, fmt:v=>Math.round(Math.abs(v)).toLocaleString()+' MM' },
+    { lbl:'Decil 9 (optimistas)', val:'$'+Math.round(last.decil9).toLocaleString()+' MM', d:last.decil9-prev.decil9, color:'#059669', inv:false, fmt:v=>Math.round(Math.abs(v)).toLocaleString()+' MM' },
+    { lbl:'Decil 1 (pesimistas)', val:'$'+Math.round(last.decil1).toLocaleString()+' MM', d:last.decil1-prev.decil1, color:'#C71E1D', inv:false, fmt:v=>Math.round(Math.abs(v)).toLocaleString()+' MM' },
+    { lbl:'Rango D9–D1', val:'$'+Math.round(last.decil9-last.decil1).toLocaleString()+' MM', d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#2563EB', inv:true, fmt:v=>Math.round(Math.abs(v)).toLocaleString()+' MM' },
+  ]));
+
+  const wrap = el('div','chart-wrap');
+  const chartCard = el('div','chart-card');
+  const ctrl = el('div','chart-ctrl');
+  const togGrp = el('div','tog-grp');
+  [{key:'mediana',label:'Mediana',color:'#2563EB',dash:false},{key:'decil9',label:'Decil 9',color:'#059669',dash:true},{key:'decil1',label:'Decil 1',color:'#C71E1D',dash:true}].forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'pill'; btn.dataset.key = s.key; btn.dataset.section = 'rin';
+    btn.innerHTML = `<span class="lp${s.dash?' dashed':''}" style="border-color:#fff"></span>${s.label}`;
+    btn.addEventListener('click', () => toggleKey('rin', s.key));
+    togGrp.appendChild(btn);
+  });
+  ctrl.appendChild(togGrp);
+  chartCard.appendChild(ctrl);
+  const chartDiv = el('div','chart-area'); chartDiv.id = 'chart-rin';
+  chartCard.appendChild(chartDiv);
+  wrap.appendChild(chartCard);
+
+  const panel = buildGenericPanel(S, N-1, 'rin', '#2563EB', v => '$'+Math.round(v).toLocaleString()+' MM', rinAnalysis);
+  panel.id = 'panel-rin';
+  wrap.appendChild(panel);
+  sec.appendChild(wrap);
+  syncPills('rin', {mediana:'#2563EB',decil9:'#059669',decil1:'#C71E1D'});
+
+  sec.appendChild(buildEduGrid([
+    { t:'¿Qué son las RIN?', b:'Las Reservas Internacionales Netas son los activos en moneda extranjera del banco central. Sirven como respaldo del tipo de cambio y colchón ante shocks externos. Bolivia pasó de $15,000 MM (2014) a niveles mínimos.' },
+    { t:'¿Por qué importan tanto?', b:'Sin reservas suficientes, el banco central no puede defender el tipo de cambio ni financiar importaciones esenciales. Las RIN son el <strong>indicador más vigilado</strong> de la crisis boliviana actual.' },
+    { t:'D1 y D9 invertidos', b:'Aquí el <strong>Decil 9 son los optimistas</strong> (esperan más reservas) y el <strong>Decil 1 los pesimistas</strong> (esperan menos). Un D1 muy bajo señala temor a agotamiento de reservas.' },
+  ], '#2563EB'));
+
+  sec.appendChild(buildDataTable('rin',
+    ['Mes encuesta','Objetivo','Mediana','Decil 1','Decil 9'],
+    S.slice().reverse().map(d => [d.label, d.target, '$'+Math.round(d.mediana).toLocaleString(), '$'+Math.round(d.decil1).toLocaleString(), '$'+Math.round(d.decil9).toLocaleString()])
+  ));
+
+  setTimeout(() => {
+    charts.rin = echarts.init(chartDiv);
+    rebuildRINChart(dk());
+    charts.rin.on('click', p => { if(p.dataIndex!==undefined) updateGenericPanel('rin', DATA.rin.series, p.dataIndex, '#2563EB', v=>'$'+Math.round(v).toLocaleString()+' MM', rinAnalysis); });
+  }, 250);
+  return sec;
+}
+
+function rebuildRINChart(d){
+  const S = DATA.rin.series;
+  const labels = S.map(s => s.label);
+  const keys = activeKeys.rin;
+  const series = [];
+  if(keys.has('mediana')) series.push(lineSeries('Mediana', S.map(x=>x.mediana), '#2563EB', 3, 'solid', d, true));
+  if(keys.has('decil9')) series.push(lineSeries('Decil 9', S.map(x=>x.decil9), '#059669', 1.5, 'dashed', d));
+  if(keys.has('decil1')) series.push(lineSeries('Decil 1', S.map(x=>x.decil1), '#C71E1D', 1.5, 'dashed', d));
+  if(keys.has('decil1') && keys.has('decil9')){
+    series.push({ name:'_bl', type:'line', data:S.map(x=>x.decil1), symbol:'none', lineStyle:{width:0}, stack:'band', areaStyle:{color:'transparent'}, silent:true, z:0 });
+    series.push({ name:'_bh', type:'line', data:S.map((x,i)=>x.decil9-x.decil1), symbol:'none', lineStyle:{width:0}, stack:'band', areaStyle:{color:d?'rgba(37,99,235,.06)':'rgba(37,99,235,.08)'}, silent:true, z:0 });
+  }
+  charts.rin.setOption(chartOption(labels, series, d, v => '$'+(v/1000).toFixed(1)+'k', (params) => {
+    const valid = params.filter(p=>!p.seriesName.startsWith('_'));
+    if(!valid.length) return '';
+    const idx = valid[0].dataIndex;
+    let html = `<div style="font-weight:700;margin-bottom:6px;color:#E9D8A6">${valid[0].axisValue}</div>`;
+    html += `<div style="font-size:10px;color:#94A3B8;margin-bottom:6px">Expectativa para ${S[idx].target}</div>`;
+    valid.forEach(p => { html += tooltipLine(p, v => '$'+Math.round(v).toLocaleString()+' MM'); });
+    return html;
+  }), true);
+}
+
+function rinAnalysis(d){
+  if(d.mediana >= 4000) return `RIN esperadas de <strong>$${Math.round(d.mediana).toLocaleString()} MM</strong>: nivel <strong>significativamente más alto</strong> que los mínimos recientes. Posible señal de recuperación de reservas por financiamiento externo o políticas cambiarias.`;
+  if(d.mediana >= 2000) return `Con <strong>$${Math.round(d.mediana).toLocaleString()} MM</strong>, se espera una recuperación parcial de reservas. Aunque mejor que los mínimos, sigue muy lejos del pico de $15,000 MM de 2014.`;
+  if(d.mediana >= 1000) return `Mediana de <strong>$${Math.round(d.mediana).toLocaleString()} MM</strong>, un nivel <strong>muy bajo</strong> que apenas cubre semanas de importaciones. Situación frágil para la estabilidad cambiaria.`;
+  return `RIN esperadas de apenas <strong>$${Math.round(d.mediana).toLocaleString()} MM</strong>: nivel <strong>crítico</strong> que señala riesgo de incapacidad para financiar importaciones esenciales.`;
+}
+
+/* ── Percepción ── */
+function buildPercepcionSection(){
+  const sec = createSection('percepcion', '#DB2777', '05', 'Índices de Percepción Económica',
+    'Índice de Percepción Económica (IPE), Situación Actual (ISA) y Situación Futura (ISF). Rango de -100 (muy negativo) a +100 (muy positivo).');
+  const S = DATA.percepcion.series.filter(d => d.ipe != null);
+  const N = S.length;
+  const last = S[N-1], prev = S[N-2];
+  activeKeys.percepcion = new Set(['ipe','isa','isf']);
+
+  const fmtPerc = v => (v>0?'+':'')+v.toFixed(1);
+  sec.appendChild(buildKPIs([
+    { lbl:'IPE (Global)', val:fmtPerc(last.ipe), d:last.ipe-prev.ipe, color:'#DB2777', inv:false },
+    { lbl:'ISA (Actual)', val:fmtPerc(last.isa), d:last.isa-prev.isa, color:'#7C3AED', inv:false },
+    { lbl:'ISF (Futura)', val:fmtPerc(last.isf), d:last.isf-prev.isf, color:'#2563EB', inv:false },
+    { lbl:'Brecha ISF–ISA', val:fmtPerc(last.isf-last.isa), d:(last.isf-last.isa)-(prev.isf-prev.isa), color:'#059669', inv:false },
+  ]));
+
+  const wrap = el('div','chart-wrap');
+  const chartCard = el('div','chart-card');
+  const ctrl = el('div','chart-ctrl');
+  const togGrp = el('div','tog-grp');
+  [{key:'ipe',label:'IPE',color:'#DB2777',dash:false},{key:'isa',label:'ISA',color:'#7C3AED',dash:true},{key:'isf',label:'ISF',color:'#2563EB',dash:true}].forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'pill'; btn.dataset.key = s.key; btn.dataset.section = 'percepcion';
+    btn.innerHTML = `<span class="lp${s.dash?' dashed':''}" style="border-color:#fff"></span>${s.label}`;
+    btn.addEventListener('click', () => toggleKey('percepcion', s.key));
+    togGrp.appendChild(btn);
+  });
+  ctrl.appendChild(togGrp);
+  chartCard.appendChild(ctrl);
+  const chartDiv = el('div','chart-area'); chartDiv.id = 'chart-percepcion';
+  chartCard.appendChild(chartDiv);
+  wrap.appendChild(chartCard);
+
+  const panel = buildPercepcionPanel(S, N-1);
+  panel.id = 'panel-percepcion';
+  wrap.appendChild(panel);
+  sec.appendChild(wrap);
+  syncPills('percepcion', {ipe:'#DB2777',isa:'#7C3AED',isf:'#2563EB'});
+
+  sec.appendChild(buildEduGrid([
+    { t:'¿Qué son IPE, ISA e ISF?', b:'El <strong>IPE</strong> (Índice de Percepción Económica) es el promedio del ISA e ISF. El <strong>ISA</strong> mide cómo perciben la situación actual. El <strong>ISF</strong> mide cómo esperan la situación futura. Rango: -100 (muy negativo) a +100 (muy positivo).' },
+    { t:'¿Cómo se calculan?', b:'Se basan en respuestas de difusión: % que dice "mejor" menos % que dice "peor". Si 60% dice peor y 10% mejor, el índice es -50. Un valor de 0 indica equilibrio entre optimistas y pesimistas.' },
+    { t:'La brecha ISF–ISA', b:'Si el ISF supera al ISA, los encuestados son <strong>más optimistas sobre el futuro</strong> que sobre el presente. Una brecha positiva creciente señala recuperación de confianza.' },
+  ], '#DB2777'));
+
+  sec.appendChild(buildDataTable('percepcion',
+    ['Mes encuesta','IPE','ISA','ISF'],
+    S.slice().reverse().map(d => [d.label, fmtPerc(d.ipe), fmtPerc(d.isa), fmtPerc(d.isf)])
+  ));
+
+  setTimeout(() => {
+    charts.percepcion = echarts.init(chartDiv);
+    rebuildPercepcionChart(dk());
+    charts.percepcion.on('click', p => { if(p.dataIndex!==undefined) updatePercepcionPanel(S, p.dataIndex); });
+  }, 300);
+  return sec;
+}
+
+function rebuildPercepcionChart(d){
+  const S = DATA.percepcion.series.filter(x => x.ipe != null);
+  const labels = S.map(s => s.label);
+  const keys = activeKeys.percepcion;
+  const series = [];
+  if(keys.has('ipe')) series.push(lineSeries('IPE', S.map(x=>x.ipe), '#DB2777', 3, 'solid', d, true));
+  if(keys.has('isa')) series.push(lineSeries('ISA', S.map(x=>x.isa), '#7C3AED', 2, 'dashed', d));
+  if(keys.has('isf')) series.push(lineSeries('ISF', S.map(x=>x.isf), '#2563EB', 2, 'dashed', d));
+
+  const opt = chartOption(labels, series, d, v => (v>0?'+':'')+v.toFixed(0), (params) => {
+    const valid = params.filter(p=>!p.seriesName.startsWith('_'));
+    if(!valid.length) return '';
+    let html = `<div style="font-weight:700;margin-bottom:6px;color:#E9D8A6">${valid[0].axisValue}</div>`;
+    valid.forEach(p => { html += tooltipLine(p, v => (v>0?'+':'')+v.toFixed(1)); });
+    return html;
+  });
+
+  opt.yAxis.min = -100;
+  opt.yAxis.max = 100;
+  opt.series.push({
+    type:'line', markLine:{ silent:true, symbol:'none',
+      lineStyle:{ color:d?'#333':'#CBD5E1', type:'dashed', width:1 },
+      label:{ show:true, position:'insideEndTop', fontSize:9, color:d?'#666':'#94A3B8', formatter:'Neutral' },
+      data:[{ yAxis:0 }]
+    }, data:[]
+  });
+
+  charts.percepcion.setOption(opt, true);
+}
+
+function buildPercepcionPanel(S, idx){
+  const panel = el('div','panel');
+  const hd = el('div','panel-hd');
+  hd.style.background = dk() ? '#2A1A2E' : '#831843';
+  hd.innerHTML = `<span class="panel-hd-t">Lectura del indicador</span><span class="panel-hd-d" style="color:#DB2777;background:rgba(219,39,119,.15)">${S[idx].label}</span>`;
+  panel.appendChild(hd);
+  const body = el('div','panel-body');
+  body.innerHTML = percepcionPanelHTML(S, idx);
+  panel.appendChild(body);
+  return panel;
+}
+
+function updatePercepcionPanel(S, idx){
+  const panel = document.getElementById('panel-percepcion');
+  if(!panel) return;
+  const dateEl = panel.querySelector('.panel-hd-d');
+  if(dateEl) dateEl.textContent = S[idx].label;
+  const body = panel.querySelector('.panel-body');
+  if(body) body.innerHTML = percepcionPanelHTML(S, idx);
+}
+
+function percepcionPanelHTML(S, idx){
+  const d = S[idx], prev = idx > 0 ? S[idx-1] : null;
+  const fmtP = v => (v>0?'+':'')+v.toFixed(1);
+  const brecha = d.isf - d.isa;
+  let analysis;
+  if(d.ipe > 30) analysis = `IPE de <strong>${fmtP(d.ipe)}</strong>: percepción <strong>muy positiva</strong>. Los especialistas ven mejoras sustanciales en la economía. El ISF de ${fmtP(d.isf)} indica optimismo sobre el futuro.`;
+  else if(d.ipe > 0) analysis = `IPE de <strong>${fmtP(d.ipe)}</strong>: percepción <strong>positiva</strong>, un cambio notable respecto al pesimismo previo. La brecha ISF–ISA de ${fmtP(brecha)} pp ${brecha > 0 ? 'sugiere mayor optimismo sobre el futuro' : 'sugiere cautela sobre la situación futura'}.`;
+  else if(d.ipe > -50) analysis = `IPE de <strong>${fmtP(d.ipe)}</strong>: percepción <strong>negativa moderada</strong>. La mayoría de especialistas percibe deterioro económico, aunque sin llegar a niveles de pesimismo extremo.`;
+  else analysis = `IPE de <strong>${fmtP(d.ipe)}</strong>: percepción <strong>muy negativa</strong>. Pesimismo generalizado entre los especialistas. El ISA de ${fmtP(d.isa)} refleja una valoración particularmente crítica de la coyuntura actual.`;
+
+  return `
+    <div class="pb"><div class="pb-lbl" style="color:#DB2777;background:rgba(219,39,119,.08);border-left-color:#DB2777">IPE · Global</div>
+    <div class="pb-val" style="color:#DB2777">${fmtP(d.ipe)}</div>
+    <p class="pb-desc">Índice de Percepción Económica en <strong>${d.label}</strong>${prev ? `, ${d.ipe>prev.ipe?'mejorando':'empeorando'} ${Math.abs(d.ipe-prev.ipe).toFixed(1)} pts` : ''}.</p></div>
+    <div class="pb"><div class="pb-lbl" style="color:#7C3AED;background:rgba(124,58,237,.08);border-left-color:#7C3AED">ISA · Actual</div>
+    <div class="pb-val" style="color:#7C3AED">${fmtP(d.isa)}</div>
+    <p class="pb-desc">Valoración de la situación económica <strong>actual</strong>. ${d.isa > 0 ? 'Más encuestados perciben mejora que deterioro.' : 'Más encuestados perciben deterioro que mejora.'}</p></div>
+    <div class="pb"><div class="pb-lbl" style="color:#2563EB;background:rgba(37,99,235,.08);border-left-color:#2563EB">ISF · Futura</div>
+    <div class="pb-val" style="color:#2563EB">${fmtP(d.isf)}</div>
+    <p class="pb-desc">Expectativa sobre la situación futura. ${d.isf > d.isa ? 'Más optimismo sobre el futuro que sobre el presente.' : 'Menos optimismo sobre el futuro que sobre el presente.'}</p></div>
+    <div class="ctx" style="background:${dk()?'#2A1A2E':'rgba(219,39,119,.04)'};border-left-color:#DB2777"><p>${analysis}</p></div>`;
+}
+
+
+/* ════════════════════════════════════════════
+   SHARED UTILITIES
+   ════════════════════════════════════════════ */
+
+function el(tag, cls){
+  const e = document.createElement(tag);
+  if(cls) e.className = cls;
+  return e;
+}
+
+function createSection(id, color, num, title, desc){
+  const sec = el('div','section');
+  sec.id = 'sec-'+id;
+  const hd = el('div','sec-hd');
+  hd.innerHTML = `<span class="sec-num" style="color:${color};border-color:${color}33">${num}</span>
+    <div class="sec-titles"><h2>${title}</h2><p>${desc}</p></div>`;
+  sec.appendChild(hd);
+  return sec;
+}
+
+function buildKPIs(items){
+  const grid = el('div','kpi-grid');
+  grid.innerHTML = items.map(i => {
+    const isUp = i.d > 0.01;
+    const isDown = i.d < -0.01;
+    const cls = i.inv ? (isUp ? 'up' : isDown ? 'down' : 'flat') : (isUp ? 'down' : isDown ? 'up' : 'flat');
+    const arrow = isUp ? '▲' : isDown ? '▼' : '—';
+    const fmt = i.fmt ? i.fmt(i.d) : Math.abs(i.d).toFixed(2)+' pp';
+    return `<div class="kpi"><div style="position:absolute;top:0;left:0;width:100%;height:3px;background:${i.color}"></div>
+      <div class="kpi-lbl">${i.lbl}</div><div class="kpi-val" style="color:${i.color}">${i.val}</div>
+      <div class="kpi-d ${cls}">${arrow} ${fmt}</div></div>`;
+  }).join('');
+  return grid;
+}
+
+function buildEduGrid(items, color){
+  const grid = el('div','edu-grid');
+  grid.innerHTML = items.map(i => `
+    <div class="edu" style="border-left-color:${color}" onclick="this.classList.toggle('open')">
+      <div class="edu-t">${i.t}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+      <div class="edu-body">${i.b}</div>
+    </div>
+  `).join('');
+  return grid;
+}
+
+function buildDataTable(id, headers, rows){
+  const wrap = el('div','tbl-wrap');
+  wrap.innerHTML = `
+    <div class="tbl-hd"><span class="tbl-hd-t">Datos completos</span><span style="font-size:.6rem;color:var(--muted)">${rows.length} observaciones</span></div>
+    <div class="tbl-scroll"><table>
+      <thead><tr>${headers.map(h=>'<th>'+h+'</th>').join('')}</tr></thead>
+      <tbody>${rows.map(r => '<tr>'+r.map(c => '<td>'+c+'</td>').join('')+'</tr>').join('')}</tbody>
+    </table></div>`;
+  return wrap;
+}
+
+function buildGenericPanel(S, idx, id, color, fmt, analysisFn){
+  const panel = el('div','panel');
+  const hd = el('div','panel-hd');
+  hd.style.background = dk() ? darkenColor(color) : color.replace('#','#');
+  hd.style.background = id === 'tc' ? (dk()?'#2A1A0A':'#78350F') :
+                         id === 'pib' ? (dk()?'#0A2A2A':'#134E4A') :
+                         id === 'rin' ? (dk()?'#0A1A2A':'#1E3A5F') : color;
+  hd.innerHTML = `<span class="panel-hd-t">Lectura del indicador</span><span class="panel-hd-d" style="color:${color};background:${color}22">${S[idx].label}</span>`;
+  panel.appendChild(hd);
+  const body = el('div','panel-body');
+  body.innerHTML = genericPanelHTML(S, idx, color, fmt, analysisFn);
+  panel.appendChild(body);
+  return panel;
+}
+
+function updateGenericPanel(id, S, idx, color, fmt, analysisFn){
+  const panel = document.getElementById('panel-'+id);
+  if(!panel) return;
+  const dateEl = panel.querySelector('.panel-hd-d');
+  if(dateEl) dateEl.textContent = S[idx].label;
+  const body = panel.querySelector('.panel-body');
+  if(body) body.innerHTML = genericPanelHTML(S, idx, color, fmt, analysisFn);
+}
+
+function genericPanelHTML(S, idx, color, fmt, analysisFn){
+  const d = S[idx], prev = idx > 0 ? S[idx-1] : null;
+  const dMed = prev ? d.mediana - prev.mediana : 0;
+  return `
+    <div class="pb"><div class="pb-lbl" style="color:${color};background:${color}14;border-left-color:${color}">Mediana</div>
+    <div class="pb-val" style="color:${color}">${fmt(d.mediana)}</div>
+    <p class="pb-desc">En <strong>${d.label}</strong>, expectativa mediana para <strong>${d.target}</strong>${prev?`, ${dMed>=0?'subiendo':'bajando'} ${typeof d.mediana === 'number' && d.mediana > 100 ? Math.round(Math.abs(dMed)).toLocaleString() : Math.abs(dMed).toFixed(2)}`:''} vs. mes anterior.</p></div>
+    <div class="pb"><div class="pb-lbl" style="color:#C71E1D;background:rgba(199,30,29,.08);border-left-color:#C71E1D">Decil extremo alto</div>
+    <div class="pb-val" style="color:#C71E1D">${fmt(d.decil9)}</div>
+    <p class="pb-desc">10% de encuestados con la expectativa más alta.</p></div>
+    <div class="pb"><div class="pb-lbl" style="color:#059669;background:rgba(5,150,105,.08);border-left-color:#059669">Decil extremo bajo</div>
+    <div class="pb-val" style="color:#059669">${fmt(d.decil1)}</div>
+    <p class="pb-desc">10% de encuestados con la expectativa más baja.</p></div>
+    <div class="ctx" style="background:${dk()?color+'0D':color+'08'};border-left-color:${color}"><p>${analysisFn(d)}</p></div>`;
+}
+
+function darkenColor(hex){ return hex; }
+
+function lineSeries(name, data, color, width, type, dark, hasArea){
+  const lastIdx = data.length - 1;
+  const s = {
+    name, type:'line', data, symbol:'none',
+    lineStyle:{ width, type },
+    itemStyle:{ color },
+    z: width > 2 ? 3 : 1,
+    markPoint:{
+      data:[{ coord:[lastIdx, data[lastIdx]] }],
+      symbol:'circle', symbolSize:7,
+      itemStyle:{ color, borderColor:dark?'#101010':'#fff', borderWidth:2 },
+      label:{ show:false }
+    }
+  };
+  if(hasArea){
+    s.areaStyle = { color: new echarts.graphic.LinearGradient(0,0,0,1,[
+      {offset:0, color:color+(dark?'20':'10')},
+      {offset:1, color:color+'00'}
+    ])};
+  }
+  return s;
+}
+
+function chartOption(labels, series, d, yFmt, tooltipFmt){
+  return {
+    grid:{ left:55, right:20, top:20, bottom:40 },
+    xAxis:{
+      type:'category', data:labels,
+      axisLine:{ lineStyle:{ color:d?'#2A3A50':'#E2E8F0' }},
+      axisTick:{ show:false },
+      axisLabel:{ fontFamily:'Inter', fontSize:10, fontWeight:500, color:d?'#666':'#94A3B8', rotate:45,
+        formatter: v => { const [m,y]=v.split(' '); return m==='Ene'?m+' '+y:m; }
+      }
+    },
+    yAxis:{
+      type:'value',
+      axisLine:{ show:false },
+      splitLine:{ lineStyle:{ color:d?'rgba(42,58,80,0.5)':'#F1F5F9' }},
+      axisLabel:{ fontFamily:'JetBrains Mono', fontSize:11, color:d?'#666':'#94A3B8', formatter:yFmt }
+    },
+    tooltip:{
+      trigger:'axis',
+      backgroundColor:'rgba(0,18,25,0.96)',
+      borderColor:d?'#2A3A50':'#1A2940',
+      borderWidth:1, padding:14,
+      extraCssText:'border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.3);',
+      textStyle:{ fontFamily:'Inter', fontSize:12, color:'#fff' },
+      formatter: params => tooltipFmt(params)
+    },
+    series
+  };
+}
+
+function tooltipLine(p, fmt){
+  const f = fmt || (v => v != null ? v.toFixed(2)+'%' : '—');
+  return `<div style="display:flex;align-items:center;gap:6px;margin-top:4px">
+    <span style="width:8px;height:8px;border-radius:50%;background:${p.color};display:inline-block"></span>
+    <span style="font-size:11px">${p.seriesName}:</span>
+    <span style="font-family:'JetBrains Mono';font-weight:700;color:${p.color}">${f(p.value)}</span>
+  </div>`;
+}
+
+function toggleKey(section, key){
+  const keys = activeKeys[section];
+  if(keys.has(key)){ if(keys.size === 1) return; keys.delete(key); }
+  else keys.add(key);
+  const COLORS_MAP = {
+    inflacion:{mediana:'#6366F1',decil9:'#C71E1D',decil1:'#059669'},
+    tc:{mediana:'#D97706',decil9:'#C71E1D',decil1:'#059669'},
+    pib:{mediana:'#0D9488',decil9:'#059669',decil1:'#C71E1D'},
+    rin:{mediana:'#2563EB',decil9:'#059669',decil1:'#C71E1D'},
+    percepcion:{ipe:'#DB2777',isa:'#7C3AED',isf:'#2563EB'},
+  };
+  syncPills(section, COLORS_MAP[section]);
+  rebuildChart(section);
+}
+
+function syncPills(section, colors){
+  document.querySelectorAll(`.pill[data-section="${section}"]`).forEach(btn => {
+    const k = btn.dataset.key;
+    const c = colors[k];
+    const on = activeKeys[section]?.has(k);
+    btn.style.backgroundColor = on ? c : 'transparent';
+    btn.style.color = on ? '#fff' : c;
+    btn.style.borderColor = c;
+    const lp = btn.querySelector('.lp');
+    if(lp) lp.style.borderColor = on ? '#fff' : c;
+  });
+}
+
+// Theme observer
+new MutationObserver(() => {
+  Object.keys(charts).forEach(k => { if(charts[k]) rebuildChart(k); });
+}).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+
+loadAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+scraper/pdfs/
+__pycache__/
+*.pyc
+.env

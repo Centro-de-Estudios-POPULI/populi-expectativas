@@ -1,0 +1,185 @@
+{
+  "metadata": {
+    "fuente": "BCB — EEE",
+    "descripcion": "Reservas Internacionales Netas esperadas (MM $us) para diciembre del año siguiente",
+    "ultimo_dato": "Abr 2026"
+  },
+  "series": [
+    {
+      "survey_month": "2024-01",
+      "label": "Ene 2024",
+      "target": "Dic 2025",
+      "mediana": 1650.0,
+      "decil1": 680.0,
+      "decil9": 2700.0
+    },
+    {
+      "survey_month": "2024-02",
+      "label": "Feb 2024",
+      "target": "Dic 2025",
+      "mediana": 1600.0,
+      "decil1": 500.0,
+      "decil9": 2600.0
+    },
+    {
+      "survey_month": "2024-03",
+      "label": "Mar 2024",
+      "target": "Dic 2025",
+      "mediana": 1500.0,
+      "decil1": 500.0,
+      "decil9": 2500.0
+    },
+    {
+      "survey_month": "2024-04",
+      "label": "Abr 2024",
+      "target": "Dic 2025",
+      "mediana": 1500.0,
+      "decil1": 500.0,
+      "decil9": 2500.0
+    },
+    {
+      "survey_month": "2024-05",
+      "label": "May 2024",
+      "target": "Dic 2025",
+      "mediana": 1550.0,
+      "decil1": 775.0,
+      "decil9": 2560.0
+    },
+    {
+      "survey_month": "2024-06",
+      "label": "Jun 2024",
+      "target": "Dic 2025",
+      "mediana": 1570.0,
+      "decil1": 850.0,
+      "decil9": 2480.0
+    },
+    {
+      "survey_month": "2024-07",
+      "label": "Jul 2024",
+      "target": "Dic 2025",
+      "mediana": 1660.0,
+      "decil1": 697.0,
+      "decil9": 2500.0
+    },
+    {
+      "survey_month": "2024-08",
+      "label": "Ago 2024",
+      "target": "Dic 2025",
+      "mediana": 1610.0,
+      "decil1": 852.0,
+      "decil9": 2470.0
+    },
+    {
+      "survey_month": "2024-09",
+      "label": "Sep 2024",
+      "target": "Dic 2025",
+      "mediana": 1815.0,
+      "decil1": 1000.0,
+      "decil9": 2520.0
+    },
+    {
+      "survey_month": "2024-10",
+      "label": "Oct 2024",
+      "target": "Dic 2025",
+      "mediana": 1800.0,
+      "decil1": 960.0,
+      "decil9": 2700.0
+    },
+    {
+      "survey_month": "2024-11",
+      "label": "Nov 2024",
+      "target": "Dic 2025",
+      "mediana": 1750.0,
+      "decil1": 1080.0,
+      "decil9": 2340.0
+    },
+    {
+      "survey_month": "2024-12",
+      "label": "Dic 2024",
+      "target": "Dic 2025",
+      "mediana": 1810.0,
+      "decil1": 1131.0,
+      "decil9": 2550.0
+    },
+    {
+      "survey_month": "2025-01",
+      "label": "Ene 2025",
+      "target": "Dic 2026",
+      "mediana": 2000.0,
+      "decil1": 1195.0,
+      "decil9": 3050.0
+    },
+    {
+      "survey_month": "2025-02",
+      "label": "Feb 2025",
+      "target": "Dic 2026",
+      "mediana": 2000.0,
+      "decil1": 1215.0,
+      "decil9": 3090.0
+    },
+    {
+      "survey_month": "2025-03",
+      "label": "Mar 2025",
+      "target": "Dic 2026",
+      "mediana": 2000.0,
+      "decil1": 1350.0,
+      "decil9": 2700.0
+    },
+    {
+      "survey_month": "2025-04",
+      "label": "Abr 2025",
+      "target": "Dic 2026",
+      "mediana": 2050.0,
+      "decil1": 1280.0,
+      "decil9": 3000.0
+    },
+    {
+      "survey_month": "2025-05",
+      "label": "May 2025",
+      "target": "Dic 2026",
+      "mediana": 2981.0,
+      "decil1": 1400.0,
+      "decil9": 5000.0
+    },
+    {
+      "survey_month": "2025-06",
+      "label": "Jun 2025",
+      "target": "Dic 2026",
+      "mediana": 2475.0,
+      "decil1": 1315.0,
+      "decil9": 5000.0
+    },
+    {
+      "survey_month": "2026-01",
+      "label": "Ene 2026",
+      "target": "Dic 2027",
+      "mediana": 5160.0,
+      "decil1": 3668.0,
+      "decil9": 8000.0
+    },
+    {
+      "survey_month": "2026-02",
+      "label": "Feb 2026",
+      "target": "Dic 2027",
+      "mediana": 6000.0,
+      "decil1": 4220.0,
+      "decil9": 8350.0
+    },
+    {
+      "survey_month": "2026-03",
+      "label": "Mar 2026",
+      "target": "Dic 2027",
+      "mediana": 5100.0,
+      "decil1": 3300.0,
+      "decil9": 6900.0
+    },
+    {
+      "survey_month": "2026-04",
+      "label": "Abr 2026",
+      "target": "Dic 2027",
+      "mediana": 5000.0,
+      "decil1": 3468.0,
+      "decil9": 6000.0
+    }
+  ]
+}
