@@ -357,24 +357,15 @@
 
       if (activeKeys.has('decil1') && activeKeys.has('decil9')) {
         series.push({
-          name: '_band_low',
-          type: 'line',
-          data: ser.map(item => item.decil1),
-          symbol: 'none',
-          lineStyle: { width: 0 },
-          stack: 'band',
-          areaStyle: { color: 'transparent' },
-          silent: true, z: 0,
-        });
-        series.push({
-          name: '_band_high',
-          type: 'line',
-          data: ser.map((item) => item.decil9 - item.decil1),
-          symbol: 'none',
-          lineStyle: { width: 0 },
-          stack: 'band',
-          areaStyle: { color: d ? 'rgba(99,102,241,0.06)' : 'rgba(99,102,241,0.08)' },
-          silent: true, z: 0,
+          type:'custom', name:'_band',
+          renderItem:function(params,api){
+            if(params.dataIndex!==0) return;
+            var pts=[];
+            for(var i=0;i<ser.length;i++) pts.push(api.coord([i,ser[i].decil9]));
+            for(var i=ser.length-1;i>=0;i--) pts.push(api.coord([i,ser[i].decil1]));
+            return {type:'polygon',shape:{points:pts},style:{fill:d?'rgba(99,102,241,0.06)':'rgba(99,102,241,0.08)'}};
+          },
+          data:ser.map(function(_,i){return[i,0]}), silent:true, z:0
         });
       }
 

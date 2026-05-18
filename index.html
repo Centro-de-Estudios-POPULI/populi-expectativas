@@ -513,8 +513,7 @@ function rebuildInflacionChart(d){
   if(keys.has('decil1')) series.push(lineSeries('Decil 1', S.map(x=>x.decil1), COLORS.decil1, 1.5, 'dashed', d));
 
   if(keys.has('decil1') && keys.has('decil9')){
-    series.push({ name:'_bl', type:'line', data:S.map(x=>x.decil1), symbol:'none', lineStyle:{width:0}, stack:'band', areaStyle:{color:'transparent'}, silent:true, z:0 });
-    series.push({ name:'_bh', type:'line', data:S.map((x,i)=>x.decil9-x.decil1), symbol:'none', lineStyle:{width:0}, stack:'band', areaStyle:{color:d?'rgba(99,102,241,0.06)':'rgba(99,102,241,0.08)'}, silent:true, z:0 });
+    series.push(bandSeries(S,'decil1','decil9',d?'rgba(99,102,241,0.06)':'rgba(99,102,241,0.08)'));
   }
 
   charts.inflacion.setOption(chartOption(labels, series, d, v => v.toFixed(0)+'%', (params) => {
@@ -646,8 +645,7 @@ function rebuildTCChart(d){
   if(keys.has('decil9')) series.push(lineSeries('Decil 9', S.map(x=>x.decil9), '#C71E1D', 1.5, 'dashed', d));
   if(keys.has('decil1')) series.push(lineSeries('Decil 1', S.map(x=>x.decil1), '#059669', 1.5, 'dashed', d));
   if(keys.has('decil1') && keys.has('decil9')){
-    series.push({ name:'_bl', type:'line', data:S.map(x=>x.decil1), symbol:'none', lineStyle:{width:0}, stack:'band', areaStyle:{color:'transparent'}, silent:true, z:0 });
-    series.push({ name:'_bh', type:'line', data:S.map((x,i)=>x.decil9-x.decil1), symbol:'none', lineStyle:{width:0}, stack:'band', areaStyle:{color:d?'rgba(217,119,6,.06)':'rgba(217,119,6,.08)'}, silent:true, z:0 });
+    series.push(bandSeries(S,'decil1','decil9',d?'rgba(217,119,6,.06)':'rgba(217,119,6,.08)'));
   }
   charts.tc.setOption(chartOption(labels, series, d, v => 'Bs '+v.toFixed(1), (params) => {
     const valid = params.filter(p=>!p.seriesName.startsWith('_'));
@@ -741,8 +739,7 @@ function rebuildPIBChart(d){
   if(keys.has('decil9')) series.push(lineSeries('Decil 9', S.map(x=>x.decil9), '#059669', 1.5, 'dashed', d));
   if(keys.has('decil1')) series.push(lineSeries('Decil 1', S.map(x=>x.decil1), '#C71E1D', 1.5, 'dashed', d));
   if(keys.has('decil1') && keys.has('decil9')){
-    series.push({ name:'_bl', type:'line', data:S.map(x=>x.decil1), symbol:'none', lineStyle:{width:0}, stack:'band', areaStyle:{color:'transparent'}, silent:true, z:0 });
-    series.push({ name:'_bh', type:'line', data:S.map((x,i)=>x.decil9-x.decil1), symbol:'none', lineStyle:{width:0}, stack:'band', areaStyle:{color:d?'rgba(13,148,136,.06)':'rgba(13,148,136,.08)'}, silent:true, z:0 });
+    series.push(bandSeries(S,'decil1','decil9',d?'rgba(13,148,136,.06)':'rgba(13,148,136,.08)'));
   }
   charts.pib.setOption(chartOption(labels, series, d, v => v.toFixed(1)+'%', (params) => {
     const valid = params.filter(p=>!p.seriesName.startsWith('_'));
@@ -836,8 +833,7 @@ function rebuildRINChart(d){
   if(keys.has('decil9')) series.push(lineSeries('Decil 9', S.map(x=>x.decil9), '#059669', 1.5, 'dashed', d));
   if(keys.has('decil1')) series.push(lineSeries('Decil 1', S.map(x=>x.decil1), '#C71E1D', 1.5, 'dashed', d));
   if(keys.has('decil1') && keys.has('decil9')){
-    series.push({ name:'_bl', type:'line', data:S.map(x=>x.decil1), symbol:'none', lineStyle:{width:0}, stack:'band', areaStyle:{color:'transparent'}, silent:true, z:0 });
-    series.push({ name:'_bh', type:'line', data:S.map((x,i)=>x.decil9-x.decil1), symbol:'none', lineStyle:{width:0}, stack:'band', areaStyle:{color:d?'rgba(37,99,235,.06)':'rgba(37,99,235,.08)'}, silent:true, z:0 });
+    series.push(bandSeries(S,'decil1','decil9',d?'rgba(37,99,235,.06)':'rgba(37,99,235,.08)'));
   }
   charts.rin.setOption(chartOption(labels, series, d, v => '$'+(v/1000).toFixed(1)+'k', (params) => {
     const valid = params.filter(p=>!p.seriesName.startsWith('_'));
@@ -1089,6 +1085,20 @@ function genericPanelHTML(S, idx, color, fmt, analysisFn){
 }
 
 function darkenColor(hex){ return hex; }
+
+function bandSeries(S, keyLo, keyHi, bandColor){
+  return {
+    type:'custom', name:'_band',
+    renderItem:function(params,api){
+      if(params.dataIndex!==0) return;
+      var pts=[];
+      for(var i=0;i<S.length;i++) pts.push(api.coord([i,S[i][keyHi]]));
+      for(var i=S.length-1;i>=0;i--) pts.push(api.coord([i,S[i][keyLo]]));
+      return {type:'polygon',shape:{points:pts},style:{fill:bandColor}};
+    },
+    data:S.map(function(_,i){return[i,0]}), silent:true, z:0
+  };
+}
 
 function lineSeries(name, data, color, width, type, dark, hasArea){
   const lastIdx = data.length - 1;
