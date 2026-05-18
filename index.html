@@ -271,9 +271,14 @@ let DATA = {};
 let charts = {};
 let activeTab = 'inflacion';
 let activeKeys = {};
-let inflacionHorizon = 'siguiente';
+let horizons = { inflacion:'siguiente', tc:'siguiente', pib:'siguiente', rin:'siguiente' };
 
-function infS(){ return inflacionHorizon === 'siguiente' ? DATA.inflacion.series_siguiente : DATA.inflacion.series_actual; }
+function getS(id){
+  const d = DATA[id];
+  if(!d) return [];
+  const hz = horizons[id] || 'siguiente';
+  return d['series_'+hz] || d.series_siguiente || d.series || [];
+}
 
 function dk(){ return document.documentElement.getAttribute('data-theme') === 'dark'; }
 
@@ -315,17 +320,17 @@ function buildHeroKPIs(){
     items.push({ lbl:'Inflación esperada', val:last.mediana.toFixed(1)+'%', sub:'Mediana · '+last.target, color:'#6366F1' });
   }
   if(DATA.tc){
-    const s = DATA.tc.series;
+    const s = DATA.tc.series_siguiente;
     const last = s[s.length-1];
     items.push({ lbl:'Tipo de cambio esp.', val:'Bs '+last.mediana.toFixed(1), sub:'Mediana · '+last.target, color:'#D97706' });
   }
   if(DATA.pib){
-    const s = DATA.pib.series;
+    const s = DATA.pib.series_siguiente;
     const last = s[s.length-1];
     items.push({ lbl:'Crecimiento PIB esp.', val:last.mediana.toFixed(1)+'%', sub:'Mediana · '+last.target, color:'#0D9488' });
   }
   if(DATA.rin){
-    const s = DATA.rin.series;
+    const s = DATA.rin.series_siguiente;
     const last = s[s.length-1];
     items.push({ lbl:'RIN esperadas', val:'$'+Math.round(last.mediana).toLocaleString()+' MM', sub:'Mediana · '+last.target, color:'#2563EB' });
   }
@@ -391,8 +396,8 @@ function buildInflacionSection(){
   const hzBar = el('div','hz-bar');
   hzBar.innerHTML = `<span class="hz-lbl">Horizonte:</span>
     <div class="hz-grp">
-      <button class="hz-btn active" data-hz="siguiente" onclick="switchInflacionHorizon('siguiente')">Año siguiente</button>
-      <button class="hz-btn" data-hz="actual" onclick="switchInflacionHorizon('actual')">Año en curso</button>
+      <button class="hz-btn active" data-hz="siguiente" onclick="switchHorizon('inflacion','siguiente')">Año siguiente</button>
+      <button class="hz-btn" data-hz="actual" onclick="switchHorizon('inflacion','actual')">Año en curso</button>
     </div>`;
   sec.appendChild(hzBar);
 
@@ -446,15 +451,18 @@ function buildInflacionSection(){
   return sec;
 }
 
-function switchInflacionHorizon(hz){
-  if(hz === inflacionHorizon) return;
-  inflacionHorizon = hz;
-  document.querySelectorAll('.hz-btn').forEach(b => b.classList.toggle('active', b.dataset.hz === hz));
-  refreshInflacionView();
+function switchHorizon(section, hz){
+  if(hz === horizons[section]) return;
+  horizons[section] = hz;
+  document.querySelectorAll(`#sec-${section} .hz-btn`).forEach(b => b.classList.toggle('active', b.dataset.hz === hz));
+  if(section === 'inflacion') refreshInflacionView();
+  else if(section === 'tc') refreshTCView();
+  else if(section === 'pib') refreshPIBView();
+  else if(section === 'rin') refreshRINView();
 }
 
 function refreshInflacionView(){
-  const S = infS();
+  const S = getS('inflacion');
   const N = S.length;
   const last = S[N-1], prev = S[N-2];
 
@@ -494,7 +502,7 @@ function rebuildChart(id){
 }
 
 function rebuildInflacionChart(d){
-  const S = infS();
+  const S = getS('inflacion');
   const labels = S.map(s => s.label);
   const keys = activeKeys.inflacion;
   const COLORS = {mediana:'#6366F1',decil9:'#C71E1D',decil1:'#059669'};
@@ -533,7 +541,7 @@ function buildInflacionPanel(S, idx){
 }
 
 function updateInflacionPanel(idx){
-  const S = infS();
+  const S = getS('inflacion');
   const panel = document.getElementById('panel-inflacion');
   if(!panel) return;
   const dateEl = panel.querySelector('.panel-hd-d');
@@ -567,18 +575,16 @@ function inflacionPanelHTML(S, idx){
 /* ── Tipo de Cambio ── */
 function buildTCSection(){
   const sec = createSection('tc', '#D97706', '02', 'Expectativas de Tipo de Cambio',
-    'Tipo de cambio Bs/$us esperado para fin de periodo (diciembre del año siguiente). Encuesta mensual EEE del BCB.');
-  const S = DATA.tc.series;
-  const N = S.length;
-  const last = S[N-1], prev = S[N-2];
+    'Tipo de cambio Bs/$us esperado para fin de periodo. Encuesta mensual EEE del BCB.');
   activeKeys.tc = new Set(['mediana','decil9','decil1']);
 
-  sec.appendChild(buildKPIs([
-    { lbl:'Mediana', val:'Bs '+last.mediana.toFixed(2), d:last.mediana-prev.mediana, color:'#D97706', inv:true },
-    { lbl:'Decil 9 (pesimistas)', val:'Bs '+last.decil9.toFixed(2), d:last.decil9-prev.decil9, color:'#C71E1D', inv:true },
-    { lbl:'Decil 1 (optimistas)', val:'Bs '+last.decil1.toFixed(2), d:last.decil1-prev.decil1, color:'#059669', inv:true },
-    { lbl:'Rango D9–D1', val:'Bs '+(last.decil9-last.decil1).toFixed(2), d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#D97706', inv:true },
-  ]));
+  const hzBar = el('div','hz-bar');
+  hzBar.innerHTML = `<span class="hz-lbl">Horizonte:</span><div class="hz-grp">
+    <button class="hz-btn active" data-hz="siguiente" onclick="switchHorizon('tc','siguiente')">Año siguiente</button>
+    <button class="hz-btn" data-hz="actual" onclick="switchHorizon('tc','actual')">Año en curso</button></div>`;
+  sec.appendChild(hzBar);
+
+  const kpiDiv = el('div',''); kpiDiv.id = 'tc-kpis'; sec.appendChild(kpiDiv);
 
   const wrap = el('div','chart-wrap');
   const chartCard = el('div','chart-card');
@@ -591,39 +597,48 @@ function buildTCSection(){
     btn.addEventListener('click', () => toggleKey('tc', s.key));
     togGrp.appendChild(btn);
   });
-  ctrl.appendChild(togGrp);
-  chartCard.appendChild(ctrl);
+  ctrl.appendChild(togGrp); chartCard.appendChild(ctrl);
   const chartDiv = el('div','chart-area'); chartDiv.id = 'chart-tc';
-  chartCard.appendChild(chartDiv);
-  wrap.appendChild(chartCard);
-
-  const panel = buildGenericPanel(S, N-1, 'tc', '#D97706', v => 'Bs '+v.toFixed(2), tcAnalysis);
-  panel.id = 'panel-tc';
-  wrap.appendChild(panel);
+  chartCard.appendChild(chartDiv); wrap.appendChild(chartCard);
+  const panelWrap = el('div',''); panelWrap.id = 'tc-panel-wrap'; wrap.appendChild(panelWrap);
   sec.appendChild(wrap);
   syncPills('tc', {mediana:'#D97706',decil9:'#C71E1D',decil1:'#059669'});
 
   sec.appendChild(buildEduGrid([
-    { t:'¿Qué refleja esta expectativa?', b:'Muestra el tipo de cambio que los especialistas esperan al cierre del próximo año. Bolivia mantuvo un tipo de cambio fijo de <strong>Bs 6.96/$us</strong> desde 2011 hasta 2024. Las expectativas por encima de ese nivel reflejan anticipación de una devaluación.' },
-    { t:'¿Por qué importa?', b:'El tipo de cambio afecta el precio de las importaciones, la deuda en dólares y el poder adquisitivo. Expectativas de depreciación pueden generar <strong>fuga de capitales</strong> y presión adicional sobre las reservas.' },
-    { t:'Tipo de cambio oficial vs. paralelo', b:'Bolivia tiene un mercado cambiario dual. El tipo de cambio oficial (BCB) se mantuvo fijo en Bs 6.96. El mercado paralelo puede reflejar primas significativas. Esta encuesta captura expectativas sobre el tipo de cambio general.' },
+    { t:'¿Qué refleja esta expectativa?', b:'Muestra el tipo de cambio que los especialistas esperan al cierre del año. Bolivia mantuvo Bs 6.96/$us fijo desde 2011. Expectativas por encima reflejan anticipación de devaluación.' },
+    { t:'¿Por qué importa?', b:'El tipo de cambio afecta importaciones, deuda en dólares y poder adquisitivo. Expectativas de depreciación generan <strong>fuga de capitales</strong> y presión sobre reservas.' },
+    { t:'Oficial vs. paralelo', b:'Bolivia tiene mercado cambiario dual. El oficial (BCB) se mantuvo fijo en Bs 6.96. El paralelo refleja primas significativas. La encuesta captura expectativas generales.' },
   ], '#D97706'));
 
-  sec.appendChild(buildDataTable('tc',
-    ['Mes encuesta','Objetivo','Mediana','Decil 1','Decil 9'],
-    S.slice().reverse().map(d => [d.label, d.target, 'Bs '+d.mediana.toFixed(2), 'Bs '+d.decil1.toFixed(2), 'Bs '+d.decil9.toFixed(2)])
-  ));
+  const tblDiv = el('div',''); tblDiv.id = 'tc-table-wrap'; sec.appendChild(tblDiv);
 
   setTimeout(() => {
     charts.tc = echarts.init(chartDiv);
-    rebuildTCChart(dk());
-    charts.tc.on('click', p => { if(p.dataIndex!==undefined) updateGenericPanel('tc', DATA.tc.series, p.dataIndex, '#D97706', v=>'Bs '+v.toFixed(2), tcAnalysis); });
+    refreshTCView();
+    charts.tc.on('click', p => { if(p.dataIndex!==undefined) updateGenericPanel('tc', getS('tc'), p.dataIndex, '#D97706', v=>'Bs '+v.toFixed(2), tcAnalysis); });
   }, 150);
   return sec;
 }
 
+function refreshTCView(){
+  const S = getS('tc'); const N = S.length; const last = S[N-1], prev = S[N-2];
+  const kpiDiv = document.getElementById('tc-kpis'); kpiDiv.innerHTML = '';
+  kpiDiv.appendChild(buildKPIs([
+    { lbl:'Mediana', val:'Bs '+last.mediana.toFixed(2), d:last.mediana-prev.mediana, color:'#D97706', inv:true },
+    { lbl:'Decil 9 (pesimistas)', val:'Bs '+last.decil9.toFixed(2), d:last.decil9-prev.decil9, color:'#C71E1D', inv:true },
+    { lbl:'Decil 1 (optimistas)', val:'Bs '+last.decil1.toFixed(2), d:last.decil1-prev.decil1, color:'#059669', inv:true },
+    { lbl:'Rango D9–D1', val:'Bs '+(last.decil9-last.decil1).toFixed(2), d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#D97706', inv:true },
+  ]));
+  const pw = document.getElementById('tc-panel-wrap'); pw.innerHTML = '';
+  const panel = buildGenericPanel(S, N-1, 'tc', '#D97706', v=>'Bs '+v.toFixed(2), tcAnalysis); panel.id = 'panel-tc'; pw.appendChild(panel);
+  const tw = document.getElementById('tc-table-wrap'); tw.innerHTML = '';
+  tw.appendChild(buildDataTable('tc', ['Mes encuesta','Objetivo','Mediana','Decil 1','Decil 9'],
+    S.slice().reverse().map(d => [d.label, d.target, 'Bs '+d.mediana.toFixed(2), 'Bs '+d.decil1.toFixed(2), 'Bs '+d.decil9.toFixed(2)])));
+  if(charts.tc) rebuildTCChart(dk());
+}
+
 function rebuildTCChart(d){
-  const S = DATA.tc.series;
+  const S = getS('tc');
   const labels = S.map(s => s.label);
   const keys = activeKeys.tc;
   const series = [];
@@ -646,27 +661,25 @@ function rebuildTCChart(d){
 }
 
 function tcAnalysis(d){
-  if(d.mediana > 12) return `Tipo de cambio esperado de <strong>Bs ${d.mediana.toFixed(2)}</strong>: los especialistas anticipan una <strong>depreciación muy significativa</strong> respecto al tipo fijo histórico de Bs 6.96. Rango D1–D9 de Bs ${(d.decil9-d.decil1).toFixed(2)} refleja alta incertidumbre.`;
-  if(d.mediana > 8) return `Con <strong>Bs ${d.mediana.toFixed(2)}</strong>, se espera una depreciación moderada a significativa. La expectativa supera ampliamente el tipo fijo de Bs 6.96, reflejando presiones cambiarias persistentes.`;
-  if(d.mediana > 6.96) return `Mediana de <strong>Bs ${d.mediana.toFixed(2)}</strong>, ligeramente por encima del tipo fijo de Bs 6.96. Señal temprana de expectativas de ajuste cambiario.`;
-  return `Mediana de <strong>Bs ${d.mediana.toFixed(2)}</strong>, en línea con el tipo de cambio fijo. Confianza en la estabilidad cambiaria.`;
+  if(d.mediana > 12) return `Tipo de cambio esperado de <strong>Bs ${d.mediana.toFixed(2)}</strong>: <strong>depreciación muy significativa</strong> respecto al Bs 6.96 histórico. Rango D1–D9 de Bs ${(d.decil9-d.decil1).toFixed(2)} refleja alta incertidumbre.`;
+  if(d.mediana > 8) return `Con <strong>Bs ${d.mediana.toFixed(2)}</strong>, se espera depreciación moderada a significativa, superando ampliamente el Bs 6.96.`;
+  if(d.mediana > 6.96) return `Mediana de <strong>Bs ${d.mediana.toFixed(2)}</strong>, por encima del tipo fijo de Bs 6.96. Señal de expectativas de ajuste cambiario.`;
+  return `Mediana de <strong>Bs ${d.mediana.toFixed(2)}</strong>, en línea con el tipo de cambio fijo. Confianza en estabilidad cambiaria.`;
 }
 
 /* ── PIB ── */
 function buildPIBSection(){
   const sec = createSection('pib', '#0D9488', '03', 'Expectativas de Crecimiento del PIB',
-    'Variación anual acumulada del PIB esperada para el año siguiente. Encuesta mensual EEE del BCB.');
-  const S = DATA.pib.series;
-  const N = S.length;
-  const last = S[N-1], prev = S[N-2];
+    'Variación anual acumulada del PIB esperada. Encuesta mensual EEE del BCB.');
   activeKeys.pib = new Set(['mediana','decil9','decil1']);
 
-  sec.appendChild(buildKPIs([
-    { lbl:'Mediana', val:last.mediana.toFixed(1)+'%', d:last.mediana-prev.mediana, color:'#0D9488', inv:false },
-    { lbl:'Decil 9 (optimistas)', val:last.decil9.toFixed(1)+'%', d:last.decil9-prev.decil9, color:'#059669', inv:false },
-    { lbl:'Decil 1 (pesimistas)', val:last.decil1.toFixed(1)+'%', d:last.decil1-prev.decil1, color:'#C71E1D', inv:false },
-    { lbl:'Rango D9–D1', val:(last.decil9-last.decil1).toFixed(1)+' pp', d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#0D9488', inv:true },
-  ]));
+  const hzBar = el('div','hz-bar');
+  hzBar.innerHTML = `<span class="hz-lbl">Horizonte:</span><div class="hz-grp">
+    <button class="hz-btn active" data-hz="siguiente" onclick="switchHorizon('pib','siguiente')">Año siguiente</button>
+    <button class="hz-btn" data-hz="actual" onclick="switchHorizon('pib','actual')">Año en curso</button></div>`;
+  sec.appendChild(hzBar);
+
+  const kpiDiv = el('div',''); kpiDiv.id = 'pib-kpis'; sec.appendChild(kpiDiv);
 
   const wrap = el('div','chart-wrap');
   const chartCard = el('div','chart-card');
@@ -679,39 +692,48 @@ function buildPIBSection(){
     btn.addEventListener('click', () => toggleKey('pib', s.key));
     togGrp.appendChild(btn);
   });
-  ctrl.appendChild(togGrp);
-  chartCard.appendChild(ctrl);
+  ctrl.appendChild(togGrp); chartCard.appendChild(ctrl);
   const chartDiv = el('div','chart-area'); chartDiv.id = 'chart-pib';
-  chartCard.appendChild(chartDiv);
-  wrap.appendChild(chartCard);
-
-  const panel = buildGenericPanel(S, N-1, 'pib', '#0D9488', v => v.toFixed(2)+'%', pibAnalysis);
-  panel.id = 'panel-pib';
-  wrap.appendChild(panel);
+  chartCard.appendChild(chartDiv); wrap.appendChild(chartCard);
+  const panelWrap = el('div',''); panelWrap.id = 'pib-panel-wrap'; wrap.appendChild(panelWrap);
   sec.appendChild(wrap);
   syncPills('pib', {mediana:'#0D9488',decil9:'#059669',decil1:'#C71E1D'});
 
   sec.appendChild(buildEduGrid([
-    { t:'¿Qué mide esta expectativa?', b:'La tasa de crecimiento anual del Producto Interno Bruto que los especialistas esperan para el próximo año. Un valor positivo indica expansión económica, uno negativo recesión.' },
-    { t:'Contexto histórico', b:'Bolivia creció en promedio <strong>4.5%</strong> entre 2006-2019 (boom de commodities). Tras la pandemia, el crecimiento se desaceleró significativamente. Las expectativas actuales reflejan un entorno económico más desafiante.' },
-    { t:'D1 y D9 invertidos', b:'A diferencia de inflación, aquí el <strong>Decil 9 son los optimistas</strong> (esperan mayor crecimiento) y el <strong>Decil 1 los pesimistas</strong> (esperan menor crecimiento o incluso contracción).' },
+    { t:'¿Qué mide esta expectativa?', b:'La tasa de crecimiento anual del PIB esperada. Positivo = expansión, negativo = recesión.' },
+    { t:'Contexto histórico', b:'Bolivia creció promedio <strong>4.5%</strong> (2006-2019). Tras la pandemia y la crisis cambiaria, las expectativas reflejan un entorno más desafiante.' },
+    { t:'D1 y D9 invertidos', b:'Aquí el <strong>Decil 9 son los optimistas</strong> (mayor crecimiento) y el <strong>Decil 1 los pesimistas</strong> (menor crecimiento o contracción).' },
   ], '#0D9488'));
 
-  sec.appendChild(buildDataTable('pib',
-    ['Mes encuesta','Objetivo','Mediana','Decil 1','Decil 9'],
-    S.slice().reverse().map(d => [d.label, d.target, d.mediana.toFixed(2)+'%', d.decil1.toFixed(2)+'%', d.decil9.toFixed(2)+'%'])
-  ));
+  const tblDiv = el('div',''); tblDiv.id = 'pib-table-wrap'; sec.appendChild(tblDiv);
 
   setTimeout(() => {
     charts.pib = echarts.init(chartDiv);
-    rebuildPIBChart(dk());
-    charts.pib.on('click', p => { if(p.dataIndex!==undefined) updateGenericPanel('pib', DATA.pib.series, p.dataIndex, '#0D9488', v=>v.toFixed(2)+'%', pibAnalysis); });
+    refreshPIBView();
+    charts.pib.on('click', p => { if(p.dataIndex!==undefined) updateGenericPanel('pib', getS('pib'), p.dataIndex, '#0D9488', v=>v.toFixed(2)+'%', pibAnalysis); });
   }, 200);
   return sec;
 }
 
+function refreshPIBView(){
+  const S = getS('pib'); const N = S.length; const last = S[N-1], prev = S[N-2];
+  const kpiDiv = document.getElementById('pib-kpis'); kpiDiv.innerHTML = '';
+  kpiDiv.appendChild(buildKPIs([
+    { lbl:'Mediana', val:last.mediana.toFixed(1)+'%', d:last.mediana-prev.mediana, color:'#0D9488', inv:false },
+    { lbl:'Decil 9 (optimistas)', val:last.decil9.toFixed(1)+'%', d:last.decil9-prev.decil9, color:'#059669', inv:false },
+    { lbl:'Decil 1 (pesimistas)', val:last.decil1.toFixed(1)+'%', d:last.decil1-prev.decil1, color:'#C71E1D', inv:false },
+    { lbl:'Rango D9–D1', val:(last.decil9-last.decil1).toFixed(1)+' pp', d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#0D9488', inv:true },
+  ]));
+  const pw = document.getElementById('pib-panel-wrap'); pw.innerHTML = '';
+  const panel = buildGenericPanel(S, N-1, 'pib', '#0D9488', v=>v.toFixed(2)+'%', pibAnalysis); panel.id = 'panel-pib'; pw.appendChild(panel);
+  const tw = document.getElementById('pib-table-wrap'); tw.innerHTML = '';
+  tw.appendChild(buildDataTable('pib', ['Mes encuesta','Objetivo','Mediana','Decil 1','Decil 9'],
+    S.slice().reverse().map(d => [d.label, d.target, d.mediana.toFixed(2)+'%', d.decil1.toFixed(2)+'%', d.decil9.toFixed(2)+'%'])));
+  if(charts.pib) rebuildPIBChart(dk());
+}
+
 function rebuildPIBChart(d){
-  const S = DATA.pib.series;
+  const S = getS('pib');
   const labels = S.map(s => s.label);
   const keys = activeKeys.pib;
   const series = [];
@@ -734,27 +756,25 @@ function rebuildPIBChart(d){
 }
 
 function pibAnalysis(d){
-  if(d.mediana < 0) return `Mediana de <strong>${d.mediana.toFixed(2)}%</strong>: los especialistas anticipan una <strong>contracción económica</strong>. Señal muy negativa para la actividad productiva.`;
-  if(d.mediana < 1.5) return `Crecimiento esperado de <strong>${d.mediana.toFixed(2)}%</strong>, un ritmo <strong>muy bajo</strong> para Bolivia. Prácticamente estancamiento considerando el crecimiento poblacional.`;
-  if(d.mediana < 3) return `Mediana de <strong>${d.mediana.toFixed(2)}%</strong>, un crecimiento <strong>moderado</strong> pero por debajo del promedio histórico de 4.5%. Refleja las limitaciones del modelo económico actual.`;
-  return `Expectativa de <strong>${d.mediana.toFixed(2)}%</strong>, un crecimiento <strong>sólido</strong> cercano al promedio histórico.`;
+  if(d.mediana < 0) return `Mediana de <strong>${d.mediana.toFixed(2)}%</strong>: <strong>contracción económica</strong> esperada.`;
+  if(d.mediana < 1.5) return `Crecimiento de <strong>${d.mediana.toFixed(2)}%</strong>, ritmo <strong>muy bajo</strong>. Prácticamente estancamiento.`;
+  if(d.mediana < 3) return `Mediana de <strong>${d.mediana.toFixed(2)}%</strong>, crecimiento <strong>moderado</strong> por debajo del promedio histórico de 4.5%.`;
+  return `Expectativa de <strong>${d.mediana.toFixed(2)}%</strong>, crecimiento <strong>sólido</strong> cercano al promedio histórico.`;
 }
 
 /* ── RIN ── */
 function buildRINSection(){
   const sec = createSection('rin', '#2563EB', '04', 'Expectativas de Reservas Internacionales (RIN)',
-    'Nivel de Reservas Internacionales Netas esperado (MM $us) para diciembre del año siguiente. Encuesta mensual EEE del BCB.');
-  const S = DATA.rin.series;
-  const N = S.length;
-  const last = S[N-1], prev = S[N-2];
+    'Nivel de RIN esperado (MM $us). Encuesta mensual EEE del BCB.');
   activeKeys.rin = new Set(['mediana','decil9','decil1']);
 
-  sec.appendChild(buildKPIs([
-    { lbl:'Mediana', val:'$'+Math.round(last.mediana).toLocaleString()+' MM', d:last.mediana-prev.mediana, color:'#2563EB', inv:false, fmt:v=>Math.round(Math.abs(v)).toLocaleString()+' MM' },
-    { lbl:'Decil 9 (optimistas)', val:'$'+Math.round(last.decil9).toLocaleString()+' MM', d:last.decil9-prev.decil9, color:'#059669', inv:false, fmt:v=>Math.round(Math.abs(v)).toLocaleString()+' MM' },
-    { lbl:'Decil 1 (pesimistas)', val:'$'+Math.round(last.decil1).toLocaleString()+' MM', d:last.decil1-prev.decil1, color:'#C71E1D', inv:false, fmt:v=>Math.round(Math.abs(v)).toLocaleString()+' MM' },
-    { lbl:'Rango D9–D1', val:'$'+Math.round(last.decil9-last.decil1).toLocaleString()+' MM', d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#2563EB', inv:true, fmt:v=>Math.round(Math.abs(v)).toLocaleString()+' MM' },
-  ]));
+  const hzBar = el('div','hz-bar');
+  hzBar.innerHTML = `<span class="hz-lbl">Horizonte:</span><div class="hz-grp">
+    <button class="hz-btn active" data-hz="siguiente" onclick="switchHorizon('rin','siguiente')">Año siguiente</button>
+    <button class="hz-btn" data-hz="actual" onclick="switchHorizon('rin','actual')">Año en curso</button></div>`;
+  sec.appendChild(hzBar);
+
+  const kpiDiv = el('div',''); kpiDiv.id = 'rin-kpis'; sec.appendChild(kpiDiv);
 
   const wrap = el('div','chart-wrap');
   const chartCard = el('div','chart-card');
@@ -767,39 +787,48 @@ function buildRINSection(){
     btn.addEventListener('click', () => toggleKey('rin', s.key));
     togGrp.appendChild(btn);
   });
-  ctrl.appendChild(togGrp);
-  chartCard.appendChild(ctrl);
+  ctrl.appendChild(togGrp); chartCard.appendChild(ctrl);
   const chartDiv = el('div','chart-area'); chartDiv.id = 'chart-rin';
-  chartCard.appendChild(chartDiv);
-  wrap.appendChild(chartCard);
-
-  const panel = buildGenericPanel(S, N-1, 'rin', '#2563EB', v => '$'+Math.round(v).toLocaleString()+' MM', rinAnalysis);
-  panel.id = 'panel-rin';
-  wrap.appendChild(panel);
+  chartCard.appendChild(chartDiv); wrap.appendChild(chartCard);
+  const panelWrap = el('div',''); panelWrap.id = 'rin-panel-wrap'; wrap.appendChild(panelWrap);
   sec.appendChild(wrap);
   syncPills('rin', {mediana:'#2563EB',decil9:'#059669',decil1:'#C71E1D'});
 
   sec.appendChild(buildEduGrid([
-    { t:'¿Qué son las RIN?', b:'Las Reservas Internacionales Netas son los activos en moneda extranjera del banco central. Sirven como respaldo del tipo de cambio y colchón ante shocks externos. Bolivia pasó de $15,000 MM (2014) a niveles mínimos.' },
-    { t:'¿Por qué importan tanto?', b:'Sin reservas suficientes, el banco central no puede defender el tipo de cambio ni financiar importaciones esenciales. Las RIN son el <strong>indicador más vigilado</strong> de la crisis boliviana actual.' },
-    { t:'D1 y D9 invertidos', b:'Aquí el <strong>Decil 9 son los optimistas</strong> (esperan más reservas) y el <strong>Decil 1 los pesimistas</strong> (esperan menos). Un D1 muy bajo señala temor a agotamiento de reservas.' },
+    { t:'¿Qué son las RIN?', b:'Activos en moneda extranjera del banco central. Respaldo del tipo de cambio y colchón ante shocks. Bolivia pasó de $15,000 MM (2014) a niveles mínimos.' },
+    { t:'¿Por qué importan?', b:'Sin reservas, el banco central no puede defender el tipo de cambio ni financiar importaciones. Las RIN son el <strong>indicador más vigilado</strong> de la crisis.' },
+    { t:'D1 y D9 invertidos', b:'<strong>Decil 9 = optimistas</strong> (más reservas), <strong>Decil 1 = pesimistas</strong> (menos). D1 muy bajo = temor a agotamiento.' },
   ], '#2563EB'));
 
-  sec.appendChild(buildDataTable('rin',
-    ['Mes encuesta','Objetivo','Mediana','Decil 1','Decil 9'],
-    S.slice().reverse().map(d => [d.label, d.target, '$'+Math.round(d.mediana).toLocaleString(), '$'+Math.round(d.decil1).toLocaleString(), '$'+Math.round(d.decil9).toLocaleString()])
-  ));
+  const tblDiv = el('div',''); tblDiv.id = 'rin-table-wrap'; sec.appendChild(tblDiv);
 
   setTimeout(() => {
     charts.rin = echarts.init(chartDiv);
-    rebuildRINChart(dk());
-    charts.rin.on('click', p => { if(p.dataIndex!==undefined) updateGenericPanel('rin', DATA.rin.series, p.dataIndex, '#2563EB', v=>'$'+Math.round(v).toLocaleString()+' MM', rinAnalysis); });
+    refreshRINView();
+    charts.rin.on('click', p => { if(p.dataIndex!==undefined) updateGenericPanel('rin', getS('rin'), p.dataIndex, '#2563EB', v=>'$'+Math.round(v).toLocaleString()+' MM', rinAnalysis); });
   }, 250);
   return sec;
 }
 
+function refreshRINView(){
+  const S = getS('rin'); const N = S.length; const last = S[N-1], prev = S[N-2];
+  const kpiDiv = document.getElementById('rin-kpis'); kpiDiv.innerHTML = '';
+  kpiDiv.appendChild(buildKPIs([
+    { lbl:'Mediana', val:'$'+Math.round(last.mediana).toLocaleString()+' MM', d:last.mediana-prev.mediana, color:'#2563EB', inv:false, fmt:v=>Math.round(Math.abs(v)).toLocaleString()+' MM' },
+    { lbl:'Decil 9 (optimistas)', val:'$'+Math.round(last.decil9).toLocaleString()+' MM', d:last.decil9-prev.decil9, color:'#059669', inv:false, fmt:v=>Math.round(Math.abs(v)).toLocaleString()+' MM' },
+    { lbl:'Decil 1 (pesimistas)', val:'$'+Math.round(last.decil1).toLocaleString()+' MM', d:last.decil1-prev.decil1, color:'#C71E1D', inv:false, fmt:v=>Math.round(Math.abs(v)).toLocaleString()+' MM' },
+    { lbl:'Rango D9–D1', val:'$'+Math.round(last.decil9-last.decil1).toLocaleString()+' MM', d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#2563EB', inv:true, fmt:v=>Math.round(Math.abs(v)).toLocaleString()+' MM' },
+  ]));
+  const pw = document.getElementById('rin-panel-wrap'); pw.innerHTML = '';
+  const panel = buildGenericPanel(S, N-1, 'rin', '#2563EB', v=>'$'+Math.round(v).toLocaleString()+' MM', rinAnalysis); panel.id = 'panel-rin'; pw.appendChild(panel);
+  const tw = document.getElementById('rin-table-wrap'); tw.innerHTML = '';
+  tw.appendChild(buildDataTable('rin', ['Mes encuesta','Objetivo','Mediana','Decil 1','Decil 9'],
+    S.slice().reverse().map(d => [d.label, d.target, '$'+Math.round(d.mediana).toLocaleString(), '$'+Math.round(d.decil1).toLocaleString(), '$'+Math.round(d.decil9).toLocaleString()])));
+  if(charts.rin) rebuildRINChart(dk());
+}
+
 function rebuildRINChart(d){
-  const S = DATA.rin.series;
+  const S = getS('rin');
   const labels = S.map(s => s.label);
   const keys = activeKeys.rin;
   const series = [];
@@ -822,10 +851,10 @@ function rebuildRINChart(d){
 }
 
 function rinAnalysis(d){
-  if(d.mediana >= 4000) return `RIN esperadas de <strong>$${Math.round(d.mediana).toLocaleString()} MM</strong>: nivel <strong>significativamente más alto</strong> que los mínimos recientes. Posible señal de recuperación de reservas por financiamiento externo o políticas cambiarias.`;
-  if(d.mediana >= 2000) return `Con <strong>$${Math.round(d.mediana).toLocaleString()} MM</strong>, se espera una recuperación parcial de reservas. Aunque mejor que los mínimos, sigue muy lejos del pico de $15,000 MM de 2014.`;
-  if(d.mediana >= 1000) return `Mediana de <strong>$${Math.round(d.mediana).toLocaleString()} MM</strong>, un nivel <strong>muy bajo</strong> que apenas cubre semanas de importaciones. Situación frágil para la estabilidad cambiaria.`;
-  return `RIN esperadas de apenas <strong>$${Math.round(d.mediana).toLocaleString()} MM</strong>: nivel <strong>crítico</strong> que señala riesgo de incapacidad para financiar importaciones esenciales.`;
+  if(d.mediana >= 4000) return `RIN esperadas de <strong>$${Math.round(d.mediana).toLocaleString()} MM</strong>: nivel <strong>significativamente más alto</strong>, posible recuperación por financiamiento externo.`;
+  if(d.mediana >= 2000) return `Con <strong>$${Math.round(d.mediana).toLocaleString()} MM</strong>, recuperación parcial. Aún lejos del pico de $15,000 MM de 2014.`;
+  if(d.mediana >= 1000) return `Mediana de <strong>$${Math.round(d.mediana).toLocaleString()} MM</strong>, nivel <strong>muy bajo</strong> que apenas cubre semanas de importaciones.`;
+  return `RIN de apenas <strong>$${Math.round(d.mediana).toLocaleString()} MM</strong>: nivel <strong>crítico</strong>.`;
 }
 
 /* ── Percepción ── */

@@ -305,21 +305,32 @@ def build_series_json(all_data):
     tc = {
         "metadata": {
             "fuente": "BCB — EEE",
-            "descripcion": "Tipo de cambio Bs/$us esperado para fin de periodo, diciembre del año siguiente",
+            "descripcion": "Tipo de cambio Bs/$us esperado para fin de periodo, diciembre del año siguiente y del año actual",
             "ultimo_dato": all_data[-1]["label"],
         },
-        "series": [],
+        "series_siguiente": [],
+        "series_actual": [],
     }
     for d in all_data:
         val = d.get("tipo_cambio_dic_siguiente", {})
         if val:
-            tc["series"].append({
+            tc["series_siguiente"].append({
                 "survey_month": d["survey_month"],
                 "label": d["label"],
                 "target": val.get("target", ""),
                 "mediana": val.get("mediana"),
                 "decil1": val.get("decil1"),
                 "decil9": val.get("decil9"),
+            })
+        val_act = d.get("tipo_cambio_dic_actual", {})
+        if val_act:
+            tc["series_actual"].append({
+                "survey_month": d["survey_month"],
+                "label": d["label"],
+                "target": f"Dic {int(d['survey_month'][:4])}",
+                "mediana": val_act.get("mediana"),
+                "decil1": val_act.get("decil1"),
+                "decil9": val_act.get("decil9"),
             })
     with open(DATA_DIR / "expectativas_tipo_cambio.json", "w", encoding="utf-8") as f:
         json.dump(tc, f, ensure_ascii=False, indent=2)
@@ -328,21 +339,32 @@ def build_series_json(all_data):
     pib = {
         "metadata": {
             "fuente": "BCB — EEE",
-            "descripcion": "Crecimiento del PIB esperado (var. anual acumulada) para el año siguiente",
+            "descripcion": "Crecimiento del PIB esperado (var. anual acumulada) para el año siguiente y el año actual",
             "ultimo_dato": all_data[-1]["label"],
         },
-        "series": [],
+        "series_siguiente": [],
+        "series_actual": [],
     }
     for d in all_data:
         val = d.get("pib_siguiente", {})
         if val:
-            pib["series"].append({
+            pib["series_siguiente"].append({
                 "survey_month": d["survey_month"],
                 "label": d["label"],
                 "target": val.get("target", ""),
                 "mediana": val.get("mediana"),
                 "decil1": val.get("decil1"),
                 "decil9": val.get("decil9"),
+            })
+        val_act = d.get("pib_actual", {})
+        if val_act:
+            pib["series_actual"].append({
+                "survey_month": d["survey_month"],
+                "label": d["label"],
+                "target": f"Año {int(d['survey_month'][:4])}",
+                "mediana": val_act.get("mediana"),
+                "decil1": val_act.get("decil1"),
+                "decil9": val_act.get("decil9"),
             })
     with open(DATA_DIR / "expectativas_pib.json", "w", encoding="utf-8") as f:
         json.dump(pib, f, ensure_ascii=False, indent=2)
@@ -351,21 +373,32 @@ def build_series_json(all_data):
     rin = {
         "metadata": {
             "fuente": "BCB — EEE",
-            "descripcion": "Reservas Internacionales Netas esperadas (MM $us) para diciembre del año siguiente",
+            "descripcion": "Reservas Internacionales Netas esperadas (MM $us) para diciembre del año siguiente y del año actual",
             "ultimo_dato": all_data[-1]["label"],
         },
-        "series": [],
+        "series_siguiente": [],
+        "series_actual": [],
     }
     for d in all_data:
         val = d.get("rin_dic_siguiente", {})
         if val:
-            rin["series"].append({
+            rin["series_siguiente"].append({
                 "survey_month": d["survey_month"],
                 "label": d["label"],
                 "target": val.get("target", ""),
                 "mediana": val.get("mediana"),
                 "decil1": val.get("decil1"),
                 "decil9": val.get("decil9"),
+            })
+        val_act = d.get("rin_dic_actual", {})
+        if val_act:
+            rin["series_actual"].append({
+                "survey_month": d["survey_month"],
+                "label": d["label"],
+                "target": f"Dic {int(d['survey_month'][:4])}",
+                "mediana": val_act.get("mediana"),
+                "decil1": val_act.get("decil1"),
+                "decil9": val_act.get("decil9"),
             })
     with open(DATA_DIR / "expectativas_rin.json", "w", encoding="utf-8") as f:
         json.dump(rin, f, ensure_ascii=False, indent=2)

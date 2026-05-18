@@ -1,10 +1,10 @@
 {
   "metadata": {
     "fuente": "BCB — EEE",
-    "descripcion": "Crecimiento del PIB esperado (var. anual acumulada) para el año siguiente",
+    "descripcion": "Crecimiento del PIB esperado (var. anual acumulada) para el año siguiente y el año actual",
     "ultimo_dato": "Abr 2026"
   },
-  "series": [
+  "series_siguiente": [
     {
       "survey_month": "2024-01",
       "label": "Ene 2024",
@@ -196,6 +196,232 @@
       "mediana": 1.5,
       "decil1": -1.64,
       "decil9": 3.66
+    }
+  ],
+  "series_actual": [
+    {
+      "survey_month": "2024-01",
+      "label": "Ene 2024",
+      "target": "Año 2024",
+      "mediana": 2.5,
+      "decil1": 1.6,
+      "decil9": 3.86
+    },
+    {
+      "survey_month": "2024-02",
+      "label": "Feb 2024",
+      "target": "Año 2024",
+      "mediana": 2.2,
+      "decil1": 1.5,
+      "decil9": 3.72
+    },
+    {
+      "survey_month": "2024-03",
+      "label": "Mar 2024",
+      "target": "Año 2024",
+      "mediana": 2.28,
+      "decil1": 1.8,
+      "decil9": 3.71
+    },
+    {
+      "survey_month": "2024-04",
+      "label": "Abr 2024",
+      "target": "Año 2024",
+      "mediana": 2.48,
+      "decil1": 1.8,
+      "decil9": 3.71
+    },
+    {
+      "survey_month": "2024-05",
+      "label": "May 2024",
+      "target": "Año 2024",
+      "mediana": 2.9,
+      "decil1": 1.5,
+      "decil9": 3.7
+    },
+    {
+      "survey_month": "2024-06",
+      "label": "Jun 2024",
+      "target": "Año 2024",
+      "mediana": 2.1,
+      "decil1": 1.62,
+      "decil9": 3.69
+    },
+    {
+      "survey_month": "2024-07",
+      "label": "Jul 2024",
+      "target": "Año 2024",
+      "mediana": 2.61,
+      "decil1": 1.71,
+      "decil9": 3.69
+    },
+    {
+      "survey_month": "2024-08",
+      "label": "Ago 2024",
+      "target": "Año 2024",
+      "mediana": 2.3,
+      "decil1": 1.5,
+      "decil9": 3.66
+    },
+    {
+      "survey_month": "2024-09",
+      "label": "Sep 2024",
+      "target": "Año 2024",
+      "mediana": 1.9,
+      "decil1": 1.0,
+      "decil9": 3.35
+    },
+    {
+      "survey_month": "2024-10",
+      "label": "Oct 2024",
+      "target": "Año 2024",
+      "mediana": 1.9,
+      "decil1": 1.0,
+      "decil9": 3.34
+    },
+    {
+      "survey_month": "2024-11",
+      "label": "Nov 2024",
+      "target": "Año 2024",
+      "mediana": 2.0,
+      "decil1": 1.47,
+      "decil9": 3.33
+    },
+    {
+      "survey_month": "2024-12",
+      "label": "Dic 2024",
+      "target": "Año 2024",
+      "mediana": 2.0,
+      "decil1": 1.5,
+      "decil9": 3.31
+    },
+    {
+      "survey_month": "2025-01",
+      "label": "Ene 2025",
+      "target": "Año 2025",
+      "mediana": 2.0,
+      "decil1": 0.6,
+      "decil9": 3.5
+    },
+    {
+      "survey_month": "2025-02",
+      "label": "Feb 2025",
+      "target": "Año 2025",
+      "mediana": 2.0,
+      "decil1": 1.17,
+      "decil9": 3.5
+    },
+    {
+      "survey_month": "2025-03",
+      "label": "Mar 2025",
+      "target": "Año 2025",
+      "mediana": 2.0,
+      "decil1": 0.52,
+      "decil9": 3.0
+    },
+    {
+      "survey_month": "2025-04",
+      "label": "Abr 2025",
+      "target": "Año 2025",
+      "mediana": 2.08,
+      "decil1": 0.4,
+      "decil9": 3.4
+    },
+    {
+      "survey_month": "2025-05",
+      "label": "May 2025",
+      "target": "Año 2025",
+      "mediana": 2.0,
+      "decil1": 0.5,
+      "decil9": 3.0
+    },
+    {
+      "survey_month": "2025-06",
+      "label": "Jun 2025",
+      "target": "Año 2025",
+      "mediana": 2.0,
+      "decil1": 1.0,
+      "decil9": 3.62
+    },
+    {
+      "survey_month": "2025-07",
+      "label": "Jul 2025",
+      "target": "Año 2025",
+      "mediana": 1.2,
+      "decil1": -0.61,
+      "decil9": 2.0
+    },
+    {
+      "survey_month": "2025-08",
+      "label": "Ago 2025",
+      "target": "Año 2025",
+      "mediana": 1.0,
+      "decil1": -0.82,
+      "decil9": 2.61
+    },
+    {
+      "survey_month": "2025-09",
+      "label": "Sep 2025",
+      "target": "Año 2025",
+      "mediana": 1.1,
+      "decil1": -0.92,
+      "decil9": 2.37
+    },
+    {
+      "survey_month": "2025-10",
+      "label": "Oct 2025",
+      "target": "Año 2025",
+      "mediana": 0.53,
+      "decil1": -1.0,
+      "decil9": 2.09
+    },
+    {
+      "survey_month": "2025-11",
+      "label": "Nov 2025",
+      "target": "Año 2025",
+      "mediana": -1.55,
+      "decil1": -3.0,
+      "decil9": 1.33
+    },
+    {
+      "survey_month": "2025-12",
+      "label": "Dic 2025",
+      "target": "Año 2025",
+      "mediana": -2.08,
+      "decil1": -3.0,
+      "decil9": 1.13
+    },
+    {
+      "survey_month": "2026-01",
+      "label": "Ene 2026",
+      "target": "Año 2026",
+      "mediana": 0.05,
+      "decil1": -2.07,
+      "decil9": 2.0
+    },
+    {
+      "survey_month": "2026-02",
+      "label": "Feb 2026",
+      "target": "Año 2026",
+      "mediana": 0.5,
+      "decil1": -2.44,
+      "decil9": 1.75
+    },
+    {
+      "survey_month": "2026-03",
+      "label": "Mar 2026",
+      "target": "Año 2026",
+      "mediana": 0.75,
+      "decil1": -1.13,
+      "decil9": 2.0
+    },
+    {
+      "survey_month": "2026-04",
+      "label": "Abr 2026",
+      "target": "Año 2026",
+      "mediana": -1.5,
+      "decil1": -3.31,
+      "decil9": 1.66
     }
   ]
 }
