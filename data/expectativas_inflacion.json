@@ -4,8 +4,8 @@
     "url": "https://www.bcb.gob.bo/?q=resultados-encuestas",
     "descripcion": "Tasa de inflación interanual (a 12 meses) esperada para diciembre del año siguiente y del año actual",
     "nota": "Cada mes presenta la expectativa de los encuestados sobre la inflación al cierre del próximo año y del año en curso",
-    "ultimo_dato": "Abr 2026",
-    "total_observaciones": 28
+    "ultimo_dato": "May 2026",
+    "total_observaciones": 29
   },
   "series_siguiente": [
     {
@@ -287,6 +287,16 @@
       "decil1": 5.0,
       "decil9": 18.0,
       "respuestas": 27
+    },
+    {
+      "survey_month": "2026-05",
+      "label": "May 2026",
+      "target": "Dic 2027",
+      "mediana": 14.0,
+      "media": 13.07,
+      "decil1": 6.16,
+      "decil9": 18.56,
+      "respuestas": 29
     }
   ],
   "series_actual": [
@@ -569,6 +579,16 @@
       "decil1": 8.08,
       "decil9": 19.61,
       "respuestas": 27
+    },
+    {
+      "survey_month": "2026-05",
+      "label": "May 2026",
+      "target": "Dic 2026",
+      "mediana": 15.0,
+      "media": 15.19,
+      "decil1": 9.84,
+      "decil9": 20.0,
+      "respuestas": 29
     }
   ]
 }
