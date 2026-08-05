@@ -1,7 +1,7 @@
 {
-  "ultimo_scrape": "2026-06",
-  "ultimo_dato": "Jun 2026",
-  "total_observaciones": 30,
+  "ultimo_scrape": "2026-07",
+  "ultimo_dato": "Jul 2026",
+  "total_observaciones": 31,
   "archivos": [
     "expectativas_inflacion.json",
     "expectativas_tipo_cambio.json",
