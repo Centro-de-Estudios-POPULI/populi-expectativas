@@ -15,7 +15,7 @@
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <style>
     :root {
-      --populi:#8B1A1A; --populi-dark:#6B0300; --populi-light:#C00000;
+      --populi:#C71E1D; --populi-dark:#6B0300; --populi-light:#E8706B;
       --bg:#EEF1F5; --card:#FFFFFF; --card2:#F7F9FB; --border:#DDE3EA;
       --text:#0D1B2A; --text2:#364555; --muted:#6B7A8D; --muted2:#9AACBA;
       --navy:#001219; --navy-light:#1A2940;
@@ -24,7 +24,7 @@
       --radius:13px; --transition:.18s ease;
       --ct-axis:#92A4B4; --ct-grid:#E8EDF2;
       --ct-tip-bg:#0A1622; --ct-tip-bd:#1E3045;
-      --accent:#6366F1;
+      --accent:#005F73;
     }
     [data-theme="dark"] {
       --bg:#050505; --card:#101010; --card2:#161616; --border:#222;
@@ -118,7 +118,7 @@
     .kpi-val{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:700}
     .kpi-d{display:inline-flex;align-items:center;gap:3px;font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:600;padding:1px 7px;border-radius:5px;margin-top:4px}
     .kpi-d.up{background:rgba(199,30,29,.08);color:#C71E1D}
-    .kpi-d.down{background:rgba(5,150,105,.08);color:#059669}
+    .kpi-d.down{background:rgba(5,150,105,.08);color:#0A9396}
     .kpi-d.flat{background:rgba(100,116,139,.08);color:#64748B}
 
     /* ── Chart area ── */
@@ -260,10 +260,10 @@
 <script>
 const BASE = 'data/';
 const TABS = [
-  { id:'inflacion', label:'Inflación', file:'expectativas_inflacion.json', color:'#6366F1', icon:'📈' },
-  { id:'tc',        label:'Tipo de Cambio', file:'expectativas_tipo_cambio.json', color:'#D97706', icon:'💱' },
-  { id:'pib',       label:'PIB', file:'expectativas_pib.json', color:'#0D9488', icon:'📊' },
-  { id:'rin',       label:'Reservas (RIN)', file:'expectativas_rin.json', color:'#2563EB', icon:'🏦' },
+  { id:'inflacion', label:'Inflación', file:'expectativas_inflacion.json', color:'#005F73', icon:'📈' },
+  { id:'tc',        label:'Tipo de Cambio', file:'expectativas_tipo_cambio.json', color:'#EE9B00', icon:'💱' },
+  { id:'pib',       label:'PIB', file:'expectativas_pib.json', color:'#0A9396', icon:'📊' },
+  { id:'rin',       label:'Reservas (RIN)', file:'expectativas_rin.json', color:'#005F73', icon:'🏦' },
   { id:'percepcion',label:'Percepción', file:'expectativas_percepcion.json', color:'#DB2777', icon:'🔮' },
 ];
 
@@ -317,22 +317,22 @@ function buildHeroKPIs(){
   if(DATA.inflacion){
     const s = DATA.inflacion.series_siguiente;
     const last = s[s.length-1];
-    items.push({ lbl:'Inflación esperada', val:last.mediana.toFixed(1)+'%', sub:'Mediana · '+last.target, color:'#6366F1' });
+    items.push({ lbl:'Inflación esperada', val:last.mediana.toFixed(1)+'%', sub:'Mediana · '+last.target, color:'#005F73' });
   }
   if(DATA.tc){
     const s = DATA.tc.series_siguiente;
     const last = s[s.length-1];
-    items.push({ lbl:'Tipo de cambio esp.', val:'Bs '+last.mediana.toFixed(1), sub:'Mediana · '+last.target, color:'#D97706' });
+    items.push({ lbl:'Tipo de cambio esp.', val:'Bs '+last.mediana.toFixed(1), sub:'Mediana · '+last.target, color:'#EE9B00' });
   }
   if(DATA.pib){
     const s = DATA.pib.series_siguiente;
     const last = s[s.length-1];
-    items.push({ lbl:'Crecimiento PIB esp.', val:last.mediana.toFixed(1)+'%', sub:'Mediana · '+last.target, color:'#0D9488' });
+    items.push({ lbl:'Crecimiento PIB esp.', val:last.mediana.toFixed(1)+'%', sub:'Mediana · '+last.target, color:'#0A9396' });
   }
   if(DATA.rin){
     const s = DATA.rin.series_siguiente;
     const last = s[s.length-1];
-    items.push({ lbl:'RIN esperadas', val:'$'+Math.round(last.mediana).toLocaleString()+' MM', sub:'Mediana · '+last.target, color:'#2563EB' });
+    items.push({ lbl:'RIN esperadas', val:'$'+Math.round(last.mediana).toLocaleString()+' MM', sub:'Mediana · '+last.target, color:'#005F73' });
   }
   if(DATA.percepcion){
     const s = DATA.percepcion.series.filter(d => d.ipe != null);
@@ -389,7 +389,7 @@ function buildAllSections(){
    ════════════════════════════════════════════ */
 
 function buildInflacionSection(){
-  const sec = createSection('inflacion', '#6366F1', '01', 'Expectativas de Inflación',
+  const sec = createSection('inflacion', '#005F73', '01', 'Expectativas de Inflación',
     'Tasa de inflación interanual (a 12 meses) esperada. Encuesta mensual EEE del BCB.');
   activeKeys.inflacion = new Set(['mediana','decil9','decil1']);
 
@@ -409,7 +409,7 @@ function buildInflacionSection(){
   const ctrl = el('div','chart-ctrl');
   const togGrp = el('div','tog-grp');
 
-  [{key:'mediana',label:'Mediana',color:'#6366F1',dash:false},{key:'decil9',label:'Decil 9',color:'#C71E1D',dash:true},{key:'decil1',label:'Decil 1',color:'#059669',dash:true}].forEach(s => {
+  [{key:'mediana',label:'Mediana',color:'#005F73',dash:false},{key:'decil9',label:'Decil 9',color:'#C71E1D',dash:true},{key:'decil1',label:'Decil 1',color:'#0A9396',dash:true}].forEach(s => {
     const btn = document.createElement('button');
     btn.className = 'pill';
     btn.dataset.key = s.key;
@@ -430,14 +430,14 @@ function buildInflacionSection(){
   wrap.appendChild(panelWrap);
   sec.appendChild(wrap);
 
-  syncPills('inflacion', {mediana:'#6366F1',decil9:'#C71E1D',decil1:'#059669'});
+  syncPills('inflacion', {mediana:'#005F73',decil9:'#C71E1D',decil1:'#0A9396'});
 
   sec.appendChild(buildEduGrid([
     { t:'¿Qué son las expectativas de inflación?', b:'Son las proyecciones que hacen los agentes económicos sobre cuánto subirán los precios. El BCB las recopila mensualmente a través de la Encuesta de Expectativas Económicas (EEE).' },
     { t:'Año siguiente vs. año en curso', b:'La serie <strong>"Año siguiente"</strong> muestra cuánta inflación esperan para dic. del próximo año (horizonte largo). <strong>"Año en curso"</strong> muestra la expectativa para dic. de este año (horizonte corto). Comparar ambas revela si el pesimismo es de corto o largo plazo.' },
     { t:'Mediana, Decil 1 y Decil 9', b:'La <strong>Mediana</strong> es el valor central. El <strong>Decil 1</strong> marca el 10% más optimista. El <strong>Decil 9</strong> el 10% más pesimista. La diferencia mide la <strong>incertidumbre</strong>.' },
     { t:'¿Cómo leer la serie?', b:'Cada punto es una encuesta mensual. Ej: Ene 2024 muestra la inflación esperada para <strong>Dic 2025</strong> (año siguiente) o <strong>Dic 2024</strong> (año en curso). Los saltos al cambiar año objetivo son normales.' },
-  ], '#6366F1'));
+  ], '#005F73'));
 
   const tblDiv = el('div',''); tblDiv.id = 'inf-table-wrap';
   sec.appendChild(tblDiv);
@@ -469,10 +469,10 @@ function refreshInflacionView(){
   const kpiDiv = document.getElementById('inf-kpis');
   kpiDiv.innerHTML = '';
   kpiDiv.appendChild(buildKPIs([
-    { lbl:'Mediana', val:last.mediana.toFixed(1)+'%', d:last.mediana-prev.mediana, color:'#6366F1', inv:true },
+    { lbl:'Mediana', val:last.mediana.toFixed(1)+'%', d:last.mediana-prev.mediana, color:'#005F73', inv:true },
     { lbl:'Decil 9 (pesimistas)', val:last.decil9.toFixed(1)+'%', d:last.decil9-prev.decil9, color:'#C71E1D', inv:true },
-    { lbl:'Decil 1 (optimistas)', val:last.decil1.toFixed(1)+'%', d:last.decil1-prev.decil1, color:'#059669', inv:true },
-    { lbl:'Rango D9–D1', val:(last.decil9-last.decil1).toFixed(1)+' pp', d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#6366F1', inv:true },
+    { lbl:'Decil 1 (optimistas)', val:last.decil1.toFixed(1)+'%', d:last.decil1-prev.decil1, color:'#0A9396', inv:true },
+    { lbl:'Rango D9–D1', val:(last.decil9-last.decil1).toFixed(1)+' pp', d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#005F73', inv:true },
   ]));
 
   const panelWrap = document.getElementById('inf-panel-wrap');
@@ -505,7 +505,7 @@ function rebuildInflacionChart(d){
   const S = getS('inflacion');
   const labels = S.map(s => s.label);
   const keys = activeKeys.inflacion;
-  const COLORS = {mediana:'#6366F1',decil9:'#C71E1D',decil1:'#059669'};
+  const COLORS = {mediana:'#005F73',decil9:'#C71E1D',decil1:'#0A9396'};
   const series = [];
 
   if(keys.has('mediana')) series.push(lineSeries('Mediana', S.map(x=>x.mediana), COLORS.mediana, 3, 'solid', d, true));
@@ -531,7 +531,7 @@ function buildInflacionPanel(S, idx){
   const panel = el('div','panel');
   const hd = el('div','panel-hd');
   hd.style.background = dk() ? '#1A1A2E' : '#1E1B4B';
-  hd.innerHTML = `<span class="panel-hd-t">Lectura del indicador</span><span class="panel-hd-d" style="color:#6366F1;background:rgba(99,102,241,.15)">${S[idx].label}</span>`;
+  hd.innerHTML = `<span class="panel-hd-t">Lectura del indicador</span><span class="panel-hd-d" style="color:#005F73;background:rgba(99,102,241,.15)">${S[idx].label}</span>`;
   panel.appendChild(hd);
   const body = el('div','panel-body');
   body.innerHTML = inflacionPanelHTML(S, idx);
@@ -559,21 +559,21 @@ function inflacionPanelHTML(S, idx){
   else if(d.mediana > 5) analysis = `Con <strong>${d.mediana.toFixed(1)}%</strong>, los encuestados anticipan inflación <strong>moderadamente elevada</strong>. El rango D1–D9 sugiere visiones divergentes.`;
   else analysis = `Mediana de <strong>${d.mediana.toFixed(1)}%</strong>: confianza razonable en la estabilidad de precios. Consenso relativamente estrecho.`;
   return `
-    <div class="pb"><div class="pb-lbl" style="color:#6366F1;background:rgba(99,102,241,.08);border-left-color:#6366F1">Mediana</div>
-    <div class="pb-val" style="color:#6366F1">${d.mediana.toFixed(1)}%</div>
+    <div class="pb"><div class="pb-lbl" style="color:#005F73;background:rgba(99,102,241,.08);border-left-color:#005F73">Mediana</div>
+    <div class="pb-val" style="color:#005F73">${d.mediana.toFixed(1)}%</div>
     <p class="pb-desc">En <strong>${d.label}</strong>, expectativa mediana para <strong>${d.target}</strong>${prev?`, ${dMed>=0?'subiendo':'bajando'} ${Math.abs(dMed).toFixed(2)} pp`:''}.${d.respuestas ? ' Basada en '+d.respuestas+' respuestas.' : ''}</p></div>
     <div class="pb"><div class="pb-lbl" style="color:#C71E1D;background:rgba(199,30,29,.08);border-left-color:#C71E1D">D9 · Pesimistas</div>
     <div class="pb-val" style="color:#C71E1D">${d.decil9.toFixed(1)}%</div>
     <p class="pb-desc">El 10% más pesimista espera al menos <strong>${d.decil9.toFixed(1)}%</strong> de inflación.</p></div>
-    <div class="pb"><div class="pb-lbl" style="color:#059669;background:rgba(5,150,105,.08);border-left-color:#059669">D1 · Optimistas</div>
-    <div class="pb-val" style="color:#059669">${d.decil1.toFixed(1)}%</div>
+    <div class="pb"><div class="pb-lbl" style="color:#0A9396;background:rgba(5,150,105,.08);border-left-color:#0A9396">D1 · Optimistas</div>
+    <div class="pb-val" style="color:#0A9396">${d.decil1.toFixed(1)}%</div>
     <p class="pb-desc">El 10% más optimista espera no más de <strong>${d.decil1.toFixed(1)}%</strong>.</p></div>
-    <div class="ctx" style="background:${dk()?'#1A1A2E':'rgba(99,102,241,.04)'};border-left-color:#6366F1"><p>${analysis}</p></div>`;
+    <div class="ctx" style="background:${dk()?'#1A1A2E':'rgba(99,102,241,.04)'};border-left-color:#005F73"><p>${analysis}</p></div>`;
 }
 
 /* ── Tipo de Cambio ── */
 function buildTCSection(){
-  const sec = createSection('tc', '#D97706', '02', 'Expectativas de Tipo de Cambio',
+  const sec = createSection('tc', '#EE9B00', '02', 'Expectativas de Tipo de Cambio',
     'Tipo de cambio Bs/$us esperado para fin de periodo. Encuesta mensual EEE del BCB.');
   activeKeys.tc = new Set(['mediana','decil9','decil1']);
 
@@ -589,7 +589,7 @@ function buildTCSection(){
   const chartCard = el('div','chart-card');
   const ctrl = el('div','chart-ctrl');
   const togGrp = el('div','tog-grp');
-  [{key:'mediana',label:'Mediana',color:'#D97706',dash:false},{key:'decil9',label:'Decil 9',color:'#C71E1D',dash:true},{key:'decil1',label:'Decil 1',color:'#059669',dash:true}].forEach(s => {
+  [{key:'mediana',label:'Mediana',color:'#EE9B00',dash:false},{key:'decil9',label:'Decil 9',color:'#C71E1D',dash:true},{key:'decil1',label:'Decil 1',color:'#0A9396',dash:true}].forEach(s => {
     const btn = document.createElement('button');
     btn.className = 'pill'; btn.dataset.key = s.key; btn.dataset.section = 'tc';
     btn.innerHTML = `<span class="lp${s.dash?' dashed':''}" style="border-color:#fff"></span>${s.label}`;
@@ -601,20 +601,20 @@ function buildTCSection(){
   chartCard.appendChild(chartDiv); wrap.appendChild(chartCard);
   const panelWrap = el('div',''); panelWrap.id = 'tc-panel-wrap'; wrap.appendChild(panelWrap);
   sec.appendChild(wrap);
-  syncPills('tc', {mediana:'#D97706',decil9:'#C71E1D',decil1:'#059669'});
+  syncPills('tc', {mediana:'#EE9B00',decil9:'#C71E1D',decil1:'#0A9396'});
 
   sec.appendChild(buildEduGrid([
     { t:'¿Qué refleja esta expectativa?', b:'Muestra el tipo de cambio que los especialistas esperan al cierre del año. Bolivia mantuvo Bs 6.96/$us fijo desde 2011. Expectativas por encima reflejan anticipación de devaluación.' },
     { t:'¿Por qué importa?', b:'El tipo de cambio afecta importaciones, deuda en dólares y poder adquisitivo. Expectativas de depreciación generan <strong>fuga de capitales</strong> y presión sobre reservas.' },
     { t:'Oficial vs. paralelo', b:'Bolivia tiene mercado cambiario dual. El oficial (BCB) se mantuvo fijo en Bs 6.96. El paralelo refleja primas significativas. La encuesta captura expectativas generales.' },
-  ], '#D97706'));
+  ], '#EE9B00'));
 
   const tblDiv = el('div',''); tblDiv.id = 'tc-table-wrap'; sec.appendChild(tblDiv);
 
   setTimeout(() => {
     charts.tc = echarts.init(chartDiv);
     refreshTCView();
-    charts.tc.on('click', p => { if(p.dataIndex!==undefined) updateGenericPanel('tc', getS('tc'), p.dataIndex, '#D97706', v=>'Bs '+v.toFixed(2), tcAnalysis); });
+    charts.tc.on('click', p => { if(p.dataIndex!==undefined) updateGenericPanel('tc', getS('tc'), p.dataIndex, '#EE9B00', v=>'Bs '+v.toFixed(2), tcAnalysis); });
   }, 150);
   return sec;
 }
@@ -623,13 +623,13 @@ function refreshTCView(){
   const S = getS('tc'); const N = S.length; const last = S[N-1], prev = S[N-2];
   const kpiDiv = document.getElementById('tc-kpis'); kpiDiv.innerHTML = '';
   kpiDiv.appendChild(buildKPIs([
-    { lbl:'Mediana', val:'Bs '+last.mediana.toFixed(2), d:last.mediana-prev.mediana, color:'#D97706', inv:true },
+    { lbl:'Mediana', val:'Bs '+last.mediana.toFixed(2), d:last.mediana-prev.mediana, color:'#EE9B00', inv:true },
     { lbl:'Decil 9 (pesimistas)', val:'Bs '+last.decil9.toFixed(2), d:last.decil9-prev.decil9, color:'#C71E1D', inv:true },
-    { lbl:'Decil 1 (optimistas)', val:'Bs '+last.decil1.toFixed(2), d:last.decil1-prev.decil1, color:'#059669', inv:true },
-    { lbl:'Rango D9–D1', val:'Bs '+(last.decil9-last.decil1).toFixed(2), d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#D97706', inv:true },
+    { lbl:'Decil 1 (optimistas)', val:'Bs '+last.decil1.toFixed(2), d:last.decil1-prev.decil1, color:'#0A9396', inv:true },
+    { lbl:'Rango D9–D1', val:'Bs '+(last.decil9-last.decil1).toFixed(2), d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#EE9B00', inv:true },
   ]));
   const pw = document.getElementById('tc-panel-wrap'); pw.innerHTML = '';
-  const panel = buildGenericPanel(S, N-1, 'tc', '#D97706', v=>'Bs '+v.toFixed(2), tcAnalysis); panel.id = 'panel-tc'; pw.appendChild(panel);
+  const panel = buildGenericPanel(S, N-1, 'tc', '#EE9B00', v=>'Bs '+v.toFixed(2), tcAnalysis); panel.id = 'panel-tc'; pw.appendChild(panel);
   const tw = document.getElementById('tc-table-wrap'); tw.innerHTML = '';
   tw.appendChild(buildDataTable('tc', ['Mes encuesta','Objetivo','Mediana','Decil 1','Decil 9'],
     S.slice().reverse().map(d => [d.label, d.target, 'Bs '+d.mediana.toFixed(2), 'Bs '+d.decil1.toFixed(2), 'Bs '+d.decil9.toFixed(2)])));
@@ -641,9 +641,9 @@ function rebuildTCChart(d){
   const labels = S.map(s => s.label);
   const keys = activeKeys.tc;
   const series = [];
-  if(keys.has('mediana')) series.push(lineSeries('Mediana', S.map(x=>x.mediana), '#D97706', 3, 'solid', d, true));
+  if(keys.has('mediana')) series.push(lineSeries('Mediana', S.map(x=>x.mediana), '#EE9B00', 3, 'solid', d, true));
   if(keys.has('decil9')) series.push(lineSeries('Decil 9', S.map(x=>x.decil9), '#C71E1D', 1.5, 'dashed', d));
-  if(keys.has('decil1')) series.push(lineSeries('Decil 1', S.map(x=>x.decil1), '#059669', 1.5, 'dashed', d));
+  if(keys.has('decil1')) series.push(lineSeries('Decil 1', S.map(x=>x.decil1), '#0A9396', 1.5, 'dashed', d));
   if(keys.has('decil1') && keys.has('decil9')){
     series.push(bandSeries(S,'decil1','decil9',d?'rgba(217,119,6,.06)':'rgba(217,119,6,.08)'));
   }
@@ -667,7 +667,7 @@ function tcAnalysis(d){
 
 /* ── PIB ── */
 function buildPIBSection(){
-  const sec = createSection('pib', '#0D9488', '03', 'Expectativas de Crecimiento del PIB',
+  const sec = createSection('pib', '#0A9396', '03', 'Expectativas de Crecimiento del PIB',
     'Variación anual acumulada del PIB esperada. Encuesta mensual EEE del BCB.');
   activeKeys.pib = new Set(['mediana','decil9','decil1']);
 
@@ -683,7 +683,7 @@ function buildPIBSection(){
   const chartCard = el('div','chart-card');
   const ctrl = el('div','chart-ctrl');
   const togGrp = el('div','tog-grp');
-  [{key:'mediana',label:'Mediana',color:'#0D9488',dash:false},{key:'decil9',label:'Decil 9',color:'#059669',dash:true},{key:'decil1',label:'Decil 1',color:'#C71E1D',dash:true}].forEach(s => {
+  [{key:'mediana',label:'Mediana',color:'#0A9396',dash:false},{key:'decil9',label:'Decil 9',color:'#0A9396',dash:true},{key:'decil1',label:'Decil 1',color:'#C71E1D',dash:true}].forEach(s => {
     const btn = document.createElement('button');
     btn.className = 'pill'; btn.dataset.key = s.key; btn.dataset.section = 'pib';
     btn.innerHTML = `<span class="lp${s.dash?' dashed':''}" style="border-color:#fff"></span>${s.label}`;
@@ -695,20 +695,20 @@ function buildPIBSection(){
   chartCard.appendChild(chartDiv); wrap.appendChild(chartCard);
   const panelWrap = el('div',''); panelWrap.id = 'pib-panel-wrap'; wrap.appendChild(panelWrap);
   sec.appendChild(wrap);
-  syncPills('pib', {mediana:'#0D9488',decil9:'#059669',decil1:'#C71E1D'});
+  syncPills('pib', {mediana:'#0A9396',decil9:'#0A9396',decil1:'#C71E1D'});
 
   sec.appendChild(buildEduGrid([
     { t:'¿Qué mide esta expectativa?', b:'La tasa de crecimiento anual del PIB esperada. Positivo = expansión, negativo = recesión.' },
     { t:'Contexto histórico', b:'Bolivia creció promedio <strong>4.5%</strong> (2006-2019). Tras la pandemia y la crisis cambiaria, las expectativas reflejan un entorno más desafiante.' },
     { t:'D1 y D9 invertidos', b:'Aquí el <strong>Decil 9 son los optimistas</strong> (mayor crecimiento) y el <strong>Decil 1 los pesimistas</strong> (menor crecimiento o contracción).' },
-  ], '#0D9488'));
+  ], '#0A9396'));
 
   const tblDiv = el('div',''); tblDiv.id = 'pib-table-wrap'; sec.appendChild(tblDiv);
 
   setTimeout(() => {
     charts.pib = echarts.init(chartDiv);
     refreshPIBView();
-    charts.pib.on('click', p => { if(p.dataIndex!==undefined) updateGenericPanel('pib', getS('pib'), p.dataIndex, '#0D9488', v=>v.toFixed(2)+'%', pibAnalysis); });
+    charts.pib.on('click', p => { if(p.dataIndex!==undefined) updateGenericPanel('pib', getS('pib'), p.dataIndex, '#0A9396', v=>v.toFixed(2)+'%', pibAnalysis); });
   }, 200);
   return sec;
 }
@@ -717,13 +717,13 @@ function refreshPIBView(){
   const S = getS('pib'); const N = S.length; const last = S[N-1], prev = S[N-2];
   const kpiDiv = document.getElementById('pib-kpis'); kpiDiv.innerHTML = '';
   kpiDiv.appendChild(buildKPIs([
-    { lbl:'Mediana', val:last.mediana.toFixed(1)+'%', d:last.mediana-prev.mediana, color:'#0D9488', inv:false },
-    { lbl:'Decil 9 (optimistas)', val:last.decil9.toFixed(1)+'%', d:last.decil9-prev.decil9, color:'#059669', inv:false },
+    { lbl:'Mediana', val:last.mediana.toFixed(1)+'%', d:last.mediana-prev.mediana, color:'#0A9396', inv:false },
+    { lbl:'Decil 9 (optimistas)', val:last.decil9.toFixed(1)+'%', d:last.decil9-prev.decil9, color:'#0A9396', inv:false },
     { lbl:'Decil 1 (pesimistas)', val:last.decil1.toFixed(1)+'%', d:last.decil1-prev.decil1, color:'#C71E1D', inv:false },
-    { lbl:'Rango D9–D1', val:(last.decil9-last.decil1).toFixed(1)+' pp', d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#0D9488', inv:true },
+    { lbl:'Rango D9–D1', val:(last.decil9-last.decil1).toFixed(1)+' pp', d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#0A9396', inv:true },
   ]));
   const pw = document.getElementById('pib-panel-wrap'); pw.innerHTML = '';
-  const panel = buildGenericPanel(S, N-1, 'pib', '#0D9488', v=>v.toFixed(2)+'%', pibAnalysis); panel.id = 'panel-pib'; pw.appendChild(panel);
+  const panel = buildGenericPanel(S, N-1, 'pib', '#0A9396', v=>v.toFixed(2)+'%', pibAnalysis); panel.id = 'panel-pib'; pw.appendChild(panel);
   const tw = document.getElementById('pib-table-wrap'); tw.innerHTML = '';
   tw.appendChild(buildDataTable('pib', ['Mes encuesta','Objetivo','Mediana','Decil 1','Decil 9'],
     S.slice().reverse().map(d => [d.label, d.target, d.mediana.toFixed(2)+'%', d.decil1.toFixed(2)+'%', d.decil9.toFixed(2)+'%'])));
@@ -735,8 +735,8 @@ function rebuildPIBChart(d){
   const labels = S.map(s => s.label);
   const keys = activeKeys.pib;
   const series = [];
-  if(keys.has('mediana')) series.push(lineSeries('Mediana', S.map(x=>x.mediana), '#0D9488', 3, 'solid', d, true));
-  if(keys.has('decil9')) series.push(lineSeries('Decil 9', S.map(x=>x.decil9), '#059669', 1.5, 'dashed', d));
+  if(keys.has('mediana')) series.push(lineSeries('Mediana', S.map(x=>x.mediana), '#0A9396', 3, 'solid', d, true));
+  if(keys.has('decil9')) series.push(lineSeries('Decil 9', S.map(x=>x.decil9), '#0A9396', 1.5, 'dashed', d));
   if(keys.has('decil1')) series.push(lineSeries('Decil 1', S.map(x=>x.decil1), '#C71E1D', 1.5, 'dashed', d));
   if(keys.has('decil1') && keys.has('decil9')){
     series.push(bandSeries(S,'decil1','decil9',d?'rgba(13,148,136,.06)':'rgba(13,148,136,.08)'));
@@ -761,7 +761,7 @@ function pibAnalysis(d){
 
 /* ── RIN ── */
 function buildRINSection(){
-  const sec = createSection('rin', '#2563EB', '04', 'Expectativas de Reservas Internacionales (RIN)',
+  const sec = createSection('rin', '#005F73', '04', 'Expectativas de Reservas Internacionales (RIN)',
     'Nivel de RIN esperado (MM $us). Encuesta mensual EEE del BCB.');
   activeKeys.rin = new Set(['mediana','decil9','decil1']);
 
@@ -777,7 +777,7 @@ function buildRINSection(){
   const chartCard = el('div','chart-card');
   const ctrl = el('div','chart-ctrl');
   const togGrp = el('div','tog-grp');
-  [{key:'mediana',label:'Mediana',color:'#2563EB',dash:false},{key:'decil9',label:'Decil 9',color:'#059669',dash:true},{key:'decil1',label:'Decil 1',color:'#C71E1D',dash:true}].forEach(s => {
+  [{key:'mediana',label:'Mediana',color:'#005F73',dash:false},{key:'decil9',label:'Decil 9',color:'#0A9396',dash:true},{key:'decil1',label:'Decil 1',color:'#C71E1D',dash:true}].forEach(s => {
     const btn = document.createElement('button');
     btn.className = 'pill'; btn.dataset.key = s.key; btn.dataset.section = 'rin';
     btn.innerHTML = `<span class="lp${s.dash?' dashed':''}" style="border-color:#fff"></span>${s.label}`;
@@ -789,20 +789,20 @@ function buildRINSection(){
   chartCard.appendChild(chartDiv); wrap.appendChild(chartCard);
   const panelWrap = el('div',''); panelWrap.id = 'rin-panel-wrap'; wrap.appendChild(panelWrap);
   sec.appendChild(wrap);
-  syncPills('rin', {mediana:'#2563EB',decil9:'#059669',decil1:'#C71E1D'});
+  syncPills('rin', {mediana:'#005F73',decil9:'#0A9396',decil1:'#C71E1D'});
 
   sec.appendChild(buildEduGrid([
     { t:'¿Qué son las RIN?', b:'Activos en moneda extranjera del banco central. Respaldo del tipo de cambio y colchón ante shocks. Bolivia pasó de $15,000 MM (2014) a niveles mínimos.' },
     { t:'¿Por qué importan?', b:'Sin reservas, el banco central no puede defender el tipo de cambio ni financiar importaciones. Las RIN son el <strong>indicador más vigilado</strong> de la crisis.' },
     { t:'D1 y D9 invertidos', b:'<strong>Decil 9 = optimistas</strong> (más reservas), <strong>Decil 1 = pesimistas</strong> (menos). D1 muy bajo = temor a agotamiento.' },
-  ], '#2563EB'));
+  ], '#005F73'));
 
   const tblDiv = el('div',''); tblDiv.id = 'rin-table-wrap'; sec.appendChild(tblDiv);
 
   setTimeout(() => {
     charts.rin = echarts.init(chartDiv);
     refreshRINView();
-    charts.rin.on('click', p => { if(p.dataIndex!==undefined) updateGenericPanel('rin', getS('rin'), p.dataIndex, '#2563EB', v=>'$'+Math.round(v).toLocaleString()+' MM', rinAnalysis); });
+    charts.rin.on('click', p => { if(p.dataIndex!==undefined) updateGenericPanel('rin', getS('rin'), p.dataIndex, '#005F73', v=>'$'+Math.round(v).toLocaleString()+' MM', rinAnalysis); });
   }, 250);
   return sec;
 }
@@ -811,13 +811,13 @@ function refreshRINView(){
   const S = getS('rin'); const N = S.length; const last = S[N-1], prev = S[N-2];
   const kpiDiv = document.getElementById('rin-kpis'); kpiDiv.innerHTML = '';
   kpiDiv.appendChild(buildKPIs([
-    { lbl:'Mediana', val:'$'+Math.round(last.mediana).toLocaleString()+' MM', d:last.mediana-prev.mediana, color:'#2563EB', inv:false, fmt:v=>Math.round(Math.abs(v)).toLocaleString()+' MM' },
-    { lbl:'Decil 9 (optimistas)', val:'$'+Math.round(last.decil9).toLocaleString()+' MM', d:last.decil9-prev.decil9, color:'#059669', inv:false, fmt:v=>Math.round(Math.abs(v)).toLocaleString()+' MM' },
+    { lbl:'Mediana', val:'$'+Math.round(last.mediana).toLocaleString()+' MM', d:last.mediana-prev.mediana, color:'#005F73', inv:false, fmt:v=>Math.round(Math.abs(v)).toLocaleString()+' MM' },
+    { lbl:'Decil 9 (optimistas)', val:'$'+Math.round(last.decil9).toLocaleString()+' MM', d:last.decil9-prev.decil9, color:'#0A9396', inv:false, fmt:v=>Math.round(Math.abs(v)).toLocaleString()+' MM' },
     { lbl:'Decil 1 (pesimistas)', val:'$'+Math.round(last.decil1).toLocaleString()+' MM', d:last.decil1-prev.decil1, color:'#C71E1D', inv:false, fmt:v=>Math.round(Math.abs(v)).toLocaleString()+' MM' },
-    { lbl:'Rango D9–D1', val:'$'+Math.round(last.decil9-last.decil1).toLocaleString()+' MM', d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#2563EB', inv:true, fmt:v=>Math.round(Math.abs(v)).toLocaleString()+' MM' },
+    { lbl:'Rango D9–D1', val:'$'+Math.round(last.decil9-last.decil1).toLocaleString()+' MM', d:(last.decil9-last.decil1)-(prev.decil9-prev.decil1), color:'#005F73', inv:true, fmt:v=>Math.round(Math.abs(v)).toLocaleString()+' MM' },
   ]));
   const pw = document.getElementById('rin-panel-wrap'); pw.innerHTML = '';
-  const panel = buildGenericPanel(S, N-1, 'rin', '#2563EB', v=>'$'+Math.round(v).toLocaleString()+' MM', rinAnalysis); panel.id = 'panel-rin'; pw.appendChild(panel);
+  const panel = buildGenericPanel(S, N-1, 'rin', '#005F73', v=>'$'+Math.round(v).toLocaleString()+' MM', rinAnalysis); panel.id = 'panel-rin'; pw.appendChild(panel);
   const tw = document.getElementById('rin-table-wrap'); tw.innerHTML = '';
   tw.appendChild(buildDataTable('rin', ['Mes encuesta','Objetivo','Mediana','Decil 1','Decil 9'],
     S.slice().reverse().map(d => [d.label, d.target, '$'+Math.round(d.mediana).toLocaleString(), '$'+Math.round(d.decil1).toLocaleString(), '$'+Math.round(d.decil9).toLocaleString()])));
@@ -829,8 +829,8 @@ function rebuildRINChart(d){
   const labels = S.map(s => s.label);
   const keys = activeKeys.rin;
   const series = [];
-  if(keys.has('mediana')) series.push(lineSeries('Mediana', S.map(x=>x.mediana), '#2563EB', 3, 'solid', d, true));
-  if(keys.has('decil9')) series.push(lineSeries('Decil 9', S.map(x=>x.decil9), '#059669', 1.5, 'dashed', d));
+  if(keys.has('mediana')) series.push(lineSeries('Mediana', S.map(x=>x.mediana), '#005F73', 3, 'solid', d, true));
+  if(keys.has('decil9')) series.push(lineSeries('Decil 9', S.map(x=>x.decil9), '#0A9396', 1.5, 'dashed', d));
   if(keys.has('decil1')) series.push(lineSeries('Decil 1', S.map(x=>x.decil1), '#C71E1D', 1.5, 'dashed', d));
   if(keys.has('decil1') && keys.has('decil9')){
     series.push(bandSeries(S,'decil1','decil9',d?'rgba(37,99,235,.06)':'rgba(37,99,235,.08)'));
@@ -866,15 +866,15 @@ function buildPercepcionSection(){
   sec.appendChild(buildKPIs([
     { lbl:'IPE (Global)', val:fmtPerc(last.ipe), d:last.ipe-prev.ipe, color:'#DB2777', inv:false },
     { lbl:'ISA (Actual)', val:fmtPerc(last.isa), d:last.isa-prev.isa, color:'#7C3AED', inv:false },
-    { lbl:'ISF (Futura)', val:fmtPerc(last.isf), d:last.isf-prev.isf, color:'#2563EB', inv:false },
-    { lbl:'Brecha ISF–ISA', val:fmtPerc(last.isf-last.isa), d:(last.isf-last.isa)-(prev.isf-prev.isa), color:'#059669', inv:false },
+    { lbl:'ISF (Futura)', val:fmtPerc(last.isf), d:last.isf-prev.isf, color:'#005F73', inv:false },
+    { lbl:'Brecha ISF–ISA', val:fmtPerc(last.isf-last.isa), d:(last.isf-last.isa)-(prev.isf-prev.isa), color:'#0A9396', inv:false },
   ]));
 
   const wrap = el('div','chart-wrap');
   const chartCard = el('div','chart-card');
   const ctrl = el('div','chart-ctrl');
   const togGrp = el('div','tog-grp');
-  [{key:'ipe',label:'IPE',color:'#DB2777',dash:false},{key:'isa',label:'ISA',color:'#7C3AED',dash:true},{key:'isf',label:'ISF',color:'#2563EB',dash:true}].forEach(s => {
+  [{key:'ipe',label:'IPE',color:'#DB2777',dash:false},{key:'isa',label:'ISA',color:'#7C3AED',dash:true},{key:'isf',label:'ISF',color:'#005F73',dash:true}].forEach(s => {
     const btn = document.createElement('button');
     btn.className = 'pill'; btn.dataset.key = s.key; btn.dataset.section = 'percepcion';
     btn.innerHTML = `<span class="lp${s.dash?' dashed':''}" style="border-color:#fff"></span>${s.label}`;
@@ -891,7 +891,7 @@ function buildPercepcionSection(){
   panel.id = 'panel-percepcion';
   wrap.appendChild(panel);
   sec.appendChild(wrap);
-  syncPills('percepcion', {ipe:'#DB2777',isa:'#7C3AED',isf:'#2563EB'});
+  syncPills('percepcion', {ipe:'#DB2777',isa:'#7C3AED',isf:'#005F73'});
 
   sec.appendChild(buildEduGrid([
     { t:'¿Qué son IPE, ISA e ISF?', b:'El <strong>IPE</strong> (Índice de Percepción Económica) es el promedio del ISA e ISF. El <strong>ISA</strong> mide cómo perciben la situación actual. El <strong>ISF</strong> mide cómo esperan la situación futura. Rango: -100 (muy negativo) a +100 (muy positivo).' },
@@ -919,7 +919,7 @@ function rebuildPercepcionChart(d){
   const series = [];
   if(keys.has('ipe')) series.push(lineSeries('IPE', S.map(x=>x.ipe), '#DB2777', 3, 'solid', d, true));
   if(keys.has('isa')) series.push(lineSeries('ISA', S.map(x=>x.isa), '#7C3AED', 2, 'dashed', d));
-  if(keys.has('isf')) series.push(lineSeries('ISF', S.map(x=>x.isf), '#2563EB', 2, 'dashed', d));
+  if(keys.has('isf')) series.push(lineSeries('ISF', S.map(x=>x.isf), '#005F73', 2, 'dashed', d));
 
   const opt = chartOption(labels, series, d, v => (v>0?'+':'')+v.toFixed(0), (params) => {
     const valid = params.filter(p=>!p.seriesName.startsWith('_'));
@@ -980,8 +980,8 @@ function percepcionPanelHTML(S, idx){
     <div class="pb"><div class="pb-lbl" style="color:#7C3AED;background:rgba(124,58,237,.08);border-left-color:#7C3AED">ISA · Actual</div>
     <div class="pb-val" style="color:#7C3AED">${fmtP(d.isa)}</div>
     <p class="pb-desc">Valoración de la situación económica <strong>actual</strong>. ${d.isa > 0 ? 'Más encuestados perciben mejora que deterioro.' : 'Más encuestados perciben deterioro que mejora.'}</p></div>
-    <div class="pb"><div class="pb-lbl" style="color:#2563EB;background:rgba(37,99,235,.08);border-left-color:#2563EB">ISF · Futura</div>
-    <div class="pb-val" style="color:#2563EB">${fmtP(d.isf)}</div>
+    <div class="pb"><div class="pb-lbl" style="color:#005F73;background:rgba(37,99,235,.08);border-left-color:#005F73">ISF · Futura</div>
+    <div class="pb-val" style="color:#005F73">${fmtP(d.isf)}</div>
     <p class="pb-desc">Expectativa sobre la situación futura. ${d.isf > d.isa ? 'Más optimismo sobre el futuro que sobre el presente.' : 'Menos optimismo sobre el futuro que sobre el presente.'}</p></div>
     <div class="ctx" style="background:${dk()?'#2A1A2E':'rgba(219,39,119,.04)'};border-left-color:#DB2777"><p>${analysis}</p></div>`;
 }
@@ -1078,8 +1078,8 @@ function genericPanelHTML(S, idx, color, fmt, analysisFn){
     <div class="pb"><div class="pb-lbl" style="color:#C71E1D;background:rgba(199,30,29,.08);border-left-color:#C71E1D">Decil extremo alto</div>
     <div class="pb-val" style="color:#C71E1D">${fmt(d.decil9)}</div>
     <p class="pb-desc">10% de encuestados con la expectativa más alta.</p></div>
-    <div class="pb"><div class="pb-lbl" style="color:#059669;background:rgba(5,150,105,.08);border-left-color:#059669">Decil extremo bajo</div>
-    <div class="pb-val" style="color:#059669">${fmt(d.decil1)}</div>
+    <div class="pb"><div class="pb-lbl" style="color:#0A9396;background:rgba(5,150,105,.08);border-left-color:#0A9396">Decil extremo bajo</div>
+    <div class="pb-val" style="color:#0A9396">${fmt(d.decil1)}</div>
     <p class="pb-desc">10% de encuestados con la expectativa más baja.</p></div>
     <div class="ctx" style="background:${dk()?color+'0D':color+'08'};border-left-color:${color}"><p>${analysisFn(d)}</p></div>`;
 }
@@ -1167,11 +1167,11 @@ function toggleKey(section, key){
   if(keys.has(key)){ if(keys.size === 1) return; keys.delete(key); }
   else keys.add(key);
   const COLORS_MAP = {
-    inflacion:{mediana:'#6366F1',decil9:'#C71E1D',decil1:'#059669'},
-    tc:{mediana:'#D97706',decil9:'#C71E1D',decil1:'#059669'},
-    pib:{mediana:'#0D9488',decil9:'#059669',decil1:'#C71E1D'},
-    rin:{mediana:'#2563EB',decil9:'#059669',decil1:'#C71E1D'},
-    percepcion:{ipe:'#DB2777',isa:'#7C3AED',isf:'#2563EB'},
+    inflacion:{mediana:'#005F73',decil9:'#C71E1D',decil1:'#0A9396'},
+    tc:{mediana:'#EE9B00',decil9:'#C71E1D',decil1:'#0A9396'},
+    pib:{mediana:'#0A9396',decil9:'#0A9396',decil1:'#C71E1D'},
+    rin:{mediana:'#005F73',decil9:'#0A9396',decil1:'#C71E1D'},
+    percepcion:{ipe:'#DB2777',isa:'#7C3AED',isf:'#005F73'},
   };
   syncPills(section, COLORS_MAP[section]);
   rebuildChart(section);

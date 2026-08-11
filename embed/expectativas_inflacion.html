@@ -10,12 +10,12 @@
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <style>
     :root {
-      --populi:#8B1A1A; --populi-dark:#6B0300; --populi-light:#C00000;
+      --populi:#C71E1D; --populi-dark:#6B0300; --populi-light:#E8706B;
       --cream:#F5EFE0; --brown-dark:#3D2B1F;
       --navy:#0D1B2A; --navy-light:#1A2940; --slate:#475569; --slate-light:#64748B;
       --warm-white:#FAF8F3; --light-gray:#F1EDE5; --border:#E2DDD3; --dark-border:#2A3A50;
       --bg:var(--warm-white); --card:#FFFFFF; --text:var(--brown-dark); --muted:var(--slate-light);
-      --ct-mediana:#6366F1; --ct-decil9:#C71E1D; --ct-decil1:#059669;
+      --ct-mediana:#005F73; --ct-decil9:#C71E1D; --ct-decil1:#0A9396;
       --radius:12px;
     }
     [data-theme="dark"] {
@@ -59,7 +59,7 @@
     .kpi-val{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:700}
     .kpi-d{display:inline-flex;align-items:center;gap:3px;font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:600;padding:1px 7px;border-radius:5px;margin-top:5px}
     .kpi-d.up{background:rgba(199,30,29,.08);color:#C71E1D}
-    .kpi-d.down{background:rgba(5,150,105,.08);color:#059669}
+    .kpi-d.down{background:rgba(5,150,105,.08);color:#0A9396}
     .kpi-d.flat{background:rgba(100,116,139,.08);color:#64748B}
     [data-theme="dark"] .kpi-d.up{background:rgba(199,30,29,.15)}
     [data-theme="dark"] .kpi-d.down{background:rgba(5,150,105,.15)}
@@ -97,9 +97,9 @@
     .pb-desc strong{color:var(--navy)}
     [data-theme="dark"] .pb-desc strong{color:#E2E8F0}
     .dt{font-family:'JetBrains Mono',monospace;font-weight:600;padding:1px 5px;border-radius:4px;font-size:.82em;white-space:nowrap}
-    .dv-purple{background:rgba(99,102,241,.08);color:#6366F1}
+    .dv-purple{background:rgba(99,102,241,.08);color:#005F73}
     .dv-red{background:rgba(199,30,29,.08);color:#C71E1D}
-    .dv-green{background:rgba(5,150,105,.08);color:#059669}
+    .dv-green{background:rgba(5,150,105,.08);color:#0A9396}
     .ctx{background:var(--cream);border-radius:6px;padding:8px 10px;border-left:3px solid var(--ct-mediana);margin-top:6px}
     [data-theme="dark"] .ctx{background:var(--navy-light)}
     .ctx p{font-size:.68rem;line-height:1.5;color:var(--muted)}
@@ -148,7 +148,7 @@
   <script>
     const DATA_URL = '../data/expectativas_inflacion.json';
     const DASHBOARD_URL = '../index.html';
-    const COLORS = { mediana:'#6366F1', decil9:'#C71E1D', decil1:'#059669' };
+    const COLORS = { mediana:'#005F73', decil9:'#C71E1D', decil1:'#0A9396' };
 
     let DATA, chart, curIdx, activeKeys, horizon = 'siguiente';
 
@@ -215,7 +215,7 @@
             Fuente: <a href="https://www.bcb.gob.bo/?q=resultados-encuestas" target="_blank">BCB</a> · Elaboración: Centro de Estudios POPULI · Datos al: ${updTxt}
           </span>
           <svg viewBox="0 0 310 130" xmlns="http://www.w3.org/2000/svg" style="height:16px;width:auto;opacity:.18;flex-shrink:0">
-            <text x="6" y="112" font-family="'Playfair Display',Georgia,serif" font-size="145" font-weight="700" fill="#8B1A1A">P</text>
+            <text x="6" y="112" font-family="'Playfair Display',Georgia,serif" font-size="145" font-weight="700" fill="#C71E1D">P</text>
             <text x="92" y="87" font-family="'Playfair Display',Georgia,serif" font-size="55" font-weight="400" font-style="italic" letter-spacing="1" fill="#3D2B1F">opuli</text>
           </svg>
         </div>
