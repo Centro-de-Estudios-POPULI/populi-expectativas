@@ -41,7 +41,7 @@
     [data-theme="dark"] .hz-grp{background:#1A1A1A;border-color:var(--dark-border)}
     .hz-btn{padding:5px 14px;border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:.68rem;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s}
     .hz-btn:hover{color:var(--text)}
-    .hz-btn.active{background:var(--ct-mediana);color:#fff;box-shadow:0 2px 8px rgba(99,102,241,.25)}
+    .hz-btn.active{background:var(--ct-mediana);color:#fff;box-shadow:0 2px 8px rgba(0,95,115,.25)}
 
     /* ── KPIs ── */
     .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
@@ -59,10 +59,10 @@
     .kpi-val{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:700}
     .kpi-d{display:inline-flex;align-items:center;gap:3px;font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:600;padding:1px 7px;border-radius:5px;margin-top:5px}
     .kpi-d.up{background:rgba(199,30,29,.08);color:#C71E1D}
-    .kpi-d.down{background:rgba(5,150,105,.08);color:#0A9396}
+    .kpi-d.down{background:rgba(10,147,150,.08);color:#0A9396}
     .kpi-d.flat{background:rgba(100,116,139,.08);color:#64748B}
     [data-theme="dark"] .kpi-d.up{background:rgba(199,30,29,.15)}
-    [data-theme="dark"] .kpi-d.down{background:rgba(5,150,105,.15)}
+    [data-theme="dark"] .kpi-d.down{background:rgba(10,147,150,.15)}
 
     /* ── Main Grid: Chart LEFT (3fr) + Panel RIGHT (2fr) ── */
     .main-grid{display:grid;grid-template-columns:3fr 2fr;grid-template-rows:540px;gap:16px}
@@ -97,20 +97,20 @@
     .pb-desc strong{color:var(--navy)}
     [data-theme="dark"] .pb-desc strong{color:#E2E8F0}
     .dt{font-family:'JetBrains Mono',monospace;font-weight:600;padding:1px 5px;border-radius:4px;font-size:.82em;white-space:nowrap}
-    .dv-purple{background:rgba(99,102,241,.08);color:#005F73}
+    .dv-purple{background:rgba(0,95,115,.08);color:#005F73}
     .dv-red{background:rgba(199,30,29,.08);color:#C71E1D}
-    .dv-green{background:rgba(5,150,105,.08);color:#0A9396}
+    .dv-green{background:rgba(10,147,150,.08);color:#0A9396}
     .ctx{background:var(--cream);border-radius:6px;padding:8px 10px;border-left:3px solid var(--ct-mediana);margin-top:6px}
     [data-theme="dark"] .ctx{background:var(--navy-light)}
     .ctx p{font-size:.68rem;line-height:1.5;color:var(--muted)}
-    [data-theme="dark"] .ctx p{color:#94A3B8}
+    [data-theme="dark"] .ctx p{color:#64748B}
     .ctx p strong{color:var(--navy)}
     [data-theme="dark"] .ctx p strong{color:#E2E8F0}
     .panel-ft{padding:10px 14px;border-top:1px solid var(--border)}
     [data-theme="dark"] .panel-ft{border-color:var(--dark-border)}
-    .amp{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:8px 0;border-radius:8px;font-family:'Inter',sans-serif;font-size:.66rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ct-mediana);background:rgba(99,102,241,.06);border:1.5px solid rgba(99,102,241,.15);transition:all .2s;text-decoration:none;cursor:pointer}
-    [data-theme="dark"] .amp{background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.2)}
-    .amp:hover{background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.3);transform:translateY(-1px);box-shadow:0 2px 8px rgba(99,102,241,.1);text-decoration:none}
+    .amp{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:8px 0;border-radius:8px;font-family:'Inter',sans-serif;font-size:.66rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ct-mediana);background:rgba(0,95,115,.06);border:1.5px solid rgba(0,95,115,.15);transition:all .2s;text-decoration:none;cursor:pointer}
+    [data-theme="dark"] .amp{background:rgba(0,95,115,.08);border-color:rgba(0,95,115,.2)}
+    .amp:hover{background:rgba(0,95,115,.12);border-color:rgba(0,95,115,.3);transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,95,115,.1);text-decoration:none}
 
     /* ── Edu boxes ── */
     .edu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-top:16px}
@@ -122,7 +122,7 @@
     .edu-t svg{width:14px;height:14px;transition:transform .2s;color:var(--muted)}
     .edu.open .edu-t svg{transform:rotate(180deg)}
     .edu-body{display:none;font-size:.68rem;line-height:1.6;color:var(--muted);margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
-    [data-theme="dark"] .edu-body{color:#94A3B8;border-color:var(--dark-border)}
+    [data-theme="dark"] .edu-body{color:#64748B;border-color:var(--dark-border)}
     .edu.open .edu-body{display:block}
 
     /* ── Footer ── */
@@ -363,7 +363,7 @@
             var pts=[];
             for(var i=0;i<ser.length;i++) pts.push(api.coord([i,ser[i].decil9]));
             for(var i=ser.length-1;i>=0;i--) pts.push(api.coord([i,ser[i].decil1]));
-            return {type:'polygon',shape:{points:pts},style:{fill:d?'rgba(99,102,241,0.06)':'rgba(99,102,241,0.08)'}};
+            return {type:'polygon',shape:{points:pts},style:{fill:d?'rgba(0,95,115,0.06)':'rgba(0,95,115,0.08)'}};
           },
           data:ser.map(function(_,i){return[i,0]}), silent:true, z:0
         });
@@ -378,7 +378,7 @@
           axisTick: { show: false },
           axisLabel: {
             fontFamily: 'Inter', fontSize: 10, fontWeight: 500,
-            color: d ? '#4A8A82' : '#94A3B8',
+            color: d ? '#4A8A82' : '#64748B',
             rotate: 45,
             formatter: v => {
               const [m, y] = v.split(' ');
@@ -392,7 +392,7 @@
           splitLine: { lineStyle: { color: d ? 'rgba(42,58,80,0.5)' : '#F1F5F9' } },
           axisLabel: {
             fontFamily: 'JetBrains Mono', fontSize: 11,
-            color: d ? '#4A8A82' : '#94A3B8',
+            color: d ? '#4A8A82' : '#64748B',
             formatter: v => v.toFixed(0) + '%',
           },
         },
@@ -410,7 +410,7 @@
             let html = `<div style="font-weight:700;margin-bottom:8px;color:#E9D8A6">${valid[0].axisValue}</div>`;
             const idx = valid[0].dataIndex;
             const target = ser[idx].target;
-            html += `<div style="font-size:10px;color:#94A3B8;margin-bottom:6px">Expectativa para ${target}</div>`;
+            html += `<div style="font-size:10px;color:#64748B;margin-bottom:6px">Expectativa para ${target}</div>`;
             valid.forEach(p => {
               html += `<div style="display:flex;align-items:center;gap:6px;margin-top:4px">
                 <span style="width:8px;height:8px;border-radius:50%;background:${p.color};display:inline-block"></span>
@@ -451,7 +451,7 @@
 
       document.getElementById('panel-body').innerHTML = `
         <div class="pb">
-          <div class="pb-lbl" style="color:${COLORS.mediana};background:rgba(99,102,241,.08);border-left-color:${COLORS.mediana}">Mediana</div>
+          <div class="pb-lbl" style="color:${COLORS.mediana};background:rgba(0,95,115,.08);border-left-color:${COLORS.mediana}">Mediana</div>
           <div class="pb-val" style="color:${COLORS.mediana}">${fvs(d.mediana)}</div>
           <p class="pb-desc">En <strong>${d.label}</strong>, la expectativa mediana de inflación interanual para <strong>${d.target}</strong> es <span class="dt dv-purple">${fvs(d.mediana)}</span>${prev ? `, ${dMed >= 0 ? 'subiendo' : 'bajando'} <span class="dt dv-purple">${Math.abs(dMed).toFixed(2)} pp</span> respecto a ${prev.label}` : ''}. Basada en ${d.respuestas} respuestas.</p>
         </div>
@@ -461,7 +461,7 @@
           <p class="pb-desc">El 10% más pesimista espera al menos <span class="dt dv-red">${fvs(d.decil9)}</span> para ${d.target}.</p>
         </div>
         <div class="pb">
-          <div class="pb-lbl" style="color:${COLORS.decil1};background:rgba(5,150,105,.08);border-left-color:${COLORS.decil1}">Decil 1 · Optimistas</div>
+          <div class="pb-lbl" style="color:${COLORS.decil1};background:rgba(10,147,150,.08);border-left-color:${COLORS.decil1}">Decil 1 · Optimistas</div>
           <div class="pb-val" style="color:${COLORS.decil1}">${fvs(d.decil1)}</div>
           <p class="pb-desc">El 10% más optimista espera no más de <span class="dt dv-green">${fvs(d.decil1)}</span>.</p>
         </div>

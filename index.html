@@ -31,7 +31,7 @@
       --text:#E8E8E8; --text2:#A0A0A0; --muted:#5A5A5A; --muted2:#303030;
       --shadow:0 2px 10px rgba(0,0,0,.6),0 6px 28px rgba(0,0,0,.5);
       --shadow-xs:0 1px 4px rgba(0,0,0,.5);
-      --ct-axis:#909090; --ct-grid:#1E1E1E;
+      --ct-axis:#909090; --ct-grid:#141414;
       --ct-tip-bg:#080808; --ct-tip-bd:#242424;
     }
 
@@ -118,7 +118,7 @@
     .kpi-val{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:700}
     .kpi-d{display:inline-flex;align-items:center;gap:3px;font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:600;padding:1px 7px;border-radius:5px;margin-top:4px}
     .kpi-d.up{background:rgba(199,30,29,.08);color:#C71E1D}
-    .kpi-d.down{background:rgba(5,150,105,.08);color:#0A9396}
+    .kpi-d.down{background:rgba(10,147,150,.08);color:#0A9396}
     .kpi-d.flat{background:rgba(100,116,139,.08);color:#64748B}
 
     /* ── Chart area ── */
@@ -171,8 +171,8 @@
     [data-theme="dark"] thead tr{background:#161616}
     th{padding:8px 12px;text-align:left;font-weight:700;font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);border-bottom:1px solid var(--border)}
     td{padding:7px 12px;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:.68rem}
-    tr:hover{background:rgba(99,102,241,.03)}
-    [data-theme="dark"] tr:hover{background:rgba(99,102,241,.05)}
+    tr:hover{background:rgba(0,95,115,.03)}
+    [data-theme="dark"] tr:hover{background:rgba(0,95,115,.05)}
 
     /* ── Footer ── */
     .footer{max-width:1320px;margin:auto;padding:0 24px 40px;display:flex;align-items:center;justify-content:space-between}
@@ -190,7 +190,7 @@
     .hz-grp{display:flex;gap:0;background:var(--card2);border-radius:8px;padding:2px;border:1px solid var(--border)}
     .hz-btn{padding:5px 14px;border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:.66rem;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s}
     .hz-btn:hover{color:var(--text)}
-    .hz-btn.active{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(99,102,241,.25)}
+    .hz-btn.active{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(0,95,115,.25)}
 
     @media(max-width:600px){
       .nav-meta,.brand-sub{display:none}
@@ -513,7 +513,7 @@ function rebuildInflacionChart(d){
   if(keys.has('decil1')) series.push(lineSeries('Decil 1', S.map(x=>x.decil1), COLORS.decil1, 1.5, 'dashed', d));
 
   if(keys.has('decil1') && keys.has('decil9')){
-    series.push(bandSeries(S,'decil1','decil9',d?'rgba(99,102,241,0.06)':'rgba(99,102,241,0.08)'));
+    series.push(bandSeries(S,'decil1','decil9',d?'rgba(0,95,115,0.06)':'rgba(0,95,115,0.08)'));
   }
 
   charts.inflacion.setOption(chartOption(labels, series, d, v => v.toFixed(0)+'%', (params) => {
@@ -521,7 +521,7 @@ function rebuildInflacionChart(d){
     if(!valid.length) return '';
     const idx = valid[0].dataIndex;
     let html = `<div style="font-weight:700;margin-bottom:6px;color:#E9D8A6">${valid[0].axisValue}</div>`;
-    html += `<div style="font-size:10px;color:#94A3B8;margin-bottom:6px">Expectativa para ${S[idx].target}</div>`;
+    html += `<div style="font-size:10px;color:#64748B;margin-bottom:6px">Expectativa para ${S[idx].target}</div>`;
     valid.forEach(p => { html += tooltipLine(p); });
     return html;
   }), true);
@@ -531,7 +531,7 @@ function buildInflacionPanel(S, idx){
   const panel = el('div','panel');
   const hd = el('div','panel-hd');
   hd.style.background = dk() ? '#1A1A2E' : '#1E1B4B';
-  hd.innerHTML = `<span class="panel-hd-t">Lectura del indicador</span><span class="panel-hd-d" style="color:#005F73;background:rgba(99,102,241,.15)">${S[idx].label}</span>`;
+  hd.innerHTML = `<span class="panel-hd-t">Lectura del indicador</span><span class="panel-hd-d" style="color:#005F73;background:rgba(0,95,115,.15)">${S[idx].label}</span>`;
   panel.appendChild(hd);
   const body = el('div','panel-body');
   body.innerHTML = inflacionPanelHTML(S, idx);
@@ -559,16 +559,16 @@ function inflacionPanelHTML(S, idx){
   else if(d.mediana > 5) analysis = `Con <strong>${d.mediana.toFixed(1)}%</strong>, los encuestados anticipan inflación <strong>moderadamente elevada</strong>. El rango D1–D9 sugiere visiones divergentes.`;
   else analysis = `Mediana de <strong>${d.mediana.toFixed(1)}%</strong>: confianza razonable en la estabilidad de precios. Consenso relativamente estrecho.`;
   return `
-    <div class="pb"><div class="pb-lbl" style="color:#005F73;background:rgba(99,102,241,.08);border-left-color:#005F73">Mediana</div>
+    <div class="pb"><div class="pb-lbl" style="color:#005F73;background:rgba(0,95,115,.08);border-left-color:#005F73">Mediana</div>
     <div class="pb-val" style="color:#005F73">${d.mediana.toFixed(1)}%</div>
     <p class="pb-desc">En <strong>${d.label}</strong>, expectativa mediana para <strong>${d.target}</strong>${prev?`, ${dMed>=0?'subiendo':'bajando'} ${Math.abs(dMed).toFixed(2)} pp`:''}.${d.respuestas ? ' Basada en '+d.respuestas+' respuestas.' : ''}</p></div>
     <div class="pb"><div class="pb-lbl" style="color:#C71E1D;background:rgba(199,30,29,.08);border-left-color:#C71E1D">D9 · Pesimistas</div>
     <div class="pb-val" style="color:#C71E1D">${d.decil9.toFixed(1)}%</div>
     <p class="pb-desc">El 10% más pesimista espera al menos <strong>${d.decil9.toFixed(1)}%</strong> de inflación.</p></div>
-    <div class="pb"><div class="pb-lbl" style="color:#0A9396;background:rgba(5,150,105,.08);border-left-color:#0A9396">D1 · Optimistas</div>
+    <div class="pb"><div class="pb-lbl" style="color:#0A9396;background:rgba(10,147,150,.08);border-left-color:#0A9396">D1 · Optimistas</div>
     <div class="pb-val" style="color:#0A9396">${d.decil1.toFixed(1)}%</div>
     <p class="pb-desc">El 10% más optimista espera no más de <strong>${d.decil1.toFixed(1)}%</strong>.</p></div>
-    <div class="ctx" style="background:${dk()?'#1A1A2E':'rgba(99,102,241,.04)'};border-left-color:#005F73"><p>${analysis}</p></div>`;
+    <div class="ctx" style="background:${dk()?'#1A1A2E':'rgba(0,95,115,.04)'};border-left-color:#005F73"><p>${analysis}</p></div>`;
 }
 
 /* ── Tipo de Cambio ── */
@@ -645,14 +645,14 @@ function rebuildTCChart(d){
   if(keys.has('decil9')) series.push(lineSeries('Decil 9', S.map(x=>x.decil9), '#C71E1D', 1.5, 'dashed', d));
   if(keys.has('decil1')) series.push(lineSeries('Decil 1', S.map(x=>x.decil1), '#0A9396', 1.5, 'dashed', d));
   if(keys.has('decil1') && keys.has('decil9')){
-    series.push(bandSeries(S,'decil1','decil9',d?'rgba(217,119,6,.06)':'rgba(217,119,6,.08)'));
+    series.push(bandSeries(S,'decil1','decil9',d?'rgba(238,155,0,.06)':'rgba(238,155,0,.08)'));
   }
   charts.tc.setOption(chartOption(labels, series, d, v => 'Bs '+v.toFixed(1), (params) => {
     const valid = params.filter(p=>!p.seriesName.startsWith('_'));
     if(!valid.length) return '';
     const idx = valid[0].dataIndex;
     let html = `<div style="font-weight:700;margin-bottom:6px;color:#E9D8A6">${valid[0].axisValue}</div>`;
-    html += `<div style="font-size:10px;color:#94A3B8;margin-bottom:6px">Expectativa para ${S[idx].target}</div>`;
+    html += `<div style="font-size:10px;color:#64748B;margin-bottom:6px">Expectativa para ${S[idx].target}</div>`;
     valid.forEach(p => { html += tooltipLine(p, v => 'Bs '+v.toFixed(2)); });
     return html;
   }), true);
@@ -739,14 +739,14 @@ function rebuildPIBChart(d){
   if(keys.has('decil9')) series.push(lineSeries('Decil 9', S.map(x=>x.decil9), '#0A9396', 1.5, 'dashed', d));
   if(keys.has('decil1')) series.push(lineSeries('Decil 1', S.map(x=>x.decil1), '#C71E1D', 1.5, 'dashed', d));
   if(keys.has('decil1') && keys.has('decil9')){
-    series.push(bandSeries(S,'decil1','decil9',d?'rgba(13,148,136,.06)':'rgba(13,148,136,.08)'));
+    series.push(bandSeries(S,'decil1','decil9',d?'rgba(10,147,150,.06)':'rgba(10,147,150,.08)'));
   }
   charts.pib.setOption(chartOption(labels, series, d, v => v.toFixed(1)+'%', (params) => {
     const valid = params.filter(p=>!p.seriesName.startsWith('_'));
     if(!valid.length) return '';
     const idx = valid[0].dataIndex;
     let html = `<div style="font-weight:700;margin-bottom:6px;color:#E9D8A6">${valid[0].axisValue}</div>`;
-    html += `<div style="font-size:10px;color:#94A3B8;margin-bottom:6px">Expectativa para ${S[idx].target}</div>`;
+    html += `<div style="font-size:10px;color:#64748B;margin-bottom:6px">Expectativa para ${S[idx].target}</div>`;
     valid.forEach(p => { html += tooltipLine(p, v => v.toFixed(2)+'%'); });
     return html;
   }), true);
@@ -833,14 +833,14 @@ function rebuildRINChart(d){
   if(keys.has('decil9')) series.push(lineSeries('Decil 9', S.map(x=>x.decil9), '#0A9396', 1.5, 'dashed', d));
   if(keys.has('decil1')) series.push(lineSeries('Decil 1', S.map(x=>x.decil1), '#C71E1D', 1.5, 'dashed', d));
   if(keys.has('decil1') && keys.has('decil9')){
-    series.push(bandSeries(S,'decil1','decil9',d?'rgba(37,99,235,.06)':'rgba(37,99,235,.08)'));
+    series.push(bandSeries(S,'decil1','decil9',d?'rgba(0,95,115,.06)':'rgba(0,95,115,.08)'));
   }
   charts.rin.setOption(chartOption(labels, series, d, v => '$'+(v/1000).toFixed(1)+'k', (params) => {
     const valid = params.filter(p=>!p.seriesName.startsWith('_'));
     if(!valid.length) return '';
     const idx = valid[0].dataIndex;
     let html = `<div style="font-weight:700;margin-bottom:6px;color:#E9D8A6">${valid[0].axisValue}</div>`;
-    html += `<div style="font-size:10px;color:#94A3B8;margin-bottom:6px">Expectativa para ${S[idx].target}</div>`;
+    html += `<div style="font-size:10px;color:#64748B;margin-bottom:6px">Expectativa para ${S[idx].target}</div>`;
     valid.forEach(p => { html += tooltipLine(p, v => '$'+Math.round(v).toLocaleString()+' MM'); });
     return html;
   }), true);
@@ -933,8 +933,8 @@ function rebuildPercepcionChart(d){
   opt.yAxis.max = 100;
   opt.series.push({
     type:'line', markLine:{ silent:true, symbol:'none',
-      lineStyle:{ color:d?'#333':'#CBD5E1', type:'dashed', width:1 },
-      label:{ show:true, position:'insideEndTop', fontSize:9, color:d?'#666':'#94A3B8', formatter:'Neutral' },
+      lineStyle:{ color:d?'#333':'#E2DDD3', type:'dashed', width:1 },
+      label:{ show:true, position:'insideEndTop', fontSize:9, color:d?'#666':'#64748B', formatter:'Neutral' },
       data:[{ yAxis:0 }]
     }, data:[]
   });
@@ -980,7 +980,7 @@ function percepcionPanelHTML(S, idx){
     <div class="pb"><div class="pb-lbl" style="color:#7C3AED;background:rgba(124,58,237,.08);border-left-color:#7C3AED">ISA · Actual</div>
     <div class="pb-val" style="color:#7C3AED">${fmtP(d.isa)}</div>
     <p class="pb-desc">Valoración de la situación económica <strong>actual</strong>. ${d.isa > 0 ? 'Más encuestados perciben mejora que deterioro.' : 'Más encuestados perciben deterioro que mejora.'}</p></div>
-    <div class="pb"><div class="pb-lbl" style="color:#005F73;background:rgba(37,99,235,.08);border-left-color:#005F73">ISF · Futura</div>
+    <div class="pb"><div class="pb-lbl" style="color:#005F73;background:rgba(0,95,115,.08);border-left-color:#005F73">ISF · Futura</div>
     <div class="pb-val" style="color:#005F73">${fmtP(d.isf)}</div>
     <p class="pb-desc">Expectativa sobre la situación futura. ${d.isf > d.isa ? 'Más optimismo sobre el futuro que sobre el presente.' : 'Menos optimismo sobre el futuro que sobre el presente.'}</p></div>
     <div class="ctx" style="background:${dk()?'#2A1A2E':'rgba(219,39,119,.04)'};border-left-color:#DB2777"><p>${analysis}</p></div>`;
@@ -1078,7 +1078,7 @@ function genericPanelHTML(S, idx, color, fmt, analysisFn){
     <div class="pb"><div class="pb-lbl" style="color:#C71E1D;background:rgba(199,30,29,.08);border-left-color:#C71E1D">Decil extremo alto</div>
     <div class="pb-val" style="color:#C71E1D">${fmt(d.decil9)}</div>
     <p class="pb-desc">10% de encuestados con la expectativa más alta.</p></div>
-    <div class="pb"><div class="pb-lbl" style="color:#0A9396;background:rgba(5,150,105,.08);border-left-color:#0A9396">Decil extremo bajo</div>
+    <div class="pb"><div class="pb-lbl" style="color:#0A9396;background:rgba(10,147,150,.08);border-left-color:#0A9396">Decil extremo bajo</div>
     <div class="pb-val" style="color:#0A9396">${fmt(d.decil1)}</div>
     <p class="pb-desc">10% de encuestados con la expectativa más baja.</p></div>
     <div class="ctx" style="background:${dk()?color+'0D':color+'08'};border-left-color:${color}"><p>${analysisFn(d)}</p></div>`;
@@ -1130,7 +1130,7 @@ function chartOption(labels, series, d, yFmt, tooltipFmt){
       type:'category', data:labels,
       axisLine:{ lineStyle:{ color:d?'#2A3A50':'#E2E8F0' }},
       axisTick:{ show:false },
-      axisLabel:{ fontFamily:'Inter', fontSize:10, fontWeight:500, color:d?'#666':'#94A3B8', rotate:45,
+      axisLabel:{ fontFamily:'Inter', fontSize:10, fontWeight:500, color:d?'#666':'#64748B', rotate:45,
         formatter: v => { const [m,y]=v.split(' '); return m==='Ene'?m+' '+y:m; }
       }
     },
@@ -1138,7 +1138,7 @@ function chartOption(labels, series, d, yFmt, tooltipFmt){
       type:'value',
       axisLine:{ show:false },
       splitLine:{ lineStyle:{ color:d?'rgba(42,58,80,0.5)':'#F1F5F9' }},
-      axisLabel:{ fontFamily:'JetBrains Mono', fontSize:11, color:d?'#666':'#94A3B8', formatter:yFmt }
+      axisLabel:{ fontFamily:'JetBrains Mono', fontSize:11, color:d?'#666':'#64748B', formatter:yFmt }
     },
     tooltip:{
       trigger:'axis',
