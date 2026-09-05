@@ -2,7 +2,7 @@
   "metadata": {
     "fuente": "BCB — EEE",
     "descripcion": "Índice de Percepción Económica, Situación Actual y Situación Futura",
-    "ultimo_dato": "Jul 2026"
+    "ultimo_dato": "Ago 2026"
   },
   "series": [
     {
@@ -221,6 +221,13 @@
       "ipe": -12.69,
       "isa": -20.83,
       "isf": -4.17
+    },
+    {
+      "survey_month": "2026-08",
+      "label": "Ago 2026",
+      "ipe": -15.54,
+      "isa": -4.35,
+      "isf": -26.09
     }
   ]
 }

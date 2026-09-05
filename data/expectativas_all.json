@@ -2,8 +2,8 @@
   "metadata": {
     "fuente": "BCB — Encuesta Mensual de Expectativas Económicas",
     "url": "https://www.bcb.gob.bo/?q=resultados-encuestas",
-    "ultimo_dato": "Jul 2026",
-    "total_observaciones": 31
+    "ultimo_dato": "Ago 2026",
+    "total_observaciones": 32
   },
   "data": [
     {
@@ -4030,6 +4030,147 @@
       "ipe": -12.69,
       "isa": -20.83,
       "isf": -4.17
+    },
+    {
+      "survey_month": "2026-08",
+      "label": "Ago 2026",
+      "inflacion_mensual": {
+        "mediana": 1.0,
+        "media": 0.99,
+        "moda": 1.0,
+        "desv_estandar": 1.88,
+        "coef_variacion": 1.91,
+        "decil1": -1.7,
+        "decil9": 2.03,
+        "respuestas": 23
+      },
+      "inflacion_dic_actual": {
+        "mediana": 10.0,
+        "media": 10.22,
+        "moda": 10.0,
+        "desv_estandar": 4.98,
+        "coef_variacion": 0.49,
+        "decil1": 5.19,
+        "decil9": 14.8,
+        "respuestas": 23
+      },
+      "inflacion_dic_siguiente": {
+        "mediana": 9.0,
+        "media": 9.64,
+        "moda": 5.0,
+        "desv_estandar": 5.58,
+        "coef_variacion": 0.58,
+        "decil1": 4.1,
+        "decil9": 17.4,
+        "respuestas": 23,
+        "target": "Dic 2027"
+      },
+      "tipo_cambio_dic_actual": {
+        "mediana": 12.0,
+        "media": 12.14,
+        "moda": 12.0,
+        "desv_estandar": 1.0,
+        "coef_variacion": 0.08,
+        "decil1": 11.0,
+        "decil9": 13.4,
+        "respuestas": 23
+      },
+      "tipo_cambio_dic_siguiente": {
+        "mediana": 12.75,
+        "media": 12.98,
+        "moda": 11.5,
+        "desv_estandar": 2.08,
+        "coef_variacion": 0.16,
+        "decil1": 11.0,
+        "decil9": 15.0,
+        "respuestas": 22,
+        "target": "Dic 2027"
+      },
+      "pib_actual": {
+        "mediana": -2.0,
+        "media": -1.7,
+        "moda": 1.0,
+        "desv_estandar": 1.73,
+        "coef_variacion": 1.01,
+        "decil1": -3.56,
+        "decil9": 1.0,
+        "respuestas": 23
+      },
+      "pib_siguiente": {
+        "mediana": 1.1,
+        "media": 0.61,
+        "moda": 1.5,
+        "desv_estandar": 1.8,
+        "coef_variacion": 2.95,
+        "decil1": -1.48,
+        "decil9": 2.24,
+        "respuestas": 23,
+        "target": "Año 2027"
+      },
+      "balance_fiscal_actual": {
+        "mediana": -9.0,
+        "media": -8.48,
+        "moda": -9.0,
+        "desv_estandar": 2.68,
+        "coef_variacion": 0.32,
+        "decil1": -11.7,
+        "decil9": -4.56,
+        "respuestas": 23
+      },
+      "balance_fiscal_siguiente": {
+        "mediana": -6.5,
+        "media": -7.04,
+        "moda": -7.0,
+        "desv_estandar": 3.3,
+        "coef_variacion": 0.47,
+        "decil1": -11.44,
+        "decil9": -3.1,
+        "respuestas": 23
+      },
+      "rin_dic_actual": {
+        "mediana": 4200.0,
+        "media": 4310.0,
+        "moda": 3800.0,
+        "desv_estandar": 636.0,
+        "coef_variacion": 0.15,
+        "decil1": 3784.0,
+        "decil9": 5400.0,
+        "respuestas": 23
+      },
+      "rin_dic_siguiente": {
+        "mediana": 4750.0,
+        "media": 5021.0,
+        "moda": 6000.0,
+        "desv_estandar": 1269.0,
+        "coef_variacion": 0.25,
+        "decil1": 3775.0,
+        "decil9": 6000.0,
+        "respuestas": 22,
+        "target": "Dic 2027"
+      },
+      "desocupacion_dic_actual": {
+        "mediana": 4.0,
+        "media": 3.96,
+        "moda": 4.0,
+        "desv_estandar": 0.59,
+        "coef_variacion": 0.15,
+        "decil1": 3.26,
+        "decil9": 5.04,
+        "respuestas": 23
+      },
+      "desocupacion_dic_siguiente": {
+        "mediana": 4.0,
+        "media": 4.01,
+        "moda": 4.0,
+        "desv_estandar": 0.69,
+        "coef_variacion": 0.17,
+        "decil1": 3.04,
+        "decil9": 4.98,
+        "respuestas": 22
+      },
+      "ipe": -15.54,
+      "isa": -4.35,
+      "isf": -26.09
     }
   ]
 }
