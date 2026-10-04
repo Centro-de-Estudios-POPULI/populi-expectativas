@@ -1,509 +1,192 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="light">
+<html lang="es" data-theme="light" style="--acento:#005F73">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Expectativas de Inflación · Populi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="comun/monitor.css" />
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-  <style>
-    :root {
-      --populi:#C71E1D; --populi-dark:#6B0300; --populi-light:#E8706B;
-      --cream:#F5EFE0; --brown-dark:#3D2B1F;
-      --navy:#0D1B2A; --navy-light:#1A2940; --slate:#475569; --slate-light:#64748B;
-      --warm-white:#FAF8F3; --light-gray:#F1EDE5; --border:#E2DDD3; --dark-border:#2A3A50;
-      --bg:var(--warm-white); --card:#FFFFFF; --text:var(--brown-dark); --muted:var(--slate-light);
-      --ct-mediana:#005F73; --ct-decil9:#C71E1D; --ct-decil1:#0A9396;
-      --radius:12px;
-    }
-    [data-theme="dark"] {
-      --bg:#080808; --card:#141414; --text:#E2E8F0; --muted:#64748B;
-      --border:#2A3A50; --light-gray:#1A1A1A; --cream:#1A2940;
-    }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth}
-    body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;transition:background .25s,color .25s}
-    .wrap{max-width:1200px;margin:0 auto;padding:20px 16px}
-
-    .sec-hd{margin-bottom:16px}
-    .sec-title{font-family:'Playfair Display',Georgia,serif;font-size:1.55rem;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:10px;line-height:1.15}
-    [data-theme="dark"] .sec-title{color:#fff}
-    .accent-bar{width:4px;height:26px;background:var(--ct-mediana);border-radius:2px;flex-shrink:0}
-    .sec-sub{font-size:.78rem;color:var(--muted);padding-left:14px;margin-top:2px}
-    [data-theme="dark"] .sec-sub{color:rgba(255,255,255,.4)}
-
-    /* ── Horizon toggle ── */
-    .hz-bar{display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-left:14px}
-    .hz-lbl{font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
-    .hz-grp{display:flex;gap:0;background:var(--light-gray);border-radius:8px;padding:2px;border:1px solid var(--border)}
-    [data-theme="dark"] .hz-grp{background:#1A1A1A;border-color:var(--dark-border)}
-    .hz-btn{padding:5px 14px;border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:.68rem;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s}
-    .hz-btn:hover{color:var(--text)}
-    .hz-btn.active{background:var(--ct-mediana);color:#fff;box-shadow:0 2px 8px rgba(0,95,115,.25)}
-
-    /* ── KPIs ── */
-    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
-    @media(max-width:700px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
-    .kpi{background:var(--warm-white);border:1px solid var(--border);border-radius:10px;padding:12px 14px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;cursor:pointer}
-    [data-theme="dark"] .kpi{background:#141414;border-color:var(--dark-border)}
-    .kpi:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.08)}
-    .kpi::after{content:'';position:absolute;top:0;left:0;width:100%;height:3px}
-    .kpi[data-s="med"]::after{background:var(--ct-mediana)}
-    .kpi[data-s="d9"]::after{background:var(--ct-decil9)}
-    .kpi[data-s="d1"]::after{background:var(--ct-decil1)}
-    .kpi[data-s="rango"]::after{background:var(--ct-mediana)}
-    .kpi-lbl{font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
-    [data-theme="dark"] .kpi-lbl{color:rgba(255,255,255,.4)}
-    .kpi-val{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:700}
-    .kpi-d{display:inline-flex;align-items:center;gap:3px;font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:600;padding:1px 7px;border-radius:5px;margin-top:5px}
-    .kpi-d.up{background:rgba(199,30,29,.08);color:#C71E1D}
-    .kpi-d.down{background:rgba(10,147,150,.08);color:#0A9396}
-    .kpi-d.flat{background:rgba(100,116,139,.08);color:#64748B}
-    [data-theme="dark"] .kpi-d.up{background:rgba(199,30,29,.15)}
-    [data-theme="dark"] .kpi-d.down{background:rgba(10,147,150,.15)}
-
-    /* ── Main Grid: Chart LEFT (3fr) + Panel RIGHT (2fr) ── */
-    .main-grid{display:grid;grid-template-columns:3fr 2fr;grid-template-rows:540px;gap:16px}
-    @media(max-width:900px){.main-grid{grid-template-columns:1fr;grid-template-rows:480px auto}}
-    @media(min-width:1100px){.main-grid{grid-template-rows:580px}}
-
-    .chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;height:100%;overflow:hidden}
-    [data-theme="dark"] .chart-card{background:#141414;border-color:var(--dark-border)}
-    .chart-ctrl{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
-    .tog-grp{display:flex;gap:6px;flex-wrap:wrap}
-    .pill{display:flex;align-items:center;gap:5px;padding:4px 12px;border:1.5px solid;border-radius:8px;background:transparent;cursor:pointer;font-family:'Inter',sans-serif;font-size:.68rem;font-weight:600;transition:all .2s}
-    .pill:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.08)}
-    .lp{width:16px;height:0;border-top:2.5px solid;border-radius:1px}
-    .lp.dashed{border-top-style:dashed}
-    #chart{flex:1;min-height:0}
-
-    /* ── Panel ── */
-    .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;height:100%}
-    [data-theme="dark"] .panel{background:#141414;border-color:var(--dark-border)}
-    .panel-hd{background:var(--navy);padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
-    [data-theme="dark"] .panel-hd{background:var(--navy-light)}
-    .panel-hd-t{font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.8)}
-    .panel-hd-d{font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:600;color:var(--populi-light);background:rgba(199,30,29,.15);padding:2px 8px;border-radius:5px}
-    .panel-body{padding:14px;flex:1;overflow-y:auto}
-    .pb{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
-    [data-theme="dark"] .pb{border-color:var(--dark-border)}
-    .pb:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
-    .pb-lbl{display:inline-flex;align-items:center;gap:4px;font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;padding:2px 9px 2px 6px;border-radius:4px;border-left:3px solid}
-    .pb-val{font-family:'JetBrains Mono',monospace;font-size:.95rem;font-weight:700;margin-bottom:3px}
-    .pb-desc{font-size:.68rem;line-height:1.5;color:var(--muted)}
-    [data-theme="dark"] .pb-desc{color:rgba(255,255,255,.45)}
-    .pb-desc strong{color:var(--navy)}
-    [data-theme="dark"] .pb-desc strong{color:#E2E8F0}
-    .dt{font-family:'JetBrains Mono',monospace;font-weight:600;padding:1px 5px;border-radius:4px;font-size:.82em;white-space:nowrap}
-    .dv-purple{background:rgba(0,95,115,.08);color:#005F73}
-    .dv-red{background:rgba(199,30,29,.08);color:#C71E1D}
-    .dv-green{background:rgba(10,147,150,.08);color:#0A9396}
-    .ctx{background:var(--cream);border-radius:6px;padding:8px 10px;border-left:3px solid var(--ct-mediana);margin-top:6px}
-    [data-theme="dark"] .ctx{background:var(--navy-light)}
-    .ctx p{font-size:.68rem;line-height:1.5;color:var(--muted)}
-    [data-theme="dark"] .ctx p{color:#64748B}
-    .ctx p strong{color:var(--navy)}
-    [data-theme="dark"] .ctx p strong{color:#E2E8F0}
-    .panel-ft{padding:10px 14px;border-top:1px solid var(--border)}
-    [data-theme="dark"] .panel-ft{border-color:var(--dark-border)}
-    .amp{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:8px 0;border-radius:8px;font-family:'Inter',sans-serif;font-size:.66rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ct-mediana);background:rgba(0,95,115,.06);border:1.5px solid rgba(0,95,115,.15);transition:all .2s;text-decoration:none;cursor:pointer}
-    [data-theme="dark"] .amp{background:rgba(0,95,115,.08);border-color:rgba(0,95,115,.2)}
-    .amp:hover{background:rgba(0,95,115,.12);border-color:rgba(0,95,115,.3);transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,95,115,.1);text-decoration:none}
-
-    /* ── Edu boxes ── */
-    .edu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-top:16px}
-    .edu{background:var(--cream);border-radius:8px;padding:10px 12px;border-left:3px solid var(--ct-mediana);cursor:pointer;transition:all .2s}
-    [data-theme="dark"] .edu{background:var(--navy-light);border-left-color:var(--ct-mediana)}
-    .edu:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.08)}
-    .edu-t{font-size:.7rem;font-weight:700;color:var(--navy);display:flex;align-items:center;justify-content:space-between}
-    [data-theme="dark"] .edu-t{color:#E2E8F0}
-    .edu-t svg{width:14px;height:14px;transition:transform .2s;color:var(--muted)}
-    .edu.open .edu-t svg{transform:rotate(180deg)}
-    .edu-body{display:none;font-size:.68rem;line-height:1.6;color:var(--muted);margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
-    [data-theme="dark"] .edu-body{color:#64748B;border-color:var(--dark-border)}
-    .edu.open .edu-body{display:block}
-
-    /* ── Footer ── */
-    .source{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding:0 2px}
-    .source-txt{font-size:.6rem;color:var(--muted)}
-    .source-txt a{color:var(--populi);font-weight:600;text-decoration:none}
-    .source-txt a:hover{text-decoration:underline}
-
-    /* ── Loading ── */
-    .loading{display:flex;align-items:center;justify-content:center;height:300px;flex-direction:column;gap:12px;color:var(--muted)}
-    .spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--ct-mediana);border-radius:50%;animation:spin .7s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-  </style>
+  <script src="comun/monitor.js"></script>
 </head>
 <body>
-  <div class="wrap" id="app">
-    <div class="loading" id="loader">
-      <div class="spinner"></div>
-      <span style="font-size:.8rem">Cargando expectativas de inflación...</span>
+  <div class="wrap">
+    <div class="sec-hd">
+      <h2 class="sec-title"><span class="accent-bar"></span>Expectativas de Inflación</h2>
+      <p class="sec-sub" id="sub"></p>
+    </div>
+
+    <div class="hz-bar">
+      <div class="hz-item"><span class="hz-lbl">Horizonte</span><div class="hz-grp" id="b-horizonte"></div></div>
+    </div>
+
+    <div class="kpi-grid" id="kpis"></div>
+
+    <div class="main-grid">
+      <div class="chart-card">
+        <div class="chart-ctrl"><div class="tog-grp" id="pastillas"></div></div>
+        <div class="grafico" id="chart"><div class="loading"><div class="spinner"></div><span>Cargando expectativas de inflación…</span></div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-hd"><span class="panel-hd-t">Lectura del indicador</span><span class="panel-hd-d" id="panel-fecha"></span></div>
+        <div class="panel-body" id="panel"></div>
+        <div class="panel-ft">
+          <a href="../index.html" target="_blank" rel="noopener" class="amp">
+            <span>Ver dashboard completo</span>
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="edu-grid" id="preguntas"></div>
+    <div class="source">
+      <span class="source-txt" id="fuente"></span>
+      <svg viewBox="0 0 310 130" xmlns="http://www.w3.org/2000/svg" style="height:16px;width:auto;opacity:.18;flex-shrink:0" aria-hidden="true">
+        <text x="6" y="112" font-family="'Playfair Display',Georgia,serif" font-size="145" font-weight="700" fill="#C71E1D">P</text>
+        <text x="92" y="87" font-family="'Playfair Display',Georgia,serif" font-size="55" font-weight="400" font-style="italic" letter-spacing="1" fill="currentColor">opuli</text>
+      </svg>
     </div>
   </div>
 
   <script>
-    const DATA_URL = '../data/expectativas_inflacion.json';
-    const DASHBOARD_URL = '../index.html';
-    const COLORS = { mediana:'#005F73', decil9:'#C71E1D', decil1:'#0A9396' };
+  (function () {
+    var C = PM.C;
+    // En tema oscuro la mediana (petróleo) sube a menta: el petróleo queda bajo 3:1 contra la tarjeta (validado).
+    var SERIES = [
+      { k: 'mediana', nombre: 'Mediana', color: { claro: C.petroleo, oscuro: C.menta }, ancho: 2.5, forma: 'linea' },
+      { k: 'decil9', nombre: 'Decil 9 (pesimistas)', corto: 'Decil 9', color: C.rojo, ancho: 1.5, forma: 'punteada' },
+      { k: 'decil1', nombre: 'Decil 1 (optimistas)', corto: 'Decil 1', color: C.turquesa, ancho: 1.5, forma: 'punteada' }
+    ];
+    var COL = { mediana: SERIES[0].color, decil9: SERIES[1].color, decil1: SERIES[2].color };
+    var estado = { horizonte: 'siguiente', idx: null };
+    var activas = new Set(['mediana', 'decil9', 'decil1']);
+    var DATA, grafico;
 
-    let DATA, chart, curIdx, activeKeys, horizon = 'siguiente';
+    function serie() { return estado.horizonte === 'siguiente' ? DATA.series_siguiente : DATA.series_actual; }
+    function tono(d) { return d > 0.05 ? 'malo' : d < -0.05 ? 'bueno' : 'neutro'; }   // en inflación esperada, subir es malo
 
-    function S(){ return horizon === 'siguiente' ? DATA.series_siguiente : DATA.series_actual; }
-    function fvs(v){ return v == null ? '—' : v.toFixed(1) + '%'; }
-    function dk(){ return document.documentElement.getAttribute('data-theme') === 'dark'; }
-
-    async function init() {
-      try {
-        const r = await fetch(DATA_URL);
-        DATA = await r.json();
-      } catch(e) {
-        document.getElementById('loader').innerHTML = '<span style="color:#C71E1D">Error cargando datos</span>';
-        return;
-      }
-
-      activeKeys = new Set(['mediana','decil9','decil1']);
-      const app = document.getElementById('app');
-      const updTxt = DATA.metadata.ultimo_dato;
-      const ser = S();
-      const N = ser.length;
-      curIdx = N - 1;
-
-      app.innerHTML = `
-        <div class="sec-hd">
-          <h2 class="sec-title">
-            <span class="accent-bar"></span>
-            Expectativas de Inflación
-          </h2>
-          <p class="sec-sub" id="sec-sub"></p>
-        </div>
-        <div class="hz-bar">
-          <span class="hz-lbl">Horizonte:</span>
-          <div class="hz-grp">
-            <button class="hz-btn active" data-hz="siguiente" onclick="switchHorizon('siguiente')">Año siguiente</button>
-            <button class="hz-btn" data-hz="actual" onclick="switchHorizon('actual')">Año en curso</button>
-          </div>
-        </div>
-        <div class="kpi-grid" id="kpis"></div>
-        <div class="main-grid">
-          <div class="chart-card">
-            <div class="chart-ctrl">
-              <div class="tog-grp" id="toggles"></div>
-            </div>
-            <div id="chart"></div>
-          </div>
-          <div class="panel">
-            <div class="panel-hd">
-              <span class="panel-hd-t">Lectura del indicador</span>
-              <span class="panel-hd-d" id="panel-date"></span>
-            </div>
-            <div class="panel-body" id="panel-body"></div>
-            <div class="panel-ft">
-              <a href="${DASHBOARD_URL}" target="_blank" class="amp">
-                <span>Ver dashboard completo</span>
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="edu-grid" id="edu-boxes"></div>
-        <div class="source">
-          <span class="source-txt">
-            Fuente: <a href="https://www.bcb.gob.bo/?q=resultados-encuestas" target="_blank">BCB</a> · Elaboración: Centro de Estudios POPULI · Datos al: ${updTxt}
-          </span>
-          <svg viewBox="0 0 310 130" xmlns="http://www.w3.org/2000/svg" style="height:16px;width:auto;opacity:.18;flex-shrink:0">
-            <text x="6" y="112" font-family="'Playfair Display',Georgia,serif" font-size="145" font-weight="700" fill="#C71E1D">P</text>
-            <text x="92" y="87" font-family="'Playfair Display',Georgia,serif" font-size="55" font-weight="400" font-style="italic" letter-spacing="1" fill="#3D2B1F">opuli</text>
-          </svg>
-        </div>
-      `;
-
-      updateSubtitle();
-      buildKPIs();
-      buildToggles();
-      buildChart();
-      updatePanel(curIdx);
-      buildEduBoxes();
-
-      window.addEventListener('resize', () => chart && chart.resize());
-      new MutationObserver(() => buildChart()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-    }
-
-    function switchHorizon(hz){
-      if(hz === horizon) return;
-      horizon = hz;
-      document.querySelectorAll('.hz-btn').forEach(b => b.classList.toggle('active', b.dataset.hz === hz));
-      const ser = S();
-      curIdx = ser.length - 1;
-      updateSubtitle();
-      buildKPIs();
-      buildChart();
-      updatePanel(curIdx);
-    }
-
-    function updateSubtitle(){
-      const ser = S();
-      const N = ser.length;
-      const hzLabel = horizon === 'siguiente' ? 'dic. del año siguiente' : 'dic. del año en curso';
-      document.getElementById('sec-sub').textContent = `Encuesta EEE — BCB · Inflación interanual esperada a ${hzLabel} · Serie ${ser[0].label}–${ser[N-1].label}`;
-    }
-
-    function buildKPIs() {
-      const ser = S();
-      const N = ser.length;
-      const last = ser[N-1], prev = ser[N-2];
-      const dMed = last.mediana - prev.mediana;
-      const dD9 = last.decil9 - prev.decil9;
-      const dD1 = last.decil1 - prev.decil1;
-      const rango = last.decil9 - last.decil1;
-      const rangoPrev = prev.decil9 - prev.decil1;
-      const dRango = rango - rangoPrev;
-
-      function cls(d){ return d > 0.01 ? 'up' : d < -0.01 ? 'down' : 'flat'; }
-      function arrow(d){ return d > 0.01 ? '▲' : d < -0.01 ? '▼' : '—'; }
-
-      document.getElementById('kpis').innerHTML = `
-        <div class="kpi" data-s="med"><div class="kpi-lbl">Mediana</div><div class="kpi-val" style="color:${COLORS.mediana}">${fvs(last.mediana)}</div><div class="kpi-d ${cls(dMed)}">${arrow(dMed)} ${Math.abs(dMed).toFixed(2)} pp</div></div>
-        <div class="kpi" data-s="d9"><div class="kpi-lbl">Decil 9 (pesimistas)</div><div class="kpi-val" style="color:${COLORS.decil9}">${fvs(last.decil9)}</div><div class="kpi-d ${cls(dD9)}">${arrow(dD9)} ${Math.abs(dD9).toFixed(2)} pp</div></div>
-        <div class="kpi" data-s="d1"><div class="kpi-lbl">Decil 1 (optimistas)</div><div class="kpi-val" style="color:${COLORS.decil1}">${fvs(last.decil1)}</div><div class="kpi-d ${cls(dD1)}">${arrow(dD1)} ${Math.abs(dD1).toFixed(2)} pp</div></div>
-        <div class="kpi" data-s="rango"><div class="kpi-lbl">Rango (D9 – D1)</div><div class="kpi-val" style="color:var(--ct-mediana)">${rango.toFixed(1)} pp</div><div class="kpi-d ${cls(dRango)}">${arrow(dRango)} ${Math.abs(dRango).toFixed(1)} pp</div></div>
-      `;
-    }
-
-    function buildToggles() {
-      const SERIES = [
-        { key:'mediana', label:'Mediana', color:COLORS.mediana, dashed:false },
-        { key:'decil9', label:'Decil 9', color:COLORS.decil9, dashed:true },
-        { key:'decil1', label:'Decil 1', color:COLORS.decil1, dashed:true },
-      ];
-      const el = document.getElementById('toggles');
+    PM.cargar(['expectativas_inflacion.json']).then(function (r) {
+      DATA = r[0];
+      estado.idx = serie().length - 1;
+      PM.botonera(document.getElementById('b-horizonte'), [['siguiente', 'Año siguiente'], ['actual', 'Año en curso']],
+        estado.horizonte, function (v) { estado.horizonte = v; estado.idx = serie().length - 1; todo(); });
+      PM.pastillas(document.getElementById('pastillas'),
+        SERIES.map(function (s) { return { k: s.k, nombre: s.corto || s.nombre, color: s.color, forma: s.forma }; }),
+        activas, function () { grafico.redibujar(); });
+      var el = document.getElementById('chart');
       el.innerHTML = '';
-      SERIES.forEach(s => {
-        const btn = document.createElement('button');
-        btn.className = 'pill';
-        btn.dataset.key = s.key;
-        btn.innerHTML = `<span class="lp${s.dashed?' dashed':''}" style="border-color:#fff"></span>${s.label}`;
-        btn.addEventListener('click', () => {
-          if (activeKeys.has(s.key)) { if (activeKeys.size === 1) return; activeKeys.delete(s.key); }
-          else activeKeys.add(s.key);
-          syncPills();
-          buildChart();
-        });
-        el.appendChild(btn);
-      });
-      syncPills();
+      grafico = PM.montar(el, opciones);
+      grafico.chart.on('click', function (p) { if (p.dataIndex != null) panel(p.dataIndex); });
+      PM.alCambiarTema(function () { cifras(); panel(estado.idx); });
+      todo(true);
+      PM.preguntas(document.getElementById('preguntas'), PREGUNTAS);
+      document.getElementById('fuente').innerHTML = 'Fuente: <a href="https://www.bcb.gob.bo/?q=resultados-encuestas" target="_blank" rel="noopener">BCB — Encuesta de Expectativas Económicas</a> · Elaboración: Centro de Estudios POPULI · Datos al: ' + PM.fecha(DATA.metadata.ultimo_dato);
+    }).catch(function (e) { console.error(e); PM.error(document.getElementById('chart')); });
+
+    function todo(inicial) {
+      var s = serie();
+      var hz = estado.horizonte === 'siguiente' ? 'dic. del año siguiente' : 'dic. del año en curso';
+      document.getElementById('sub').textContent = 'Encuesta EEE — BCB · Inflación interanual esperada a ' + hz + ' · Serie ' +
+        PM.fecha(s[0].survey_month) + ' – ' + PM.fecha(s[s.length - 1].survey_month);
+      cifras();
+      if (!inicial) grafico.redibujar();
+      panel(estado.idx);
     }
 
-    function syncPills() {
-      document.querySelectorAll('.pill').forEach(btn => {
-        const k = btn.dataset.key;
-        const c = COLORS[k];
-        const on = activeKeys.has(k);
-        btn.style.backgroundColor = on ? c : 'transparent';
-        btn.style.color = on ? '#fff' : c;
-        btn.style.borderColor = c;
-        const lp = btn.querySelector('.lp');
-        if (lp) lp.style.borderColor = on ? '#fff' : c;
-      });
+    function cifras() {
+      var s = serie(), u = s[s.length - 1], a = s[s.length - 2];
+      var dMed = u.mediana - a.mediana, dD9 = u.decil9 - a.decil9, dD1 = u.decil1 - a.decil1;
+      var rango = u.decil9 - u.decil1, dRango = rango - (a.decil9 - a.decil1);
+      var delta = function (d) { return PM.flecha(d, 0.01) + ' ' + PM.num(Math.abs(d), 1) + ' pp'; };
+      var serieK = function (f) { return PM.ultimos(s.map(f), 24); };
+      document.getElementById('kpis').innerHTML =
+        PM.kpi({ color: COL.mediana, rotulo: 'Mediana', valor: PM.pct(u.mediana, 1), delta: delta(dMed), tono: tono(dMed), serie: serieK(function (x) { return x.mediana; }) }) +
+        PM.kpi({ color: COL.decil9, rotulo: 'Decil 9 (pesimistas)', valor: PM.pct(u.decil9, 1), delta: delta(dD9), tono: tono(dD9), serie: serieK(function (x) { return x.decil9; }) }) +
+        PM.kpi({ color: COL.decil1, rotulo: 'Decil 1 (optimistas)', valor: PM.pct(u.decil1, 1), delta: delta(dD1), tono: tono(dD1), serie: serieK(function (x) { return x.decil1; }) }) +
+        PM.kpi({ color: COL.mediana, rotulo: 'Rango (D9 – D1)', valor: PM.num(rango, 1) + ' pp', delta: delta(dRango), tono: tono(dRango), serie: serieK(function (x) { return x.decil9 - x.decil1; }) });
     }
 
-    function buildChart() {
-      const ser = S();
-      const d = dk();
-      const labels = ser.map(s => s.label);
-
-      if (!chart) {
-        chart = echarts.init(document.getElementById('chart'));
-        chart.on('click', p => { if (p.dataIndex !== undefined) updatePanel(p.dataIndex); });
-        chart.getZr().on('mousemove', e => {
-          const p = chart.convertFromPixel({seriesIndex:0}, [e.offsetX, e.offsetY]);
-          if (p) { const idx = Math.round(p[0]); if (idx >= 0 && idx < ser.length && idx !== curIdx) updatePanel(idx); }
-        });
-      }
-
-      const SERIES_CFG = [
-        { key:'mediana', name:'Mediana', color:COLORS.mediana, width:3, type:'solid', z:3 },
-        { key:'decil9', name:'Decil 9 (pesimistas)', color:COLORS.decil9, width:1.5, type:'dashed', z:1 },
-        { key:'decil1', name:'Decil 1 (optimistas)', color:COLORS.decil1, width:1.5, type:'dashed', z:1 },
-      ];
-
-      const series = SERIES_CFG.filter(s => activeKeys.has(s.key)).map(s => {
-        const data = ser.map(item => item[s.key]);
-        const lastIdx = data.length - 1;
-        return {
-          name: s.name,
-          type: 'line',
-          data,
-          symbol: 'none',
-          lineStyle: { width: s.width, type: s.type },
-          itemStyle: { color: s.color },
-          z: s.z,
-          markPoint: {
-            data: [{ coord: [lastIdx, data[lastIdx]] }],
-            symbol: 'circle',
-            symbolSize: 7,
-            itemStyle: { color: s.color, borderColor: d ? '#141414' : '#fff', borderWidth: 2 },
-            label: { show: false },
-          },
-          areaStyle: s.key === 'mediana' ? { color: new echarts.graphic.LinearGradient(0,0,0,1,[
-            {offset:0, color: s.color + (d?'20':'10')},
-            {offset:1, color: s.color + '00'}
-          ])} : undefined,
-        };
+    function opciones() {
+      var s = serie(), K = s.map(function (x) { return x.survey_month; }), dk = PM.dk();
+      var series = SERIES.filter(function (c) { return activas.has(c.k); }).map(function (c) {
+        var data = s.map(function (x) { return x[c.k]; }), n = data.length - 1;
+        var o = PM.linea(c.color, { ancho: c.ancho, punteada: c.forma === 'punteada', extra: {
+          name: c.nombre, data: data, z: c.k === 'mediana' ? 3 : 2,
+          markPoint: PM.puntoFinal(c.color, n, data[n])      // el último dato, con anillo del color de la tarjeta
+        } });
+        if (c.k === 'mediana') o.areaStyle = { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: PM.rgba(c.color, dk ? 0.16 : 0.10) }, { offset: 1, color: PM.rgba(c.color, 0) }]) };
+        return o;
       });
-
-      if (activeKeys.has('decil1') && activeKeys.has('decil9')) {
+      // Banda entre el decil 1 y el decil 9: la dispersión de las respuestas
+      if (activas.has('decil1') && activas.has('decil9')) {
         series.push({
-          type:'custom', name:'_band',
-          renderItem:function(params,api){
-            if(params.dataIndex!==0) return;
-            var pts=[];
-            for(var i=0;i<ser.length;i++) pts.push(api.coord([i,ser[i].decil9]));
-            for(var i=ser.length-1;i>=0;i--) pts.push(api.coord([i,ser[i].decil1]));
-            return {type:'polygon',shape:{points:pts},style:{fill:d?'rgba(0,95,115,0.06)':'rgba(0,95,115,0.08)'}};
-          },
-          data:ser.map(function(_,i){return[i,0]}), silent:true, z:0
+          type: 'custom', name: '_banda', silent: true, z: 0, data: s.map(function (_, i) { return [i, 0]; }),
+          renderItem: function (params, api) {
+            if (params.dataIndex !== 0) return;
+            var pts = [], i;
+            for (i = 0; i < s.length; i++) pts.push(api.coord([i, s[i].decil9]));
+            for (i = s.length - 1; i >= 0; i--) pts.push(api.coord([i, s[i].decil1]));
+            return { type: 'polygon', shape: { points: pts }, style: { fill: PM.rgba(C.petroleo, dk ? 0.10 : 0.07) } };
+          }
         });
       }
-
-      chart.setOption({
-        grid: { left: 50, right: 20, top: 20, bottom: 40 },
-        xAxis: {
-          type: 'category',
-          data: labels,
-          axisLine: { lineStyle: { color: d ? '#2A3A50' : '#E2E8F0' } },
-          axisTick: { show: false },
-          axisLabel: {
-            fontFamily: 'Inter', fontSize: 10, fontWeight: 500,
-            color: d ? '#4A8A82' : '#64748B',
-            rotate: 45,
-            formatter: v => {
-              const [m, y] = v.split(' ');
-              return m === 'Ene' ? `${m} ${y}` : m;
-            },
-          },
-        },
-        yAxis: {
-          type: 'value',
-          axisLine: { show: false },
-          splitLine: { lineStyle: { color: d ? 'rgba(42,58,80,0.5)' : '#F1F5F9' } },
-          axisLabel: {
-            fontFamily: 'JetBrains Mono', fontSize: 11,
-            color: d ? '#4A8A82' : '#64748B',
-            formatter: v => v.toFixed(0) + '%',
-          },
-        },
-        tooltip: {
-          trigger: 'axis',
-          backgroundColor: 'rgba(0,18,25,0.96)',
-          borderColor: d ? '#2A3A50' : '#1A2940',
-          borderWidth: 1,
-          padding: 14,
-          extraCssText: 'border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.3);',
-          textStyle: { fontFamily: 'Inter', fontSize: 12, color: '#fff' },
-          formatter: params => {
-            const valid = params.filter(p => !p.seriesName.startsWith('_'));
-            if (!valid.length) return '';
-            let html = `<div style="font-weight:700;margin-bottom:8px;color:#E9D8A6">${valid[0].axisValue}</div>`;
-            const idx = valid[0].dataIndex;
-            const target = ser[idx].target;
-            html += `<div style="font-size:10px;color:#64748B;margin-bottom:6px">Expectativa para ${target}</div>`;
-            valid.forEach(p => {
-              html += `<div style="display:flex;align-items:center;gap:6px;margin-top:4px">
-                <span style="width:8px;height:8px;border-radius:50%;background:${p.color};display:inline-block"></span>
-                <span style="font-size:11px">${p.seriesName}:</span>
-                <span style="font-family:'JetBrains Mono';font-weight:700;color:${p.color}">${p.value != null ? p.value.toFixed(2) + '%' : '—'}</span>
-              </div>`;
-            });
-            return html;
-          },
-        },
-        series,
-      }, true);
+      var el = document.getElementById('chart');
+      return {
+        animationDuration: 450,
+        grid: PM.grid({ top: 16 }),
+        xAxis: PM.ejeTiempo(K, el),
+        yAxis: PM.ejeY({ fmt: 'pct', extra: { min: 0 } }),
+        tooltip: PM.tooltip(function (ps) {
+          var v = ps.filter(function (p) { return p.seriesName.charAt(0) !== '_'; });
+          if (!v.length) return '';
+          var i = v[0].dataIndex, x = s[i];
+          panel(i);
+          var h = PM.ttTitulo(PM.fecha(x.survey_month), 'Expectativa para ' + PM.fecha(x.target));
+          v.forEach(function (p) {
+            var c = SERIES.filter(function (q) { return q.nombre === p.seriesName; })[0];
+            h += PM.ttFila(c.color, c.nombre, PM.pct(p.value, 1), c.forma);
+          });
+          return h;
+        }),
+        series: series
+      };
     }
 
-    function updatePanel(idx) {
-      const ser = S();
-      const N = ser.length;
-      if (idx < 0 || idx >= N) return;
-      curIdx = idx;
-      const d = ser[idx];
-      const prev = idx > 0 ? ser[idx-1] : null;
-
-      document.getElementById('panel-date').textContent = d.label;
-
-      const dMed = prev ? d.mediana - prev.mediana : 0;
-      const rango = d.decil9 - d.decil1;
-      const hzLabel = horizon === 'siguiente' ? 'del año siguiente' : 'del año en curso';
-
-      let analysis;
-      if (d.mediana > 15)
-        analysis = `Con una expectativa mediana de <span class="dt dv-purple">${fvs(d.mediana)}</span>, los encuestados anticipan una <strong>inflación muy elevada</strong> al cierre ${hzLabel}. El pesimismo se refleja en un Decil 9 de <span class="dt dv-red">${fvs(d.decil9)}</span>, señalando una <strong>pérdida significativa de confianza</strong>.`;
-      else if (d.mediana > 10)
-        analysis = `La expectativa mediana de <span class="dt dv-purple">${fvs(d.mediana)}</span> se sitúa en <strong>niveles altos</strong>. La dispersión de <strong>${rango.toFixed(1)} pp</strong> refleja una <strong>incertidumbre considerable</strong>.`;
-      else if (d.mediana > 5)
-        analysis = `Con <span class="dt dv-purple">${fvs(d.mediana)}</span>, los encuestados anticipan inflación <strong>moderadamente elevada</strong>. El rango entre D1 (<span class="dt dv-green">${fvs(d.decil1)}</span>) y D9 (<span class="dt dv-red">${fvs(d.decil9)}</span>) sugiere visiones divergentes.`;
-      else
-        analysis = `La expectativa mediana de <span class="dt dv-purple">${fvs(d.mediana)}</span> refleja <strong>confianza razonable</strong> en la estabilidad de precios. Consenso relativamente estrecho con rango de <strong>${rango.toFixed(1)} pp</strong>.`;
-
-      document.getElementById('panel-body').innerHTML = `
-        <div class="pb">
-          <div class="pb-lbl" style="color:${COLORS.mediana};background:rgba(0,95,115,.08);border-left-color:${COLORS.mediana}">Mediana</div>
-          <div class="pb-val" style="color:${COLORS.mediana}">${fvs(d.mediana)}</div>
-          <p class="pb-desc">En <strong>${d.label}</strong>, la expectativa mediana de inflación interanual para <strong>${d.target}</strong> es <span class="dt dv-purple">${fvs(d.mediana)}</span>${prev ? `, ${dMed >= 0 ? 'subiendo' : 'bajando'} <span class="dt dv-purple">${Math.abs(dMed).toFixed(2)} pp</span> respecto a ${prev.label}` : ''}. Basada en ${d.respuestas} respuestas.</p>
-        </div>
-        <div class="pb">
-          <div class="pb-lbl" style="color:${COLORS.decil9};background:rgba(199,30,29,.08);border-left-color:${COLORS.decil9}">Decil 9 · Pesimistas</div>
-          <div class="pb-val" style="color:${COLORS.decil9}">${fvs(d.decil9)}</div>
-          <p class="pb-desc">El 10% más pesimista espera al menos <span class="dt dv-red">${fvs(d.decil9)}</span> para ${d.target}.</p>
-        </div>
-        <div class="pb">
-          <div class="pb-lbl" style="color:${COLORS.decil1};background:rgba(10,147,150,.08);border-left-color:${COLORS.decil1}">Decil 1 · Optimistas</div>
-          <div class="pb-val" style="color:${COLORS.decil1}">${fvs(d.decil1)}</div>
-          <p class="pb-desc">El 10% más optimista espera no más de <span class="dt dv-green">${fvs(d.decil1)}</span>.</p>
-        </div>
-        <div class="ctx"><p>${analysis}</p></div>
-      `;
+    function panel(i) {
+      var s = serie();
+      if (i == null || i < 0 || i >= s.length) return;
+      estado.idx = i;
+      var d = s[i], a = i > 0 ? s[i - 1] : null, dMed = a ? d.mediana - a.mediana : 0, rango = d.decil9 - d.decil1;
+      var hz = estado.horizonte === 'siguiente' ? 'del año siguiente' : 'del año en curso';
+      var med = PM.dt(COL.mediana, PM.pct(d.mediana, 1)), d9 = PM.dt(COL.decil9, PM.pct(d.decil9, 1)), d1 = PM.dt(COL.decil1, PM.pct(d.decil1, 1));
+      var mes = PM.fecha(d.survey_month), meta = PM.fecha(d.target);
+      var txt;
+      if (d.mediana > 15) txt = 'Con una expectativa mediana de ' + med + ', los encuestados anticipan una <strong>inflación muy elevada</strong> al cierre ' + hz + '. El pesimismo se refleja en un decil 9 de ' + d9 + ', señal de una <strong>pérdida significativa de confianza</strong>.';
+      else if (d.mediana > 10) txt = 'La expectativa mediana de ' + med + ' se sitúa en <strong>niveles altos</strong>. La dispersión de <strong>' + PM.num(rango, 1) + ' pp</strong> refleja una <strong>incertidumbre considerable</strong>.';
+      else if (d.mediana > 5) txt = 'Con ' + med + ', los encuestados anticipan una inflación <strong>moderadamente elevada</strong>. El rango entre el decil 1 (' + d1 + ') y el decil 9 (' + d9 + ') sugiere visiones divergentes.';
+      else txt = 'La expectativa mediana de ' + med + ' refleja <strong>confianza razonable</strong> en la estabilidad de precios, con un consenso relativamente estrecho: rango de <strong>' + PM.num(rango, 1) + ' pp</strong>.';
+      document.getElementById('panel-fecha').textContent = mes;
+      document.getElementById('panel').innerHTML =
+        PM.pb(COL.mediana, 'Mediana', PM.pct(d.mediana, 1),
+          'En <strong>' + mes + '</strong>, la expectativa mediana de inflación interanual para <strong>' + meta + '</strong> es ' + med +
+          (a ? ', ' + (dMed >= 0 ? 'subiendo ' : 'bajando ') + PM.dt(COL.mediana, PM.num(Math.abs(dMed), 1) + ' pp') + ' respecto a ' + PM.fecha(a.survey_month) : '') +
+          '. Basada en ' + d.respuestas + ' respuestas.') +
+        PM.pb(COL.decil9, 'Decil 9 · Pesimistas', PM.pct(d.decil9, 1), 'El 10% más pesimista espera al menos ' + d9 + ' para ' + meta + '.') +
+        PM.pb(COL.decil1, 'Decil 1 · Optimistas', PM.pct(d.decil1, 1), 'El 10% más optimista espera no más de ' + d1 + '.') +
+        PM.ctx(txt);
     }
 
-    function buildEduBoxes() {
-      const boxes = [
-        {
-          title: '¿Qué son las expectativas de inflación?',
-          body: 'Son las proyecciones que hacen los agentes económicos (empresas, analistas, académicos) sobre cuánto subirán los precios. El BCB las recopila mensualmente a través de la Encuesta de Expectativas Económicas (EEE), dirigida a ejecutivos, académicos e investigadores.'
-        },
-        {
-          title: '¿Año siguiente vs. año en curso?',
-          body: 'La serie <strong>"Año siguiente"</strong> muestra cuánta inflación esperan para diciembre del próximo año (horizonte largo). La serie <strong>"Año en curso"</strong> muestra la expectativa para diciembre de este mismo año (horizonte corto). Comparar ambas revela si el pesimismo es de corto o largo plazo.'
-        },
-        {
-          title: '¿Qué significan Mediana, D1 y D9?',
-          body: 'La <strong>Mediana</strong> es el valor central: la mitad espera más y la otra mitad menos. El <strong>Decil 1</strong> marca el 10% más optimista. El <strong>Decil 9</strong> marca el 10% más pesimista. La diferencia mide la <strong>incertidumbre</strong>.'
-        },
-        {
-          title: '¿Por qué importan?',
-          body: 'Las expectativas de inflación son un predictor clave de la inflación futura. Si los agentes esperan inflación alta, ajustan precios y salarios al alza, generando una <strong>profecía autocumplida</strong>. Expectativas desancladas dificultan enormemente el control de precios.'
-        },
-      ];
-      const el = document.getElementById('edu-boxes');
-      el.innerHTML = boxes.map(b => `
-        <div class="edu" onclick="this.classList.toggle('open')">
-          <div class="edu-t">${b.title}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
-          <div class="edu-body">${b.body}</div>
-        </div>
-      `).join('');
-    }
-
-    window.addEventListener('message', e => {
-      if (e.data && e.data.theme) {
-        document.documentElement.setAttribute('data-theme', e.data.theme);
-      }
-    });
-
-    init();
+    var PREGUNTAS = [
+      ['¿Qué son las expectativas de inflación?', 'Son las proyecciones que hacen los agentes económicos (empresas, analistas, académicos) sobre cuánto subirán los precios. El BCB las recopila mensualmente a través de la Encuesta de Expectativas Económicas (EEE), dirigida a ejecutivos, académicos e investigadores.'],
+      ['¿Año siguiente vs. año en curso?', 'La serie <strong>«Año siguiente»</strong> muestra cuánta inflación esperan para diciembre del próximo año (horizonte largo). La serie <strong>«Año en curso»</strong> muestra la expectativa para diciembre de este mismo año (horizonte corto). Comparar ambas revela si el pesimismo es de corto o largo plazo.'],
+      ['¿Qué significan mediana, D1 y D9?', 'La <strong>mediana</strong> es el valor central: la mitad espera más y la otra mitad menos. El <strong>decil 1</strong> marca el 10% más optimista y el <strong>decil 9</strong>, el 10% más pesimista. La diferencia entre ambos mide la <strong>incertidumbre</strong>.'],
+      ['¿Por qué importan?', 'Las expectativas de inflación son un predictor clave de la inflación futura. Si los agentes esperan inflación alta, ajustan precios y salarios al alza, generando una <strong>profecía autocumplida</strong>. Expectativas desancladas dificultan enormemente el control de precios.']
+    ];
+  })();
   </script>
 </body>
 </html>
