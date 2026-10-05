@@ -2,7 +2,7 @@
   "metadata": {
     "fuente": "BCB — EEE",
     "descripcion": "Crecimiento del PIB esperado (var. anual acumulada) para el año siguiente y el año actual",
-    "ultimo_dato": "Ago 2026"
+    "ultimo_dato": "Sep 2026"
   },
   "series_siguiente": [
     {
@@ -228,6 +228,14 @@
       "mediana": 1.1,
       "decil1": -1.48,
       "decil9": 2.24
+    },
+    {
+      "survey_month": "2026-09",
+      "label": "Sep 2026",
+      "target": "Año 2027",
+      "mediana": 0.15,
+      "decil1": -2.0,
+      "decil9": 2.85
     }
   ],
   "series_actual": [
@@ -486,6 +494,14 @@
       "mediana": -2.0,
       "decil1": -3.56,
       "decil9": 1.0
+    },
+    {
+      "survey_month": "2026-09",
+      "label": "Sep 2026",
+      "target": "Año 2026",
+      "mediana": -2.7,
+      "decil1": -3.84,
+      "decil9": -0.9
     }
   ]
 }

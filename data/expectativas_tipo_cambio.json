@@ -2,7 +2,7 @@
   "metadata": {
     "fuente": "BCB — EEE",
     "descripcion": "Tipo de cambio Bs/$us esperado para fin de periodo, diciembre del año siguiente y del año actual",
-    "ultimo_dato": "Ago 2026"
+    "ultimo_dato": "Sep 2026"
   },
   "series_siguiente": [
     {
@@ -260,6 +260,14 @@
       "mediana": 12.75,
       "decil1": 11.0,
       "decil9": 15.0
+    },
+    {
+      "survey_month": "2026-09",
+      "label": "Sep 2026",
+      "target": "Dic 2027",
+      "mediana": 13.5,
+      "decil1": 10.66,
+      "decil9": 16.0
     }
   ],
   "series_actual": [
@@ -518,6 +526,14 @@
       "mediana": 12.0,
       "decil1": 11.0,
       "decil9": 13.4
+    },
+    {
+      "survey_month": "2026-09",
+      "label": "Sep 2026",
+      "target": "Dic 2026",
+      "mediana": 12.5,
+      "decil1": 10.71,
+      "decil9": 14.0
     }
   ]
 }

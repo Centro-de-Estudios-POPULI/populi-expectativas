@@ -2,7 +2,7 @@
   "metadata": {
     "fuente": "BCB — EEE",
     "descripcion": "Reservas Internacionales Netas esperadas (MM $us) para diciembre del año siguiente y del año actual",
-    "ultimo_dato": "Ago 2026"
+    "ultimo_dato": "Sep 2026"
   },
   "series_siguiente": [
     {
@@ -212,6 +212,14 @@
       "mediana": 4750.0,
       "decil1": 3775.0,
       "decil9": 6000.0
+    },
+    {
+      "survey_month": "2026-09",
+      "label": "Sep 2026",
+      "target": "Dic 2027",
+      "mediana": 5500.0,
+      "decil1": 4020.0,
+      "decil9": 6500.0
     }
   ],
   "series_actual": [
@@ -470,6 +478,14 @@
       "mediana": 4200.0,
       "decil1": 3784.0,
       "decil9": 5400.0
+    },
+    {
+      "survey_month": "2026-09",
+      "label": "Sep 2026",
+      "target": "Dic 2026",
+      "mediana": 4800.0,
+      "decil1": 3800.0,
+      "decil9": 6000.0
     }
   ]
 }
