@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Expectativas de Crecimiento del PIB · Populi</title>
+  <title data-en="GDP Growth Expectations · Populi">Expectativas de Crecimiento del PIB · Populi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
@@ -14,12 +14,12 @@
 <body>
   <div class="wrap">
     <div class="sec-hd">
-      <h2 class="sec-title"><span class="accent-bar"></span>Expectativas de Crecimiento del PIB</h2>
+      <h2 class="sec-title" data-en='<span class="accent-bar"></span>GDP Growth Expectations'><span class="accent-bar"></span>Expectativas de Crecimiento del PIB</h2>
       <p class="sec-sub" id="sub"></p>
     </div>
 
     <div class="hz-bar">
-      <div class="hz-item"><span class="hz-lbl">Horizonte</span><div class="hz-grp" id="b-horizonte"></div></div>
+      <div class="hz-item"><span class="hz-lbl" data-en="Horizon">Horizonte</span><div class="hz-grp" id="b-horizonte"></div></div>
     </div>
 
     <div class="kpi-grid" id="kpis"></div>
@@ -27,14 +27,14 @@
     <div class="main-grid">
       <div class="chart-card">
         <div class="chart-ctrl"><div class="tog-grp" id="pastillas"></div></div>
-        <div class="grafico" id="chart"><div class="loading"><div class="spinner"></div><span>Cargando expectativas de crecimiento…</span></div></div>
+        <div class="grafico" id="chart"><div class="loading"><div class="spinner"></div><span data-en="Loading growth expectations…">Cargando expectativas de crecimiento…</span></div></div>
       </div>
       <div class="panel">
-        <div class="panel-hd"><span class="panel-hd-t">Lectura del indicador</span><span class="panel-hd-d" id="panel-fecha"></span></div>
+        <div class="panel-hd"><span class="panel-hd-t" data-en="Reading the indicator">Lectura del indicador</span><span class="panel-hd-d" id="panel-fecha"></span></div>
         <div class="panel-body" id="panel"></div>
         <div class="panel-ft">
           <a href="../index.html" target="_blank" rel="noopener" class="amp">
-            <span>Ver dashboard completo</span>
+            <span data-en="View full dashboard">Ver dashboard completo</span>
             <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
         </div>
@@ -48,13 +48,14 @@
   <script>
   (function () {
     var C = PM.C, NB = ' ';   // espacio duro: «0,6 pp» y «▲ 0,6» nunca se parten
+    var T = PM.t;             // T('castellano', 'inglés'): con ?lang=en el gráfico sale en inglés
     // La misma construcción que las expectativas de inflación (serie continua, mediana y banda decil 1 – decil 9),
     // con los deciles al revés en lo que significan: en crecimiento, el decil 9 son los OPTIMISTAS (turquesa) y el
     // decil 1 los PESIMISTAS (rojo). En tema oscuro la mediana (petróleo) sube a menta: el petróleo queda bajo 3:1.
     var SERIES = [
-      { k: 'mediana', nombre: 'Mediana', color: { claro: C.petroleo, oscuro: C.menta }, ancho: 2.5, forma: 'linea' },
-      { k: 'decil9', nombre: 'Decil 9 (optimistas)', corto: 'Decil 9', color: C.turquesa, ancho: 1.5, forma: 'punteada' },
-      { k: 'decil1', nombre: 'Decil 1 (pesimistas)', corto: 'Decil 1', color: C.rojo, ancho: 1.5, forma: 'punteada' }
+      { k: 'mediana', nombre: T('Mediana', 'Median'), color: { claro: C.petroleo, oscuro: C.menta }, ancho: 2.5, forma: 'linea' },
+      { k: 'decil9', nombre: T('Decil 9 (optimistas)', 'Decile 9 (optimists)'), corto: T('Decil 9', 'Decile 9'), color: C.turquesa, ancho: 1.5, forma: 'punteada' },
+      { k: 'decil1', nombre: T('Decil 1 (pesimistas)', 'Decile 1 (pessimists)'), corto: T('Decil 1', 'Decile 1'), color: C.rojo, ancho: 1.5, forma: 'punteada' }
     ];
     var COL = { mediana: SERIES[0].color, decil9: SERIES[1].color, decil1: SERIES[2].color };
     var estado = { horizonte: 'siguiente', idx: null };
@@ -82,7 +83,7 @@
       DATA = r[0];
       S.siguiente = armar(DATA.series_siguiente); S.actual = armar(DATA.series_actual);
       estado.idx = s().K.length - 1;
-      PM.botonera(document.getElementById('b-horizonte'), [['siguiente', 'Año siguiente'], ['actual', 'Año en curso']],
+      PM.botonera(document.getElementById('b-horizonte'), [['siguiente', T('Año siguiente', 'Next year')], ['actual', T('Año en curso', 'Current year')]],
         estado.horizonte, function (v) { estado.horizonte = v; estado.idx = s().K.length - 1; todo(); });
       PM.pastillas(document.getElementById('pastillas'),
         SERIES.map(function (x) { return { k: x.k, nombre: x.corto || x.nombre, color: x.color, forma: x.forma }; }),
@@ -94,12 +95,15 @@
       PM.alCambiarTema(function () { cifras(); panel(estado.idx); });
       todo(true);
       PM.preguntas(document.getElementById('preguntas'), preguntas().filter(Boolean));
-      document.getElementById('fuente').innerHTML = 'Fuente: <a href="https://www.bcb.gob.bo/?q=resultados-encuestas" target="_blank" rel="noopener">BCB — Encuesta de Expectativas Económicas</a> · Elaboración: Centro de Estudios POPULI · Datos al: ' + PM.fecha(DATA.metadata.ultimo_dato);
+      document.getElementById('fuente').innerHTML = T(
+        'Fuente: <a href="https://www.bcb.gob.bo/?q=resultados-encuestas" target="_blank" rel="noopener">BCB — Encuesta de Expectativas Económicas</a> · Elaboración: Centro de Estudios POPULI · Datos al: ',
+        'Source: <a href="https://www.bcb.gob.bo/?q=resultados-encuestas" target="_blank" rel="noopener">BCB — Economic Expectations Survey (EEE)</a> · Analysis: Centro de Estudios POPULI · Data as of: ') + PM.fecha(DATA.metadata.ultimo_dato);
     }).catch(function (e) { console.error(e); PM.error(document.getElementById('chart')); });
 
     function todo(inicial) {
-      var x = s(), hz = estado.horizonte === 'siguiente' ? 'el año siguiente' : 'el año en curso';
-      document.getElementById('sub').textContent = 'Cuánto esperan que crezca la economía ' + hz + ' los encuestados por el BCB, en %. Línea: la respuesta del medio; banda: del 10% más pesimista al 10% más optimista';
+      var x = s(), hz = estado.horizonte === 'siguiente' ? T('el año siguiente', 'next year') : T('el año en curso', 'in the current year');
+      document.getElementById('sub').textContent = T('Cuánto esperan que crezca la economía ' + hz + ' los encuestados por el BCB, en %. Línea: la respuesta del medio; banda: del 10% más pesimista al 10% más optimista',
+        'How much those surveyed by the BCB expect the economy to grow ' + hz + ', in %. Line: the middle response; band: from the most pessimistic 10% to the most optimistic 10%');
       cifras();
       if (!inicial) grafico.redibujar();
       panel(estado.idx);
@@ -113,11 +117,11 @@
       var delta = function (d, que) { return que + (a ? ' · ' + mov(d) : ''); };
       var serieK = function (f) { return PM.ultimos(x.F.map(function (y) { return y ? f(y) : null; }), 24); };
       document.getElementById('kpis').innerHTML =
-        PM.kpi({ color: COL.mediana, rotulo: 'Mediana', valor: PM.pct(u.mediana, 1, true), delta: delta(a ? u.mediana - a.mediana : 0, 'para ' + meta(u)), tono: a ? tono(u.mediana - a.mediana) : 'neutro', serie: serieK(function (y) { return y.mediana; }) }) +
-        PM.kpi({ color: COL.decil9, rotulo: 'Decil 9', valor: PM.pct(u.decil9, 1, true), delta: delta(a ? u.decil9 - a.decil9 : 0, 'optimistas'), tono: a ? tono(u.decil9 - a.decil9) : 'neutro', serie: serieK(function (y) { return y.decil9; }) }) +
-        PM.kpi({ color: COL.decil1, rotulo: 'Decil 1', valor: PM.pct(u.decil1, 1, true), delta: delta(a ? u.decil1 - a.decil1 : 0, 'pesimistas'), tono: a ? tono(u.decil1 - a.decil1) : 'neutro', serie: serieK(function (y) { return y.decil1; }) }) +
+        PM.kpi({ color: COL.mediana, rotulo: T('Mediana', 'Median'), valor: PM.pct(u.mediana, 1, true), delta: delta(a ? u.mediana - a.mediana : 0, T('para ' + meta(u), 'for ' + meta(u))), tono: a ? tono(u.mediana - a.mediana) : 'neutro', serie: serieK(function (y) { return y.mediana; }) }) +
+        PM.kpi({ color: COL.decil9, rotulo: T('Decil 9', 'Decile 9'), valor: PM.pct(u.decil9, 1, true), delta: delta(a ? u.decil9 - a.decil9 : 0, T('optimistas', 'optimists')), tono: a ? tono(u.decil9 - a.decil9) : 'neutro', serie: serieK(function (y) { return y.decil9; }) }) +
+        PM.kpi({ color: COL.decil1, rotulo: T('Decil 1', 'Decile 1'), valor: PM.pct(u.decil1, 1, true), delta: delta(a ? u.decil1 - a.decil1 : 0, T('pesimistas', 'pessimists')), tono: a ? tono(u.decil1 - a.decil1) : 'neutro', serie: serieK(function (y) { return y.decil1; }) }) +
         // un rango que se abre es más incertidumbre: subir es malo
-        PM.kpi({ color: COL.mediana, rotulo: 'Rango (D9 – D1)', valor: PM.num(rango, 1) + NB + 'pp', delta: delta(a ? rango - (a.decil9 - a.decil1) : 0, 'incertidumbre'), tono: a ? tono(-(rango - (a.decil9 - a.decil1))) : 'neutro', serie: serieK(function (y) { return y.decil9 - y.decil1; }) });
+        PM.kpi({ color: COL.mediana, rotulo: T('Rango (D9 – D1)', 'Range (D9 – D1)'), valor: PM.num(rango, 1) + NB + 'pp', delta: delta(a ? rango - (a.decil9 - a.decil1) : 0, T('incertidumbre', 'uncertainty')), tono: a ? tono(-(rango - (a.decil9 - a.decil1))) : 'neutro', serie: serieK(function (y) { return y.decil9 - y.decil1; }) });
     }
 
     function opciones() {
@@ -161,8 +165,8 @@
           if (!ps.length) return '';
           var i = ps[0].dataIndex, y = F[i];
           panel(i);
-          if (!y) return PM.ttTitulo(PM.fecha(K[i]), 'La encuesta no preguntó por este horizonte');
-          var h = PM.ttTitulo(PM.fecha(y.survey_month), 'Expectativa para ' + meta(y));
+          if (!y) return PM.ttTitulo(PM.fecha(K[i]), T('La encuesta no preguntó por este horizonte', 'The survey did not ask about this horizon'));
+          var h = PM.ttTitulo(PM.fecha(y.survey_month), T('Expectativa para ' + meta(y), 'Expectation for ' + meta(y)));
           SERIES.forEach(function (c) {
             if (activas.has(c.k)) h += PM.ttFila(c.color, c.nombre, PM.pct(y[c.k], 1, true), c.forma);
           });
@@ -182,27 +186,37 @@
         // Verificado en los informes del BCB (ene–mar 2025 y ene 2026): esos meses la encuesta preguntó por el año
         // recién cerrado y por el año en curso, NO por el siguiente. No es un dato perdido: nadie lo respondió.
         document.getElementById('panel').innerHTML = PM.ctx(estado.horizonte === 'siguiente'
-          ? 'En <strong>' + mes + '</strong> la encuesta del BCB <strong>no preguntó</strong> por el año siguiente: preguntó por el año que acababa de cerrar —el INE todavía no lo había publicado— y por el año en curso. Como nadie respondió esa pregunta, no hay dato que completar y la línea se corta.'
-          : 'En <strong>' + mes + '</strong> la encuesta no publicó la expectativa para el año en curso: por eso la línea se corta.');
+          ? T('En <strong>' + mes + '</strong> la encuesta del BCB <strong>no preguntó</strong> por el año siguiente: preguntó por el año que acababa de cerrar —el INE todavía no lo había publicado— y por el año en curso. Como nadie respondió esa pregunta, no hay dato que completar y la línea se corta.',
+            'In <strong>' + mes + '</strong> the BCB survey <strong>did not ask</strong> about the following year: it asked about the year that had just ended—INE had not yet published it—and about the current year. Since nobody answered that question, there is no data point to fill in and the line breaks.')
+          : T('En <strong>' + mes + '</strong> la encuesta no publicó la expectativa para el año en curso: por eso la línea se corta.',
+            'In <strong>' + mes + '</strong> the survey did not publish the expectation for the current year: that is why the line breaks.'));
         return;
       }
       var j = previo(i), a = j >= 0 ? x.F[j] : null, dMed = a ? d.mediana - a.mediana : 0, rango = d.decil9 - d.decil1;
       var med = PM.dt(COL.mediana, PM.pct(d.mediana, 1, true)), d9 = PM.dt(COL.decil9, PM.pct(d.decil9, 1, true)), d1 = PM.dt(COL.decil1, PM.pct(d.decil1, 1, true));
       var anio = meta(d), txt;
       // umbrales de la mediana: < 0 contracción · < 1,5% casi estancamiento · < 3% moderado · ≥ 3% sólido
-      if (d.mediana < 0) txt = 'La expectativa mediana de ' + med + ' anticipa una <strong>contracción</strong> de la economía en ' + anio + '.';
-      else if (d.mediana < 1.5) txt = 'Con una mediana de ' + med + ', los encuestados esperan un crecimiento <strong>muy bajo</strong> en ' + anio + ', cercano al estancamiento.';
-      else if (d.mediana < 3) txt = 'La mediana de ' + med + ' apunta a un crecimiento <strong>moderado</strong> en ' + anio + '.';
-      else txt = 'Con ' + med + ', los encuestados esperan un crecimiento <strong>sólido</strong> en ' + anio + '.';
+      if (d.mediana < 0) txt = T('La expectativa mediana de ' + med + ' anticipa una <strong>contracción</strong> de la economía en ' + anio + '.',
+        'The median expectation of ' + med + ' anticipates a <strong>contraction</strong> of the economy in ' + anio + '.');
+      else if (d.mediana < 1.5) txt = T('Con una mediana de ' + med + ', los encuestados esperan un crecimiento <strong>muy bajo</strong> en ' + anio + ', cercano al estancamiento.',
+        'With a median of ' + med + ', respondents expect <strong>very low</strong> growth in ' + anio + ', close to stagnation.');
+      else if (d.mediana < 3) txt = T('La mediana de ' + med + ' apunta a un crecimiento <strong>moderado</strong> en ' + anio + '.',
+        'The median of ' + med + ' points to <strong>moderate</strong> growth in ' + anio + '.');
+      else txt = T('Con ' + med + ', los encuestados esperan un crecimiento <strong>sólido</strong> en ' + anio + '.',
+        'At ' + med + ', respondents expect <strong>solid</strong> growth in ' + anio + '.');
       // si la banda cruza el cero, los extremos de la encuesta no coinciden ni en el signo
-      if (d.decil1 < 0 && d.decil9 > 0) txt += ' La banda cruza el cero: el 10% más pesimista espera caída (' + d1 + ') y el 10% más optimista, crecimiento (' + d9 + ').';
-      else txt += ' Entre el decil 1 (' + d1 + ') y el decil 9 (' + d9 + ') hay <strong>' + PM.num(rango, 1) + NB + 'pp</strong> de diferencia.';
+      if (d.decil1 < 0 && d.decil9 > 0) txt += T(' La banda cruza el cero: el 10% más pesimista espera caída (' + d1 + ') y el 10% más optimista, crecimiento (' + d9 + ').',
+        ' The band crosses zero: the most pessimistic 10% expect a decline (' + d1 + ') and the most optimistic 10%, growth (' + d9 + ').');
+      else txt += T(' Entre el decil 1 (' + d1 + ') y el decil 9 (' + d9 + ') hay <strong>' + PM.num(rango, 1) + NB + 'pp</strong> de diferencia.',
+        ' Between decile 1 (' + d1 + ') and decile 9 (' + d9 + ') there is a difference of <strong>' + PM.num(rango, 1) + NB + 'pp</strong>.');
       document.getElementById('panel').innerHTML =
-        PM.pb(COL.mediana, 'Mediana', PM.pct(d.mediana, 1, true),
+        PM.pb(COL.mediana, T('Mediana', 'Median'), PM.pct(d.mediana, 1, true), T(
           'En <strong>' + mes + '</strong>, la expectativa mediana de crecimiento del PIB para <strong>' + anio + '</strong> es ' + med +
-          (a ? ', ' + (dMed >= 0 ? 'subiendo ' : 'bajando ') + PM.dt(COL.mediana, PM.num(Math.abs(dMed), 1) + NB + 'pp') + ' respecto a ' + PM.fecha(a.survey_month) : '') + '.') +
-        PM.pb(COL.decil9, 'Decil 9 · Optimistas', PM.pct(d.decil9, 1, true), 'El 10% más optimista espera al menos ' + d9 + ' para ' + anio + '.') +
-        PM.pb(COL.decil1, 'Decil 1 · Pesimistas', PM.pct(d.decil1, 1, true), 'El 10% más pesimista espera no más de ' + d1 + '.') +
+          (a ? ', ' + (dMed >= 0 ? 'subiendo ' : 'bajando ') + PM.dt(COL.mediana, PM.num(Math.abs(dMed), 1) + NB + 'pp') + ' respecto a ' + PM.fecha(a.survey_month) : '') + '.',
+          'In <strong>' + mes + '</strong>, the median expectation of GDP growth for <strong>' + anio + '</strong> is ' + med +
+          (a ? ', ' + (dMed >= 0 ? 'up ' : 'down ') + PM.dt(COL.mediana, PM.num(Math.abs(dMed), 1) + NB + 'pp') + ' from ' + PM.fecha(a.survey_month) : '') + '.')) +
+        PM.pb(COL.decil9, T('Decil 9 · Optimistas', 'Decile 9 · Optimists'), PM.pct(d.decil9, 1, true), T('El 10% más optimista espera al menos ' + d9 + ' para ' + anio + '.', 'The most optimistic 10% expect at least ' + d9 + ' for ' + anio + '.')) +
+        PM.pb(COL.decil1, T('Decil 1 · Pesimistas', 'Decile 1 · Pessimists'), PM.pct(d.decil1, 1, true), T('El 10% más pesimista espera no más de ' + d1 + '.', 'The most pessimistic 10% expect no more than ' + d1 + '.')) +
         PM.ctx(txt);
     }
 
@@ -215,19 +229,28 @@
         if (t && t.a === p.a && t.m1 === p.m - 1) t.m1 = p.m; else tr.push({ a: p.a, m0: p.m, m1: p.m });
       });
       var f = tr.map(function (t) { return (t.m0 === t.m1 ? PM.MES[t.m0] : PM.MES[t.m0] + '–' + PM.MES[t.m1]) + NB + t.a; });
-      f = f.length > 1 ? [f.slice(0, -1).join(', ') + ' y ' + f[f.length - 1]] : f;
+      f = f.length > 1 ? [f.slice(0, -1).join(', ') + T(' y ', ' and ') + f[f.length - 1]] : f;
       return [
-        ['¿Qué mide esta expectativa?', '<p>La variación anual del PIB que esperan los encuestados para un año calendario: positiva es crecimiento; negativa, contracción.</p>' +
-          '<p>El BCB la recopila cada mes en la Encuesta de Expectativas Económicas (EEE), dirigida a ejecutivos, académicos e investigadores.</p>'],
-        ['¿Año siguiente vs. año en curso?', '<p>La serie <strong>«Año siguiente»</strong> muestra el crecimiento esperado para el próximo año (horizonte largo); <strong>«Año en curso»</strong>, el de este mismo año (horizonte corto), que se corrige a medida que el año avanza.</p>' +
-          ''],
+        [T('¿Qué mide esta expectativa?', 'What does this expectation measure?'), T('<p>La variación anual del PIB que esperan los encuestados para un año calendario: positiva es crecimiento; negativa, contracción.</p>' +
+          '<p>El BCB la recopila cada mes en la Encuesta de Expectativas Económicas (EEE), dirigida a ejecutivos, académicos e investigadores.</p>',
+          '<p>The annual change in GDP that respondents expect for a calendar year: positive means growth; negative, contraction.</p>' +
+          '<p>The BCB collects it every month in the Economic Expectations Survey (EEE), addressed to executives, academics and researchers.</p>')],
+        [T('¿Año siguiente vs. año en curso?', 'Next year vs. current year?'), T('<p>La serie <strong>«Año siguiente»</strong> muestra el crecimiento esperado para el próximo año (horizonte largo); <strong>«Año en curso»</strong>, el de este mismo año (horizonte corto), que se corrige a medida que el año avanza.</p>' +
+          '',
+          '<p>The <strong>“Next year”</strong> series shows the growth expected for next year (long horizon); <strong>“Current year”</strong>, the growth expected for this same year (short horizon), which is revised as the year goes on.</p>')],
         // los meses sin dato salen del dato; el motivo está verificado en los informes del BCB de esos meses
-        f.length ? ['¿Por qué hay meses sin dato?', '<p>En ' + f.join(', ') + ' la encuesta del BCB <strong>no preguntó</strong> por el crecimiento del año siguiente. En esos meses preguntó por el año que acababa de cerrar —el INE todavía no lo había publicado— y por el año en curso.</p>' +
-          '<p>No es un dato perdido ni un error de lectura: nadie respondió esa pregunta, así que no hay forma honesta de completarlo. Por eso la línea se corta en lugar de unir los puntos.</p>'] : null,
-        ['Mediana, decil 1 y decil 9', '<p>La <strong>mediana</strong> es el valor central: la mitad espera más y la otra mitad menos.</p>' +
-          '<p>En crecimiento, el <strong>decil 9</strong> marca al 10% más optimista y el <strong>decil 1</strong> al 10% más pesimista: al revés que en inflación, donde esperar más es ser pesimista. La distancia entre ambos mide la incertidumbre.</p>'],
-        ['¿Por qué importan?', '<p>Las expectativas de crecimiento guían decisiones de hoy: cuánto invertir, contratar o endeudarse. Si se espera menos actividad, se posterga inversión y eso mismo frena el crecimiento.</p>' +
-          '<p>Comparadas con el dato observado del INE, muestran cuánto se equivocaron (y en qué dirección) los encuestados.</p>']
+        f.length ? [T('¿Por qué hay meses sin dato?', 'Why are there months with no data?'), T('<p>En ' + f.join(', ') + ' la encuesta del BCB <strong>no preguntó</strong> por el crecimiento del año siguiente. En esos meses preguntó por el año que acababa de cerrar —el INE todavía no lo había publicado— y por el año en curso.</p>' +
+          '<p>No es un dato perdido ni un error de lectura: nadie respondió esa pregunta, así que no hay forma honesta de completarlo. Por eso la línea se corta en lugar de unir los puntos.</p>',
+          '<p>In ' + f.join(', ') + ' the BCB survey <strong>did not ask</strong> about growth in the following year. In those months it asked about the year that had just ended—INE had not yet published it—and about the current year.</p>' +
+          '<p>It is not a lost data point or a reading error: nobody answered that question, so there is no honest way to fill it in. That is why the line breaks instead of joining the points.</p>')] : null,
+        [T('Mediana, decil 1 y decil 9', 'Median, decile 1 and decile 9'), T('<p>La <strong>mediana</strong> es el valor central: la mitad espera más y la otra mitad menos.</p>' +
+          '<p>En crecimiento, el <strong>decil 9</strong> marca al 10% más optimista y el <strong>decil 1</strong> al 10% más pesimista: al revés que en inflación, donde esperar más es ser pesimista. La distancia entre ambos mide la incertidumbre.</p>',
+          '<p>The <strong>median</strong> is the central value: half expect more and the other half less.</p>' +
+          '<p>For growth, <strong>decile 9</strong> marks the most optimistic 10% and <strong>decile 1</strong> the most pessimistic 10%: the reverse of inflation, where expecting more means being pessimistic. The distance between the two measures uncertainty.</p>')],
+        [T('¿Por qué importan?', 'Why do they matter?'), T('<p>Las expectativas de crecimiento guían decisiones de hoy: cuánto invertir, contratar o endeudarse. Si se espera menos actividad, se posterga inversión y eso mismo frena el crecimiento.</p>' +
+          '<p>Comparadas con el dato observado del INE, muestran cuánto se equivocaron (y en qué dirección) los encuestados.</p>',
+          '<p>Growth expectations guide decisions made today: how much to invest, hire or borrow. If less activity is expected, investment is postponed and that in itself slows growth.</p>' +
+          '<p>Compared with the figure observed by INE, they show how wrong respondents were (and in which direction).</p>')]
       ];
     }
   })();
