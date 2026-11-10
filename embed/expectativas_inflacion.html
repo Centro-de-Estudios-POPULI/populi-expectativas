@@ -91,7 +91,7 @@
     function todo(inicial) {
       var s = serie();
       var hz = estado.horizonte === 'siguiente' ? T('dic. del año siguiente', 'Dec. of next year') : T('dic. del año en curso', 'Dec. of the current year');
-      document.getElementById('sub').textContent = T('Encuesta EEE — BCB · Inflación interanual esperada a ' + hz + ' · Serie ' +
+      document.getElementById('sub').textContent = T('Encuesta de Expectativas Económicas (EEE) — BCB · Inflación interanual esperada a ' + hz + ' · Serie ' +
         PM.fecha(s[0].survey_month) + ' – ' + PM.fecha(s[s.length - 1].survey_month),
         'EEE Survey — BCB · Year-on-year inflation expected for ' + hz + ' · Series ' +
         PM.fecha(s[0].survey_month) + ' – ' + PM.fecha(s[s.length - 1].survey_month));
